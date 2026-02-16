@@ -76,12 +76,48 @@ const { theme, toggleTheme } = useThemeInit();
 - Idempotency keys: auto-generated for POST/PUT/PATCH/DELETE (header `X-Idempotency-Key`)
 - Response interceptor: 401 → clear token + redirect to login
 
+## Routing (`App.jsx`)
+
+### Public (static import — fast first paint)
+- `/` — LandingPage
+- `/login` — LoginPage
+- `/signup` — SignupPage
+
+### Protected (React.lazy — code split)
+- `/dashboard` — MarketDashboardPage (KPI cards, watchlist, news)
+- `/survey` — SurveyPage (investment profile diagnosis)
+- `/result`, `/history` — DiagnosisResultPage, DiagnosisHistoryPage
+- `/portfolio` — PortfolioRecommendationPage
+- `/backtest` — BacktestPage
+- `/scenarios` — ScenarioSimulationPage
+- `/screener` — StockScreenerPage
+- `/watchlist` — WatchlistPage
+- `/stock-comparison` — StockComparisonPage
+- `/profile` — ProfilePage
+
+### Admin (role-based, lazy-loaded)
+- `/admin/data` — DataManagementPage (batch data collection + progress monitoring)
+- `/admin/users` — UserManagementPage
+- `/admin/stock-detail` — StockDetailPage
+- `/admin/financial-analysis`, `/admin/valuation`, `/admin/quant` — Analysis pages
+
+`ProtectedRoute` checks `isAuthenticated` from AuthContext; redirects to `/login` if false.
+`ErrorBoundary` catches `ChunkLoadError` from failed lazy imports.
+
 ## Component Conventions
 
 - Hooks must appear before any conditional returns (React rules)
 - Use `useRef` for polling intervals to prevent multiple concurrent polls
 - ProgressModal: 3-retry 404 handling before giving up
 - Disclaimer: always use `<Disclaimer />` component, never inline disclaimer text
+- New page = `src/pages/{PageName}.jsx` + `src/styles/{PageName}.css` (page-scoped prefix)
+
+## State Management
+
+- **AuthContext** (App.jsx): `user`, `isAuthenticated`, `login()`, `logout()`
+- **ThemeContext** (useTheme.js): `theme`, `toggleTheme()` — persists to localStorage
+- No Redux/Zustand — all state is local `useState` or Context
+- `useCallback` for memoizing API fetch functions; `useEffect` with dependency arrays
 
 ## Environment Variables
 
@@ -95,10 +131,23 @@ VITE_API_URL=http://localhost:8000
 VITE_API_URL=https://your-production-api.com
 ```
 
+## Deployment
+
+| Component | Service | URL |
+|-----------|---------|-----|
+| Frontend | Vercel (Hobby) | `https://foresto-compass-frontend.vercel.app` |
+| Custom Domain | Cloudflare DNS → Vercel | `https://foresto.co.kr` |
+| Backend API | Render | `https://foresto-compass-backend.onrender.com` |
+
+- Auto-deploy: pushes to `main` trigger Vercel build
+- Framework preset: Vite (auto-detected)
+- `VITE_API_URL` set in Vercel Environment Variables
+- Cloudflare DNS: A `foresto.co.kr` → `216.198.79.1`, CNAME `www` → `cname.vercel-dns.com`
+
 ## Tech Stack
 
 - **Framework**: React 18, Vite 5, React Router 6
 - **Charts**: Chart.js
 - **Styling**: CSS custom properties (theme.css) — no CSS-in-JS, no Tailwind utility classes in components
-- **PWA**: Workbox + standalone + offline caching
+- **PWA**: Workbox + standalone + offline caching (NetworkFirst for API, autoUpdate SW)
 - **Code splitting**: React.lazy + ErrorBoundary for chunk loading failures
