@@ -1,0 +1,489 @@
+/* DataManagement.css — theme-aware */
+
+/* ── Section divider ── */
+.dm-section {
+  margin-top: 40px;
+  border-top: 2px solid var(--border, #e5e7eb);
+  padding-top: 30px;
+}
+
+/* ── Card ── */
+.dm-card {
+  padding: 15px;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  background: var(--card, #ffffff);
+}
+
+.dm-card h3 {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: var(--text, #1f2937);
+}
+
+.dm-card-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted, #9ca3af);
+  margin: 0 0 10px;
+}
+
+/* ── Input / select ── */
+.dm-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.9rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 6px;
+  box-sizing: border-box;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.dm-input:focus {
+  border-color: var(--primary, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+}
+
+[data-theme="dark"] .dm-input:focus {
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+}
+
+.dm-input-mb {
+  margin-bottom: 8px;
+}
+
+.dm-input-mb-lg {
+  margin-bottom: 10px;
+}
+
+/* ── Label ── */
+.dm-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary, #6b7280);
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ── Grid layout ── */
+.dm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* ── Full-width button ── */
+.dm-btn-full {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95rem;
+}
+
+.dm-btn-full-bold {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95rem;
+  font-weight: bold;
+}
+
+/* ── Step badge ── */
+.dm-step-badge {
+  display: inline-block;
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ── Section subtitle ── */
+.dm-section-subtitle {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* ── Status cards grid ── */
+.dm-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* ── Success result card ── */
+.dm-success-card {
+  background: rgba(22, 163, 74, 0.08);
+  border-left: 4px solid var(--stock-up, #16a34a);
+}
+
+[data-theme="dark"] .dm-success-card {
+  background: rgba(22, 163, 74, 0.12);
+}
+
+.dm-success-card h3 {
+  color: var(--stock-up, #16a34a);
+  margin-bottom: 15px;
+}
+
+.dm-success-results {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dm-success-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background: var(--card, #ffffff);
+  border-radius: 6px;
+  border: 1px solid var(--border, #e5e7eb);
+}
+
+.dm-success-row-key {
+  font-weight: bold;
+  color: var(--text, #1f2937);
+}
+
+.dm-success-row-vals {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+}
+
+/* ── Two-column grid ── */
+.dm-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.dm-grid-2col-sm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* ── Large action buttons ── */
+.dm-btn-action {
+  padding: 18px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* ── Panels ── */
+.dm-panel {
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+}
+
+.dm-panel h3 {
+  margin-bottom: 12px;
+  font-size: 1rem;
+  color: var(--text, #1f2937);
+}
+
+.dm-panel-green {
+  margin-top: 15px;
+  padding: 20px;
+  background: rgba(22, 163, 74, 0.06);
+  border-radius: 8px;
+  border: 1px solid var(--stock-up, #16a34a);
+}
+
+[data-theme="dark"] .dm-panel-green {
+  background: rgba(22, 163, 74, 0.1);
+}
+
+.dm-panel-green h3 {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: var(--text, #1f2937);
+}
+
+.dm-panel-green-desc {
+  margin: 0 0 12px 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.dm-btn-incremental {
+  width: 100%;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: #2e7d32;
+}
+
+/* ── Hint text ── */
+.dm-hint {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-muted, #9ca3af);
+}
+
+.dm-hint-dark {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.dm-hint-sm {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted, #9ca3af);
+}
+
+/* ── Placeholder (Alpha Vantage) ── */
+.dm-placeholder {
+  padding: 20px;
+  background: var(--card-inner, #fafbfc);
+  border-radius: 8px;
+  border: 1px dashed var(--border, #e5e7eb);
+  text-align: center;
+}
+
+.dm-placeholder h2 {
+  color: var(--text-muted, #9ca3af);
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+
+.dm-placeholder p {
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ── Data view tabs ── */
+.dm-tab-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.dm-tab-row .btn {
+  flex: 1;
+  min-width: 120px;
+}
+
+.dm-tab-content {
+  margin-top: 20px;
+}
+
+/* ── FSS card title ── */
+.dm-fss-title {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: var(--text, #1f2937);
+}
+
+/* ══════════════════════════════════════ */
+/* Phase 3: 수집 스케줄 모니터링 스타일 */
+/* ══════════════════════════════════════ */
+
+/* ── Schedule status badges ── */
+.dm-schedule-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.dm-schedule-completed {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--stock-up, #16a34a);
+}
+
+.dm-schedule-failed {
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--stock-down, #dc2626);
+}
+
+.dm-schedule-running {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+}
+
+.dm-schedule-pending {
+  background: rgba(107, 114, 128, 0.12);
+  color: var(--text-muted, #9ca3af);
+}
+
+[data-theme="dark"] .dm-schedule-completed {
+  background: rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .dm-schedule-failed {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+[data-theme="dark"] .dm-schedule-running {
+  background: rgba(37, 99, 235, 0.2);
+}
+
+[data-theme="dark"] .dm-schedule-pending {
+  background: rgba(107, 114, 128, 0.2);
+}
+
+/* ── Validation badges ── */
+.dm-validation-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+.dm-validation-pass {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--stock-up, #16a34a);
+}
+
+.dm-validation-warn {
+  background: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+}
+
+.dm-validation-fail {
+  background: rgba(220, 38, 38, 0.12);
+  color: var(--stock-down, #dc2626);
+}
+
+[data-theme="dark"] .dm-validation-pass {
+  background: rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .dm-validation-warn {
+  background: rgba(217, 119, 6, 0.2);
+}
+
+[data-theme="dark"] .dm-validation-fail {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+/* ── Log table ── */
+.dm-log-table-wrap {
+  overflow-x: auto;
+}
+
+.dm-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.dm-log-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--border, #e5e7eb);
+  color: var(--text-secondary, #6b7280);
+  font-weight: 600;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.dm-log-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  color: var(--text, #1f2937);
+}
+
+.dm-log-row:hover {
+  background: var(--card-hover, #f9fafb);
+}
+
+[data-theme="dark"] .dm-log-row:hover {
+  background: var(--card-hover, #2d3748);
+}
+
+.dm-log-time {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+}
+
+/* ── Log detail modal ── */
+.dm-log-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.dm-log-detail-modal {
+  background: var(--card, #ffffff);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg, 0 20px 60px rgba(0, 0, 0, 0.15));
+}
+
+.dm-log-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.dm-log-detail-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dm-log-detail-pre {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.78rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--text, #1f2937);
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .dm-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dm-grid-2col {
+    grid-template-columns: 1fr;
+  }
+
+  .dm-grid-2col-sm {
+    grid-template-columns: 1fr;
+  }
+
+  .dm-log-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

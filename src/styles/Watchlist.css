@@ -1,0 +1,273 @@
+/* Watchlist.css — theme-aware */
+
+.watchlist-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.watchlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.watchlist-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: var(--text, #111827);
+}
+
+.watchlist-subtitle {
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* Alert toggle */
+.watchlist-alert-toggle {
+  flex-shrink: 0;
+}
+
+.alert-switch-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.alert-label-text {
+  white-space: nowrap;
+}
+
+.alert-hint {
+  color: #ea580c;
+  font-size: 0.75rem;
+}
+
+.alert-toggle-btn {
+  padding: 0.35rem 1rem;
+  border: 2px solid var(--border, #d1d5db);
+  border-radius: 20px;
+  background: var(--card-inner, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.alert-toggle-btn.enabled {
+  border-color: var(--stock-up, #16a34a);
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--stock-up, #16a34a);
+}
+
+[data-theme="dark"] .alert-toggle-btn.enabled {
+  background: rgba(22, 163, 74, 0.15);
+  color: #86efac;
+  border-color: #86efac;
+}
+
+.alert-toggle-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Table wrapper */
+.watchlist-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  background: var(--card, #ffffff);
+}
+
+.watchlist-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.watchlist-table thead th {
+  background: var(--card-inner, #f9fafb);
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+  border-bottom: 2px solid var(--border, #e5e7eb);
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+
+.watchlist-table tbody td {
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  color: var(--text, #111827);
+}
+
+.watchlist-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.watchlist-row:hover {
+  background: var(--card-hover, #f9fafb);
+}
+
+.watchlist-table .stock-name {
+  font-weight: 600;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watchlist-table .stock-ticker {
+  color: var(--text-secondary, #6b7280);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+}
+
+.watchlist-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.watchlist-table .summary-cell {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.compass-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 2px solid;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.grade-tag {
+  font-weight: 700;
+}
+
+.change-up {
+  color: var(--stock-up, #16a34a);
+  font-weight: 700;
+}
+
+.change-down {
+  color: var(--stock-down, #dc2626);
+  font-weight: 700;
+}
+
+.watchlist-remove-btn {
+  background: none;
+  border: 1px solid var(--border, #d1d5db);
+  border-radius: 4px;
+  color: var(--text-muted, #9ca3af);
+  cursor: pointer;
+  padding: 2px 8px;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+
+.watchlist-remove-btn:hover {
+  color: var(--stock-down, #dc2626);
+  border-color: var(--stock-down, #dc2626);
+  background: rgba(220, 38, 38, 0.06);
+}
+
+[data-theme="dark"] .watchlist-remove-btn:hover {
+  color: #fca5a5;
+  border-color: #991b1b;
+  background: rgba(153, 27, 27, 0.15);
+}
+
+.watchlist-remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Empty state */
+.watchlist-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary, #6b7280);
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+}
+
+.watchlist-empty p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.watchlist-go-screener {
+  padding: 0.6rem 1.5rem;
+  background: linear-gradient(135deg, var(--primary, #667eea), var(--accent, #764ba2));
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.watchlist-go-screener:hover {
+  opacity: 0.9;
+}
+
+/* Loading, Error, Disclaimer */
+.watchlist-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.watchlist-error {
+  background: rgba(220, 38, 38, 0.06);
+  color: var(--stock-down, #dc2626);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+[data-theme="dark"] .watchlist-error {
+  background: rgba(153, 27, 27, 0.15);
+  color: #fca5a5;
+}
+
+.watchlist-disclaimer {
+  text-align: center;
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .watchlist-header {
+    flex-direction: column;
+  }
+
+  .watchlist-table {
+    font-size: 0.8rem;
+  }
+
+  .watchlist-table thead th,
+  .watchlist-table tbody td {
+    padding: 0.5rem 0.35rem;
+  }
+}

@@ -1,0 +1,87 @@
+/* AdminConsentPage.css — theme-aware */
+
+.admin-consent-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.admin-consent-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.admin-consent-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.8rem;
+  color: var(--text, #1f2937);
+}
+
+.admin-consent-header p {
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.admin-consent-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.5rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.filter-field label {
+  font-size: 0.9rem;
+  color: var(--text, #1f2937);
+}
+
+.filter-field input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+}
+
+.filter-field input:focus {
+  outline: none;
+  border-color: var(--primary, #667eea);
+}
+
+.admin-consent-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-consent-row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 0.7fr 1.4fr;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  font-size: 0.9rem;
+  color: var(--text, #1f2937);
+}
+
+.admin-consent-row:last-child {
+  border-bottom: none;
+}
+
+.admin-consent-header-row {
+  background: var(--card-inner, #fafbfc);
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}

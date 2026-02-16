@@ -1,0 +1,624 @@
+/* Phase7PortfolioEvaluation.css — theme-aware */
+
+.phase7-eval-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+.phase7-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-subtitle {
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 2rem;
+}
+
+.phase7-status {
+  background: rgba(255, 152, 0, 0.08);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  color: #a16207;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .phase7-status {
+  background: rgba(255, 152, 0, 0.12);
+  border-color: rgba(255, 152, 0, 0.2);
+  color: #fbbf24;
+}
+
+.phase7-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.8rem;
+}
+
+.phase7-card h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-hint {
+  margin: 0;
+  color: var(--text-secondary, #6b7280);
+}
+
+.phase7-form-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 1rem;
+}
+
+.phase7-period-hint {
+  margin-bottom: 1rem;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9rem;
+}
+
+.phase7-advanced {
+  margin-bottom: 1rem;
+}
+
+.phase7-advanced-toggle {
+  background: rgba(102, 126, 234, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  border-radius: 999px;
+  color: var(--primary, #667eea);
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+[data-theme="dark"] .phase7-advanced-toggle {
+  background: rgba(102, 126, 234, 0.15);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.phase7-advanced-panel {
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  background: var(--card-inner, #fafbfc);
+  border-radius: 12px;
+  border: 1px solid var(--border, #e5e7eb);
+}
+
+.phase7-form-row label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: var(--text, #1f2937);
+  gap: 0.4rem;
+}
+
+.phase7-form-row input,
+.phase7-form-row select,
+.phase7-item-row input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+}
+
+.phase7-date-field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phase7-date-field input {
+  flex: 1;
+}
+
+.phase7-date-button {
+  border: 1px solid var(--border, #e5e7eb);
+  background: var(--card-inner, #fafbfc);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-date-button:hover {
+  background: rgba(102, 126, 234, 0.08);
+  border-color: var(--primary, #667eea);
+}
+
+[data-theme="dark"] .phase7-date-button:hover {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.phase7-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.phase7-item-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 0.8fr auto;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.phase7-item-row button {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border-light, #f3f4f6);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  color: var(--text, #1f2937);
+}
+
+.phase7-item-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-item-actions button {
+  background: var(--text, #1f2937);
+  color: var(--card, #ffffff);
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+
+.phase7-primary {
+  margin-top: 1rem;
+  background: var(--primary, #667eea);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1.4rem;
+  cursor: pointer;
+}
+
+.phase7-result {
+  margin-top: 1.2rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border-light, #f3f4f6);
+}
+
+.phase7-result-inline {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.phase7-tab-header {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.phase7-tab {
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--border, #e5e7eb);
+  color: var(--text, #1f2937);
+  cursor: pointer;
+}
+
+.phase7-tab.active {
+  background: var(--primary, #667eea);
+  color: #ffffff;
+}
+
+.phase7-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.8rem;
+}
+
+.phase7-detail-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+
+.phase7-detail-card h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-note {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.phase7-explain {
+  margin-top: 1rem;
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+}
+
+.phase7-explain h4 {
+  margin: 0 0 0.6rem 0;
+  font-size: 0.95rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-explain ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9rem;
+}
+
+.phase7-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.5rem;
+}
+
+.phase7-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  background: var(--card, #ffffff);
+  border-radius: 10px;
+  border: 1px solid var(--border, #e5e7eb);
+}
+
+.phase7-metric span {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.phase7-metric strong {
+  font-size: 0.95rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-summary-card {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+  padding: 1.2rem;
+  border-radius: 14px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: var(--card-inner, #fafbfc);
+}
+
+.phase7-summary-card h3 {
+  margin-top: 0;
+  color: var(--text, #1f2937);
+}
+
+.phase7-summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+
+.phase7-summary-metric {
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  text-align: center;
+}
+
+.phase7-summary-metric span {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.phase7-summary-metric strong {
+  font-size: 1.1rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-summary-metric.good strong,
+.phase7-metric-value.good {
+  color: var(--stock-up, #16a34a);
+}
+
+.phase7-summary-metric.caution strong,
+.phase7-metric-value.caution {
+  color: #f59e0b;
+}
+
+.phase7-summary-metric.bad strong,
+.phase7-metric-value.bad {
+  color: var(--stock-down, #dc2626);
+}
+
+.phase7-summary-metric.neutral strong,
+.phase7-metric-value.neutral {
+  color: var(--text-muted, #9ca3af);
+}
+
+.phase7-summary-note {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+.phase7-muted {
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9rem;
+}
+
+.phase7-error {
+  color: var(--stock-down, #dc2626);
+  font-size: 0.9rem;
+}
+
+[data-theme="dark"] .phase7-error {
+  color: #fca5a5;
+}
+
+.phase7-summary-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px dashed rgba(102, 126, 234, 0.3);
+  border-radius: 12px;
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.85rem;
+  min-height: 160px;
+  background: var(--card, #ffffff);
+}
+
+.phase7-summary-chart canvas {
+  width: 100% !important;
+  height: 200px !important;
+}
+
+.phase7-chart-extremes {
+  width: 100%;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.phase7-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.phase7-metric-card {
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: var(--card, #ffffff);
+}
+
+.phase7-metric-card h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-metric-card strong {
+  font-size: 1.2rem;
+  color: var(--primary, #667eea);
+}
+
+.phase7-metric-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0.6rem 0 0 0;
+}
+
+.phase7-status-card {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.25);
+  background: rgba(102, 126, 234, 0.06);
+}
+
+[data-theme="dark"] .phase7-status-card {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.2);
+}
+
+.phase7-status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.phase7-status-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--primary, #667eea);
+}
+
+.phase7-grade {
+  background: var(--primary, #667eea);
+  color: #ffffff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.phase7-status-line {
+  font-size: 0.85rem;
+  color: var(--text, #1f2937);
+  margin-top: 0.4rem;
+}
+
+@media (max-width: 900px) {
+  .phase7-summary-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+.phase7-history {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.phase7-history-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--card-hover, #f9fafb);
+  border: 1px solid transparent;
+  color: var(--text, #1f2937);
+}
+
+.phase7-history-item.active {
+  background: rgba(102, 126, 234, 0.08);
+  border-color: rgba(102, 126, 234, 0.25);
+}
+
+[data-theme="dark"] .phase7-history-item.active {
+  background: rgba(102, 126, 234, 0.12);
+  border-color: rgba(102, 126, 234, 0.2);
+}
+
+.phase7-hash {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.phase7-history button {
+  background: rgba(102, 126, 234, 0.1);
+  border: none;
+  border-radius: 10px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  color: var(--primary, #667eea);
+}
+
+[data-theme="dark"] .phase7-history button {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.phase7-compare-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.phase7-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.phase7-compare-chart {
+  margin: 0.75rem 0 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border, #e5e7eb);
+  background: var(--card, #ffffff);
+  padding: 0.75rem;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.phase7-compare-chart canvas {
+  width: 100% !important;
+  height: 200px !important;
+}
+
+.phase7-compare-period {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.phase7-compare-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 14px;
+  padding: 0.9rem;
+}
+
+.phase7-compare-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  color: var(--text, #1f2937);
+}
+
+.phase7-compare-header span {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.phase7-disclaimer {
+  margin-top: 1.5rem;
+}
+
+.phase7-disclaimer-bottom {
+  margin-top: 2rem;
+}
+
+@media (max-width: 720px) {
+  .phase7-item-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.phase7-nav-link {
+  margin-top: 1.2rem;
+  text-align: center;
+}
+
+.phase7-btn-link {
+  background: none;
+  border: 1px solid var(--primary, #667eea);
+  color: var(--primary, #667eea);
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.phase7-btn-link:hover {
+  background: var(--primary, #667eea);
+  color: #ffffff;
+}

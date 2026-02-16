@@ -1,0 +1,445 @@
+/* StockDetail.css — theme-aware */
+
+/* ── Card override ── */
+.sd-card {
+  max-width: 1400px;
+}
+
+/* ── Search Panel ── */
+.sd-search-panel {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 12px);
+}
+
+.sd-search-form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  position: relative;
+}
+
+.sd-search-field {
+  flex: 1;
+  position: relative;
+}
+
+.sd-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  font-size: 0.9rem;
+}
+
+.sd-input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.sd-input:focus {
+  border-color: var(--primary, #667eea);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+}
+
+[data-theme="dark"] .sd-input:focus {
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25);
+}
+
+.sd-days-field {
+  width: 150px;
+}
+
+.sd-select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+  outline: none;
+}
+
+.sd-search-btn {
+  padding: 0.7rem 2rem;
+  white-space: nowrap;
+}
+
+/* ── Autocomplete ── */
+.sd-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  margin-top: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+.sd-suggestion-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  transition: background 0.2s;
+}
+
+.sd-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.sd-suggestion-item:hover {
+  background: var(--card-hover, #f9fafb);
+}
+
+.sd-suggestion-name {
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.sd-suggestion-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  margin-top: 4px;
+}
+
+/* ── Error ── */
+.sd-error {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(220, 38, 38, 0.08);
+  border-radius: 8px;
+  color: var(--stock-down, #dc2626);
+  border: 1px solid var(--stock-down, #dc2626);
+}
+
+[data-theme="dark"] .sd-error {
+  color: #fca5a5;
+  border-color: #991b1b;
+  background: rgba(153, 27, 27, 0.15);
+}
+
+/* ── Results ── */
+.sd-results {
+  margin-top: 2rem;
+}
+
+/* ── Section ── */
+.sd-section {
+  padding: 1.5rem;
+  background: var(--card, #ffffff);
+  border-radius: var(--radius, 12px);
+  border: 1px solid var(--border, #e5e7eb);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+.sd-section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 1.25rem 0;
+  color: var(--text, #1f2937);
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border, #e5e7eb);
+}
+
+/* ── Info Grid ── */
+.sd-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.sd-info-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 4px;
+}
+
+.sd-info-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.sd-info-value-highlight {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary, #667eea);
+}
+
+/* ── Data Table ── */
+.sd-table-wrap {
+  overflow-x: auto;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.sd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.sd-table thead {
+  position: sticky;
+  top: 0;
+  background: var(--card-inner, #fafbfc);
+}
+
+.sd-table th {
+  padding: 0.75rem;
+  border-bottom: 2px solid var(--border, #e5e7eb);
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+}
+
+.sd-table th.right {
+  text-align: right;
+}
+
+.sd-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  color: var(--text, #1f2937);
+}
+
+.sd-table td.right {
+  text-align: right;
+}
+
+.sd-table td.bold {
+  font-weight: 600;
+}
+
+.sd-table td.high {
+  color: var(--stock-down, #dc2626);
+}
+
+.sd-table td.low {
+  color: #2563eb;
+}
+
+[data-theme="dark"] .sd-table td.low {
+  color: #60a5fa;
+}
+
+.sd-table tbody tr:nth-child(even) {
+  background: var(--card-inner, #fafbfc);
+}
+
+.sd-table tbody tr:hover {
+  background: var(--card-hover, #f9fafb);
+}
+
+/* ── Empty State ── */
+.sd-empty {
+  text-align: center;
+  padding: 2.5rem;
+  color: var(--text-muted, #9ca3af);
+}
+
+/* ── Compass Score ── */
+.sd-compass {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.sd-compass-badge {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sd-compass-badge-score {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.sd-compass-badge-grade {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 2px;
+  opacity: 0.9;
+}
+
+.sd-compass-bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.sd-compass-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sd-compass-bar-label {
+  width: 90px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+  flex-shrink: 0;
+}
+
+.sd-compass-bar-track {
+  flex: 1;
+  height: 8px;
+  background: var(--border, #e5e7eb);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sd-compass-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.sd-compass-bar-value {
+  width: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.sd-compass-summary {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--text, #1f2937);
+  font-weight: 500;
+}
+
+.sd-compass-commentary {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.7;
+  border-left: 3px solid var(--primary, #667eea);
+}
+
+.sd-compass-actions {
+  margin-top: 1rem;
+}
+
+.sd-ai-btn {
+  padding: 0.625rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--primary, #667eea);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.sd-ai-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.sd-ai-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sd-ai-result {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.7;
+  border-left: 3px solid var(--accent, #764ba2);
+}
+
+.sd-ai-result-header {
+  font-weight: 700;
+  color: var(--accent, #764ba2);
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.sd-compass-meta {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, #9ca3af);
+}
+
+.sd-compass-disclaimer {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted, #9ca3af);
+  font-style: italic;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sd-search-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sd-days-field {
+    width: 100%;
+  }
+
+  .sd-compass {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sd-compass-bar-label {
+    width: 80px;
+    font-size: 0.8rem;
+  }
+
+  .sd-compass-bar-value {
+    width: 45px;
+    font-size: 0.8rem;
+  }
+
+  .sd-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
