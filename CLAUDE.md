@@ -128,7 +128,7 @@ VITE_API_URL=http://localhost:8000
 
 `.env.production`:
 ```
-VITE_API_URL=https://your-production-api.com
+VITE_API_URL=https://foresto-compass-backend.onrender.com
 ```
 
 ## Deployment
@@ -142,7 +142,7 @@ VITE_API_URL=https://your-production-api.com
 - Auto-deploy: pushes to `main` trigger Vercel build
 - Framework preset: Vite (auto-detected)
 - `VITE_API_URL` set in Vercel Environment Variables
-- Cloudflare DNS: A `foresto.co.kr` → `216.198.79.1`, CNAME `www` → `cname.vercel-dns.com`
+- Cloudflare DNS: A `foresto.co.kr` → `76.76.21.21`, CNAME `www` → `cname.vercel-dns.com`
 
 ## Tech Stack
 
