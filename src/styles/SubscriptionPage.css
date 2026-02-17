@@ -1,0 +1,603 @@
+/* ============================================================
+   SubscriptionPage + PaymentSuccess/Fail — Styles
+   Prefix: sub-  (conflict prevention)
+   ============================================================ */
+
+/* ── Layout ── */
+.sub-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.sub-page h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+}
+
+/* ── Tabs ── */
+.sub-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.sub-tab {
+  padding: 0.75rem 1.25rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  cursor: pointer;
+  font-size: 0.938rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.sub-tab:hover {
+  color: var(--text);
+}
+
+.sub-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 600;
+}
+
+/* ── Billing Toggle ── */
+.sub-billing-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.sub-billing-toggle span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.sub-billing-toggle span.active {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sub-toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background: var(--border);
+  border-radius: 13px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sub-toggle-switch.on {
+  background: var(--primary);
+}
+
+.sub-toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--card);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.sub-toggle-switch.on::after {
+  transform: translateX(22px);
+}
+
+.sub-save-badge {
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+}
+
+/* ── Plan Cards ── */
+.sub-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.sub-plan-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sub-plan-card:hover {
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+}
+
+.sub-plan-card.current {
+  border-color: var(--primary);
+}
+
+.sub-plan-card.recommended {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.sub-plan-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  margin-bottom: 0.75rem;
+  align-self: flex-start;
+}
+
+.sub-plan-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.sub-plan-price {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 0.125rem;
+}
+
+.sub-plan-price .sub-price-unit {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.sub-plan-original {
+  font-size: 0.813rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  margin-bottom: 0.75rem;
+}
+
+.sub-plan-desc {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.sub-plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  flex: 1;
+}
+
+.sub-plan-features li {
+  font-size: 0.85rem;
+  color: var(--text);
+  padding: 0.35rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.sub-plan-features li::before {
+  content: '\2713';
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.sub-plan-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.938rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.sub-plan-btn.primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.sub-plan-btn.primary:hover {
+  background: var(--primary-dark);
+}
+
+.sub-plan-btn.secondary {
+  background: var(--card-inner);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.sub-plan-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── My Subscription ── */
+.sub-my-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.sub-my-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.sub-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.sub-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sub-info-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.sub-info-value {
+  font-size: 0.938rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.sub-status-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+
+.sub-status-badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.sub-status-badge.canceled {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.sub-status-badge.pending {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.sub-cancel-notice {
+  background: #fef9c3;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #854d0e;
+}
+
+.sub-cancel-btn {
+  margin-top: 1rem;
+  padding: 0.625rem 1.25rem;
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sub-cancel-btn:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.sub-cancel-confirm {
+  margin-top: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.sub-cancel-confirm p {
+  font-size: 0.875rem;
+  color: #991b1b;
+  margin-bottom: 0.75rem;
+}
+
+.sub-cancel-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sub-cancel-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.813rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.sub-cancel-actions .confirm {
+  background: #ef4444;
+  color: #fff;
+}
+
+.sub-cancel-actions .dismiss {
+  background: var(--card-inner);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+/* ── No Subscription ── */
+.sub-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+.sub-empty p {
+  margin-bottom: 1rem;
+  font-size: 0.938rem;
+}
+
+.sub-empty button {
+  padding: 0.625rem 1.5rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Payment History Table ── */
+.sub-history-wrap {
+  overflow-x: auto;
+}
+
+.sub-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.sub-history-table th {
+  text-align: left;
+  padding: 0.625rem 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+.sub-history-table td {
+  padding: 0.625rem 0.75rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.sub-history-table .sub-receipt-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.sub-history-table .sub-receipt-link:hover {
+  text-decoration: underline;
+}
+
+.sub-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.sub-pagination button {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  font-size: 0.813rem;
+  cursor: pointer;
+}
+
+.sub-pagination button.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.sub-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Callback Pages ── */
+.sub-callback {
+  max-width: 480px;
+  margin: 4rem auto;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.sub-callback-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.sub-callback-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.sub-callback-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+
+.sub-callback-card p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.sub-callback-details {
+  background: var(--card-inner);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.sub-callback-details .sub-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.375rem 0;
+  font-size: 0.85rem;
+}
+
+.sub-detail-row .label {
+  color: var(--text-muted);
+}
+
+.sub-detail-row .value {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.sub-callback-btn {
+  padding: 0.75rem 2rem;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.938rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sub-callback-btn:hover {
+  background: var(--primary-dark);
+}
+
+.sub-callback-btn.secondary {
+  background: var(--card-inner);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+/* ── Spinner ── */
+.sub-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: sub-spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes sub-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error ── */
+.sub-error-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  color: #991b1b;
+}
+
+.sub-error-code {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ── Loading skeleton ── */
+.sub-loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sub-plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sub-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sub-tabs {
+    overflow-x: auto;
+  }
+
+  .sub-tab {
+    white-space: nowrap;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .sub-plan-card {
+    padding: 1.25rem;
+  }
+}

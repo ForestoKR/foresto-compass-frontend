@@ -74,7 +74,10 @@ function Header() {
       },
       {
         label: '계정',
-        items: [{ label: '프로필', path: '/profile' }],
+        items: [
+          { label: '프로필', path: '/profile' },
+          { label: '구독 관리', path: '/subscription' },
+        ],
       },
     ];
 

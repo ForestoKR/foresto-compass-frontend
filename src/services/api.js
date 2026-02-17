@@ -1066,3 +1066,12 @@ export const getCollectionLogDetail = (logId) => {
 export const getSchedulerStatus = () => {
   return api.get('/admin/scheduler/status');
 };
+
+// ── Payments API ──
+export const getPaymentPlans = () => api.get('/payments/plans');
+export const createCheckout = (data) => api.post('/payments/checkout', data);
+export const confirmPayment = (data) => api.post('/payments/confirm', data);
+export const getSubscription = () => api.get('/payments/subscription');
+export const cancelSubscription = () => api.post('/payments/cancel');
+export const getPaymentHistory = (page = 1, pageSize = 20) =>
+  api.get(`/payments/history?page=${page}&page_size=${pageSize}`);

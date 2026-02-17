@@ -42,6 +42,9 @@ const ValuationPage = lazy(() => import('./pages/ValuationPage'));
 const QuantAnalysisPage = lazy(() => import('./pages/QuantAnalysisPage'));
 const ReportPage = lazy(() => import('./pages/ReportPage'));
 const StockComparisonPage = lazy(() => import('./pages/StockComparisonPage'));
+const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
+const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage'));
+const PaymentFailPage = lazy(() => import('./pages/PaymentFailPage'));
 
 // ============================================================
 // Auth Context
@@ -393,6 +396,32 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <ReportPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Subscription & Payment */}
+          <Route
+            path="/subscription"
+            element={
+              <ProtectedRoute>
+                <SubscriptionPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment/success"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccessPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment/fail"
+            element={
+              <ProtectedRoute>
+                <PaymentFailPage />
               </ProtectedRoute>
             }
           />

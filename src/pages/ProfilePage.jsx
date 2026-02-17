@@ -369,6 +369,14 @@ function ProfilePage() {
                 </span>
               </div>
               <small>등급에 따라 시뮬레이션 생성 횟수, AI 학습 분석 횟수 등이 제한됩니다</small>
+              <button
+                type="button"
+                className="pp-verify-btn"
+                style={{ marginTop: '0.5rem' }}
+                onClick={() => navigate('/subscription')}
+              >
+                구독 관리
+              </button>
             </div>
 
             <div className="profile-field">
