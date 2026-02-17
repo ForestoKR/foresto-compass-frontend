@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // KingoPortfolio 브랜드 컬러
+        // Foresto Compass 브랜드 컬러
         primary: {
           50: '#f0f9ff',
           100: '#e0f2fe',

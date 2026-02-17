@@ -2,7 +2,7 @@
 
 ## 설치 완료 ✅
 
-Tailwind CSS가 KingoPortfolio 프론트엔드에 성공적으로 설치되었습니다.
+Tailwind CSS가 Foresto Compass 프론트엔드에 성공적으로 설치되었습니다.
 
 ## 설치된 패키지
 
@@ -30,7 +30,7 @@ export default {
     extend: {
       colors: {
         primary: {
-          500: '#667eea', // KingoPortfolio 메인 브랜드 컬러
+          500: '#667eea', // Foresto Compass 메인 브랜드 컬러
           // ... 기타 색상
         },
         success: { ... },
@@ -173,7 +173,7 @@ const NewComponent = () => {
 
 ## 커스텀 브랜드 컬러 활용
 
-KingoPortfolio 브랜드 컬러가 이미 설정되어 있습니다:
+Foresto Compass 브랜드 컬러가 이미 설정되어 있습니다:
 
 ```jsx
 // Primary 컬러 (브랜드 컬러)
