@@ -1,0 +1,505 @@
+/* Scheduler.css — theme-aware, prefix: sc- */
+
+/* ── Page header bar ── */
+.sc-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.sc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sc-back-btn {
+  background: none;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.sc-back-btn:hover {
+  background: var(--card-hover, #f8f9ff);
+}
+
+.sc-scheduler-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sc-scheduler-badge.active {
+  background: rgba(22, 163, 74, 0.1);
+  color: var(--grade-a, #16a34a);
+}
+
+.sc-scheduler-badge.inactive {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+
+[data-theme="dark"] .sc-scheduler-badge.active {
+  background: rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .sc-scheduler-badge.inactive {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+/* ── Refresh button ── */
+.sc-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  background: var(--card, #ffffff);
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.sc-refresh-btn:hover {
+  background: var(--card-hover, #f8f9ff);
+  border-color: var(--primary, #667eea);
+}
+
+.sc-refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Job cards grid ── */
+.sc-jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.sc-job-card {
+  padding: 18px;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  background: var(--card, #ffffff);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.sc-job-card:hover {
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+}
+
+.sc-job-card.running {
+  border-color: var(--primary, #667eea);
+  box-shadow: 0 0 0 1px var(--primary, #667eea);
+}
+
+.sc-job-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sc-job-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sc-job-card-icon {
+  font-size: 1.3rem;
+}
+
+.sc-job-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+/* ── Status badges ── */
+.sc-status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.sc-status-idle {
+  background: rgba(107, 114, 128, 0.1);
+  color: var(--text-muted, #9ca3af);
+}
+
+.sc-status-running {
+  background: rgba(102, 126, 234, 0.12);
+  color: var(--primary, #667eea);
+}
+
+.sc-status-completed {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--grade-a, #16a34a);
+}
+
+.sc-status-failed {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+[data-theme="dark"] .sc-status-idle {
+  background: rgba(107, 114, 128, 0.2);
+}
+
+[data-theme="dark"] .sc-status-running {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+[data-theme="dark"] .sc-status-completed {
+  background: rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .sc-status-failed {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+/* ── Job card info rows ── */
+.sc-job-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 14px;
+}
+
+.sc-job-info-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sc-job-info-label {
+  color: var(--text-muted, #9ca3af);
+  min-width: 48px;
+}
+
+.sc-job-info-value {
+  color: var(--text, #1f2937);
+}
+
+/* ── Last run summary ── */
+.sc-last-run {
+  padding: 10px;
+  border-radius: 6px;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border-light, #f3f4f6);
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+}
+
+.sc-last-run-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.sc-last-run-label {
+  color: var(--text-muted, #9ca3af);
+  font-weight: 600;
+}
+
+.sc-last-run-detail {
+  color: var(--text-secondary, #6b7280);
+}
+
+/* ── Validation badge ── */
+.sc-validation-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.sc-validation-pass {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--grade-a, #16a34a);
+}
+
+.sc-validation-warn {
+  background: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+}
+
+.sc-validation-fail {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+[data-theme="dark"] .sc-validation-pass {
+  background: rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .sc-validation-warn {
+  background: rgba(217, 119, 6, 0.2);
+}
+
+[data-theme="dark"] .sc-validation-fail {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+/* ── Trigger button ── */
+.sc-trigger-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--primary, #667eea);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.sc-trigger-btn:hover:not(:disabled) {
+  background: var(--primary-dark, #5568d3);
+}
+
+.sc-trigger-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sc-trigger-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sc-spin 0.6s linear infinite;
+}
+
+@keyframes sc-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Section divider ── */
+.sc-section {
+  margin-top: 32px;
+  border-top: 2px solid var(--border, #e5e7eb);
+  padding-top: 24px;
+}
+
+.sc-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sc-section-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+/* ── Log table ── */
+.sc-log-table-wrap {
+  overflow-x: auto;
+}
+
+.sc-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.sc-log-table th {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--border, #e5e7eb);
+  color: var(--text-secondary, #6b7280);
+  font-weight: 600;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.sc-log-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  color: var(--text, #1f2937);
+}
+
+.sc-log-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sc-log-row:hover {
+  background: var(--card-hover, #f9fafb);
+}
+
+[data-theme="dark"] .sc-log-row:hover {
+  background: var(--card-hover, #1e2235);
+}
+
+.sc-log-time {
+  font-size: 0.78rem;
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+}
+
+/* ── Log detail modal ── */
+.sc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.sc-modal {
+  background: var(--card, #ffffff);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg, 0 20px 60px rgba(0, 0, 0, 0.15));
+}
+
+.sc-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.sc-modal-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.sc-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--text-muted, #9ca3af);
+  padding: 4px;
+}
+
+.sc-modal-close:hover {
+  color: var(--text, #1f2937);
+}
+
+.sc-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.sc-modal-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sc-modal-label {
+  font-size: 0.75rem;
+  color: var(--text-muted, #9ca3af);
+}
+
+.sc-modal-value {
+  font-size: 0.88rem;
+  color: var(--text, #1f2937);
+  font-weight: 500;
+}
+
+.sc-modal-pre {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.78rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--text, #1f2937);
+  margin-top: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* ── Empty state ── */
+.sc-empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.9rem;
+}
+
+/* ── Loading state ── */
+.sc-loading {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sc-jobs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sc-header-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sc-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sc-log-table {
+    font-size: 0.78rem;
+  }
+
+  .sc-log-table th,
+  .sc-log-table td {
+    padding: 6px 8px;
+  }
+}

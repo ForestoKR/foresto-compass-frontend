@@ -1067,6 +1067,10 @@ export const getSchedulerStatus = () => {
   return api.get('/admin/scheduler/status');
 };
 
+export const triggerSchedulerJob = (jobId) => {
+  return api.post(`/admin/scheduler/jobs/${jobId}/trigger`);
+};
+
 // ── Payments API ──
 export const getPaymentPlans = () => api.get('/payments/plans');
 export const createCheckout = (data) => api.post('/payments/checkout', data);

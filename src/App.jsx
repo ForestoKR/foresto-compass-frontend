@@ -36,6 +36,7 @@ const UserManagementPage = lazy(() => import('./pages/UserManagementPage'));
 const PortfolioManagementPage = lazy(() => import('./pages/PortfolioManagementPage'));
 const PortfolioComparisonPage = lazy(() => import('./pages/PortfolioComparisonPage'));
 const BatchJobsPage = lazy(() => import('./pages/BatchJobsPage'));
+const SchedulerPage = lazy(() => import('./pages/SchedulerPage'));
 const StockDetailPage = lazy(() => import('./pages/StockDetailPage'));
 const FinancialAnalysisPage = lazy(() => import('./pages/FinancialAnalysisPage'));
 const ValuationPage = lazy(() => import('./pages/ValuationPage'));
@@ -356,6 +357,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <BatchJobsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/scheduler"
+            element={
+              <ProtectedRoute>
+                <SchedulerPage />
               </ProtectedRoute>
             }
           />

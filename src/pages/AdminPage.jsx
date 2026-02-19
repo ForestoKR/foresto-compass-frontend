@@ -22,6 +22,13 @@ export default function AdminPage() {
       color: '#FF9800'
     },
     {
+      icon: '🗓️',
+      title: '스케줄 관리',
+      description: '데이터 수집 스케줄 관리 및 수동 실행',
+      path: '/admin/scheduler',
+      color: '#0ea5e9'
+    },
+    {
       icon: '🔍',
       title: '종목 조회',
       description: '기본 정보, 시계열 데이터, 재무 지표 한눈에 확인',
