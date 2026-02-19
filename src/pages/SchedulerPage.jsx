@@ -54,7 +54,7 @@ export default function SchedulerPage() {
         getCollectionLogs({ limit: 20 }),
       ]);
       setSchedulerData(statusRes.data.data);
-      setLogs(logsRes.data.data?.logs || logsRes.data.data || []);
+      setLogs(logsRes.data.data?.items || []);
       setError(null);
     } catch (err) {
       console.error('Failed to fetch scheduler data:', err);
