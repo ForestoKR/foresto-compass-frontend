@@ -2,11 +2,43 @@ import { useEffect, useRef, useState } from 'react';
 import * as api from '../services/api';
 import '../styles/ProgressModal.css';
 
+const PIPELINE_STEPS = [
+  { name: 'FDR 종목 마스터', group: 'Step 1' },
+  { name: '주식 데이터 수집', group: 'Step 2' },
+  { name: 'ETF 데이터 수집', group: 'Step 2' },
+  { name: '시계열 증분 적재', group: 'Step 3' },
+  { name: '배당이력 전체종목', group: 'Step 4' },
+  { name: '기업액션 5년', group: 'Step 4' },
+  { name: '채권 전체', group: 'Step 4' },
+  { name: '재무제표 FY2021', group: 'Step 5' },
+  { name: '재무제표 FY2022', group: 'Step 5' },
+  { name: '재무제표 FY2023', group: 'Step 5' },
+  { name: '재무제표 FY2024', group: 'Step 5' },
+  { name: '재무제표 FY2025', group: 'Step 5' },
+  { name: '금융상품 6종', group: 'Step 6' },
+];
+
 function ProgressModal({ taskId, onComplete, onClose }) {
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
   const [logs, setLogs] = useState([]);
   const lastHistoryLenRef = useRef(0);
+
+  const getEstimatedTime = (tid) => {
+    if (!tid) return '약 2-3분';
+    if (tid.startsWith('pipeline_')) return '약 60-90분';
+    if (tid.startsWith('incremental_')) return '약 30-40분';
+    if (tid.startsWith('dart_fin_')) return '약 5-10분';
+    if (tid.startsWith('compass_')) return '약 20-30분';
+    if (tid.startsWith('stocks_') || tid.startsWith('fdr_')) return '약 3-5분';
+    if (tid.startsWith('etf_')) return '약 1-2분';
+    if (tid.startsWith('dividends_')) return '약 3-5분';
+    if (tid.startsWith('corp_action_')) return '약 10-30초';
+    if (tid.startsWith('bonds_')) return '약 3-5분';
+    if (tid.startsWith('deposits_') || tid.startsWith('savings_')) return '약 1-2분';
+    if (tid.startsWith('annuity_') || tid.startsWith('mortgage_') || tid.startsWith('rentloan_') || tid.startsWith('creditloan_')) return '약 1-2분';
+    return '약 2-3분';
+  };
 
   const formatLogTimestamp = (timestamp) => {
     if (!timestamp) return '';
@@ -123,7 +155,7 @@ function ProgressModal({ taskId, onComplete, onClose }) {
                 FSC API를 통해 주식 정보를 병렬로 수집 중입니다...
               </p>
               <p style={{ marginTop: '5px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                (약 2-3분 소요)
+                ({getEstimatedTime(taskId)} 소요)
               </p>
             </div>
           </div>
@@ -138,8 +170,11 @@ function ProgressModal({ taskId, onComplete, onClose }) {
 
   const isComplete = progress.status === 'completed' || progress.status === 'failed';
 
-  // 채권/예금/적금/연금저축/주담대/전세대출 적재의 경우 Phase 1 없음 - Phase 배지 숨김
-  const isBondTask = taskId && (taskId.startsWith('bonds_') || taskId.startsWith('deposits_') || taskId.startsWith('savings_') || taskId.startsWith('annuity_') || taskId.startsWith('mortgage_') || taskId.startsWith('rentloan_') || taskId.startsWith('creditloan_'));
+  // 파이프라인 작업 여부
+  const isPipeline = taskId && taskId.startsWith('pipeline_');
+
+  // 단일 Phase 작업 - Phase 배지 숨김 (채권/예금/적금/연금저축/주담대/전세대출/DART재무제표/파이프라인)
+  const isBondTask = taskId && (taskId.startsWith('bonds_') || taskId.startsWith('deposits_') || taskId.startsWith('savings_') || taskId.startsWith('annuity_') || taskId.startsWith('mortgage_') || taskId.startsWith('rentloan_') || taskId.startsWith('creditloan_') || taskId.startsWith('dart_fin_') || taskId.startsWith('corp_action_') || isPipeline);
 
   // Phase 판별: backend의 phase 필드 사용, 없으면 current_item 기반으로 판단
   const currentPhase = progress.phase ||
@@ -172,7 +207,7 @@ function ProgressModal({ taskId, onComplete, onClose }) {
                 {progress.current_item || 'FSC API를 통해 주식 정보를 병렬로 수집 중...'}
               </p>
               <p style={{ marginTop: '10px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                이 단계는 약 2-3분이 소요됩니다
+                이 단계는 {getEstimatedTime(taskId)}이 소요됩니다
               </p>
               <p style={{ marginTop: '5px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                 완료 후 Phase 2에서 데이터베이스에 저장됩니다
@@ -246,7 +281,46 @@ function ProgressModal({ taskId, onComplete, onClose }) {
                  `⏳ 진행 중`}
               </span>
             </div>
+            {progress.status === 'running' && (
+              <p style={{ marginTop: '8px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                예상 소요시간: {getEstimatedTime(taskId)}
+              </p>
+            )}
           </div>
+
+          {/* Pipeline Step List */}
+          {isPipeline && (
+            <div className="pm-pipeline-steps">
+              {PIPELINE_STEPS.map((step, idx) => {
+                const historyEntry = progress.items_history?.[idx];
+                let status = 'pending';
+                if (historyEntry) {
+                  status = historyEntry.success ? 'done' : 'fail';
+                } else if (idx === (progress.items_history?.length || 0) && progress.status === 'running') {
+                  status = 'running';
+                }
+                const showGroup = idx === 0 || PIPELINE_STEPS[idx - 1].group !== step.group;
+                return (
+                  <div key={idx}>
+                    {showGroup && (
+                      <div className="pm-pipeline-group">{step.group}</div>
+                    )}
+                    <div className={`pm-pipeline-step pm-pipeline-step--${status}`}>
+                      <span className="pm-pipeline-icon">
+                        {status === 'done' ? '✅' : status === 'fail' ? '❌' : status === 'running' ? '⏳' : '⬜'}
+                      </span>
+                      <span className="pm-pipeline-name">{step.name}</span>
+                      {historyEntry && (
+                        <span className="pm-pipeline-info">
+                          {historyEntry.item?.match(/\(([^)]+)\)$/)?.[1] || ''}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* Error Messages */}
           {error && (

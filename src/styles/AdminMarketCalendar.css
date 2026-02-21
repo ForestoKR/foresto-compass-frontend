@@ -1,0 +1,453 @@
+/* AdminMarketCalendar.css — theme-aware, .amc- prefix */
+
+.amc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.amc-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.amc-header h1 {
+  margin: 0 0 0.5rem;
+  font-size: 1.8rem;
+  color: var(--text, #1f2937);
+}
+
+.amc-header p {
+  margin: 0 0 1.5rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* Toolbar */
+.amc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.amc-year-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.amc-year-select label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.amc-year-select select {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+  cursor: pointer;
+}
+
+.amc-year-select select:focus {
+  outline: none;
+  border-color: var(--primary, #667eea);
+}
+
+/* Alerts */
+.amc-alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: amc-fadeIn 0.3s ease;
+}
+
+@keyframes amc-fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.amc-alert-error {
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--stock-down, #dc2626);
+  border: 1px solid var(--stock-down, #dc2626);
+}
+
+[data-theme="dark"] .amc-alert-error {
+  color: #fca5a5;
+  border-color: #991b1b;
+  background: rgba(153, 27, 27, 0.15);
+}
+
+.amc-alert-success {
+  background: rgba(22, 163, 74, 0.08);
+  color: var(--stock-up, #16a34a);
+  border: 1px solid var(--stock-up, #16a34a);
+}
+
+[data-theme="dark"] .amc-alert-success {
+  color: #86efac;
+  border-color: #166534;
+  background: rgba(22, 101, 52, 0.15);
+}
+
+/* Stats */
+.amc-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.amc-stat-card {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  padding: 1.25rem;
+  border-radius: 10px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.amc-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-sm);
+}
+
+.amc-stat-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+}
+
+.amc-stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary, #667eea);
+  margin: 0;
+}
+
+/* Loading & Empty */
+.amc-loading,
+.amc-empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted, #9ca3af);
+  font-size: 1rem;
+}
+
+/* Table */
+.amc-table-wrap {
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.amc-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.amc-table thead {
+  background: var(--primary, #667eea);
+  color: white;
+}
+
+.amc-table th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.amc-table tbody tr {
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  transition: background-color 0.15s;
+}
+
+.amc-table tbody tr:hover {
+  background-color: var(--card-hover, #f9fafb);
+}
+
+.amc-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.amc-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  color: var(--text, #1f2937);
+}
+
+.amc-type-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.amc-type-public {
+  background: rgba(102, 126, 234, 0.12);
+  color: var(--primary, #667eea);
+}
+
+[data-theme="dark"] .amc-type-public {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.amc-type-krx_special {
+  background: rgba(255, 152, 0, 0.12);
+  color: #f59e0b;
+}
+
+[data-theme="dark"] .amc-type-krx_special {
+  background: rgba(245, 158, 11, 0.2);
+}
+
+.amc-btn-delete {
+  padding: 0.35rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: white;
+  background: var(--stock-down, #dc2626);
+  transition: opacity 0.2s;
+}
+
+.amc-btn-delete:hover {
+  opacity: 0.85;
+}
+
+/* Check Trading Day Section */
+.amc-check-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border, #e5e7eb);
+}
+
+.amc-check-top {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.amc-check-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.3rem;
+  color: var(--text, #1f2937);
+}
+
+.amc-check-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.amc-check-form input[type="date"] {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+}
+
+.amc-check-form input[type="date"]:focus {
+  outline: none;
+  border-color: var(--primary, #667eea);
+}
+
+.amc-check-result {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.amc-trading {
+  background: rgba(22, 163, 74, 0.08);
+  color: var(--stock-up, #16a34a);
+  border: 1px solid var(--stock-up, #16a34a);
+}
+
+[data-theme="dark"] .amc-trading {
+  color: #86efac;
+  border-color: #166534;
+  background: rgba(22, 101, 52, 0.15);
+}
+
+.amc-non-trading {
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--stock-down, #dc2626);
+  border: 1px solid var(--stock-down, #dc2626);
+}
+
+[data-theme="dark"] .amc-non-trading {
+  color: #fca5a5;
+  border-color: #991b1b;
+  background: rgba(153, 27, 27, 0.15);
+}
+
+/* Modal */
+.amc-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: amc-fadeIn 0.2s ease;
+}
+
+.amc-modal {
+  background: var(--card, #ffffff);
+  border-radius: 16px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: amc-slideUp 0.3s ease;
+}
+
+@keyframes amc-slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.amc-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  background: var(--primary, #667eea);
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+.amc-modal-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.amc-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.amc-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.amc-modal-body {
+  padding: 1.5rem;
+}
+
+.amc-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.amc-form-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.amc-form-field input,
+.amc-form-field select {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: var(--card, #ffffff);
+  color: var(--text, #1f2937);
+}
+
+.amc-form-field input:focus,
+.amc-form-field select:focus {
+  outline: none;
+  border-color: var(--primary, #667eea);
+}
+
+.amc-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .amc-container {
+    padding: 1rem;
+  }
+
+  .amc-card {
+    padding: 1.25rem;
+  }
+
+  .amc-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .amc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .amc-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .amc-table-wrap {
+    overflow-x: auto;
+  }
+
+  .amc-table {
+    min-width: 500px;
+  }
+
+  .amc-check-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .amc-modal {
+    width: 95%;
+  }
+}

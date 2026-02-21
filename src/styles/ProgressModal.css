@@ -342,6 +342,85 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Pipeline Step List */
+.pm-pipeline-steps {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.pm-pipeline-group {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 8px 0 4px;
+  margin-top: 4px;
+}
+
+.pm-pipeline-group:first-child {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.pm-pipeline-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+
+.pm-pipeline-step--running {
+  background: rgba(102, 126, 234, 0.08);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .pm-pipeline-step--running {
+  background: rgba(102, 126, 234, 0.15);
+}
+
+.pm-pipeline-step--done {
+  color: var(--text-secondary, #6b7280);
+}
+
+.pm-pipeline-step--fail {
+  color: var(--stock-down, #dc2626);
+}
+
+.pm-pipeline-step--pending {
+  color: var(--text-muted, #9ca3af);
+}
+
+.pm-pipeline-icon {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  width: 20px;
+  text-align: center;
+}
+
+.pm-pipeline-name {
+  flex: 1;
+  color: var(--text, #1f2937);
+}
+
+.pm-pipeline-step--pending .pm-pipeline-name {
+  color: var(--text-muted, #9ca3af);
+}
+
+.pm-pipeline-info {
+  font-size: 0.75rem;
+  color: var(--text-muted, #9ca3af);
+  white-space: nowrap;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .progress-modal {

@@ -310,6 +310,10 @@ export default api;
 /**
  * 주식 데이터만 수집
  */
+export const runAllPipeline = () => {
+  return api.post('/admin/run-all');
+};
+
 export const loadStocks = () => {
   return api.post('/admin/load-stocks');
 };
@@ -1070,6 +1074,18 @@ export const getSchedulerStatus = () => {
 export const triggerSchedulerJob = (jobId) => {
   return api.post(`/admin/scheduler/jobs/${jobId}/trigger`);
 };
+
+// ── Market Calendar API ──
+export const getMarketHolidays = (year) =>
+  api.get(`/admin/market-calendar/holidays?year=${year}`);
+export const createMarketHoliday = (data) =>
+  api.post('/admin/market-calendar/holidays', data);
+export const deleteMarketHoliday = (id) =>
+  api.delete(`/admin/market-calendar/holidays/${id}`);
+export const bulkUploadHolidays = (data) =>
+  api.post('/admin/market-calendar/holidays/bulk', data);
+export const checkTradingDay = (date) =>
+  api.get(`/admin/market-calendar/check?check_date=${date}`);
 
 // ── Payments API ──
 export const getPaymentPlans = () => api.get('/payments/plans');

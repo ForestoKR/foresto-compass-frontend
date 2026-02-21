@@ -26,6 +26,8 @@ export default function DataManagementPage() {
   const [fdrMarket, setFdrMarket] = useState('KRX');
   const [fdrAsOf, setFdrAsOf] = useState(new Date().toISOString().split('T')[0]);
   const [bondQualityFilter, setBondQualityFilter] = useState('all');
+  const [isRunAllLoading, setIsRunAllLoading] = useState(false);
+  const [showRunAllConfirm, setShowRunAllConfirm] = useState(false);
   // Phase 3: 수집 스케줄 탭 상태
   const [scheduleView, setScheduleView] = useState('status'); // 'status' | 'logs'
   const [schedulerStatus, setSchedulerStatus] = useState(null);
@@ -100,7 +102,7 @@ export default function DataManagementPage() {
 
       await fetchDataStatus();
     } catch (err) {
-      setError(err.response?.data?.detail || '데이터 수집 실패');
+      setError(err.response?.data?.error?.message || err.response?.data?.detail || '데이터 수집 실패');
       setCurrentTaskId(null); // 에러 시 모달 닫기
     } finally {
       setLoading(false);
@@ -139,7 +141,7 @@ export default function DataManagementPage() {
 
       await fetchDataStatus();
     } catch (err) {
-      setError(err.response?.data?.detail || '채권 데이터 조회 실패');
+      setError(err.response?.data?.error?.message || err.response?.data?.detail || '채권 데이터 조회 실패');
       setCurrentTaskId(null); // 에러 시 모달 닫기
     } finally {
       setLoading(false);
@@ -153,6 +155,26 @@ export default function DataManagementPage() {
   const handleCloseModal = useCallback(() => {
     setCurrentTaskId(null);
   }, []);
+
+  const handleRunAllClick = () => {
+    setShowRunAllConfirm(true);
+  };
+
+  const handleRunAllConfirm = async () => {
+    setShowRunAllConfirm(false);
+    setIsRunAllLoading(true);
+    setError(null);
+    try {
+      const response = await api.runAllPipeline();
+      if (response.data.task_id) {
+        setCurrentTaskId(response.data.task_id);
+      }
+    } catch (err) {
+      alert(err.response?.data?.detail || '파이프라인 실행 실패');
+    } finally {
+      setIsRunAllLoading(false);
+    }
+  };
 
   const stepBadge = (num, color) => (
     <span className="dm-step-badge" style={{ background: color }}>Step {num}</span>
@@ -183,6 +205,55 @@ export default function DataManagementPage() {
               onComplete={handleProgressComplete}
               onClose={handleCloseModal}
             />
+          )}
+
+          {/* Run All Confirm Modal */}
+          {showRunAllConfirm && (
+            <div className="dm-confirm-overlay">
+              <div className="dm-confirm-modal">
+                <div className="dm-confirm-header">
+                  <h3>전체 적재 파이프라인 실행</h3>
+                </div>
+                <div className="dm-confirm-body">
+                  <div className="dm-confirm-warning">
+                    <strong>주의사항을 반드시 확인하세요</strong>
+                  </div>
+                  <ul className="dm-confirm-list">
+                    <li><strong>소요시간:</strong> 약 60~90분 (네트워크 상태에 따라 변동)</li>
+                    <li><strong>서버 부하:</strong> 실행 중 외부 API를 대량 호출합니다. 다른 적재 작업과 동시 실행을 피하세요.</li>
+                    <li><strong>중단 불가:</strong> 시작 후 개별 단계를 건너뛰거나 중도 취소할 수 없습니다.</li>
+                    <li><strong>서버 재시작 주의:</strong> <code>--reload</code> 모드에서는 코드 변경 시 서버가 재시작되어 작업이 중단됩니다.</li>
+                    <li><strong>DB 영향:</strong> 기존 데이터를 최신 값으로 덮어씁니다 (upsert). 삭제는 없습니다.</li>
+                  </ul>
+                  <div className="dm-confirm-steps">
+                    <strong>실행 순서 (13단계)</strong>
+                    <ol>
+                      <li>FDR 종목 마스터</li>
+                      <li>주식 데이터 수집 → ETF 데이터 수집</li>
+                      <li>시계열 증분 적재 (5년치)</li>
+                      <li>배당이력 전체종목 → 기업액션 5년 → 채권 전체</li>
+                      <li>재무제표 FY2021 ~ FY2025 (5개년 순차)</li>
+                      <li>금융상품 6종 (예금/적금/연금저축/주담대/전세대출/신용대출)</li>
+                    </ol>
+                  </div>
+                </div>
+                <div className="dm-confirm-footer">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setShowRunAllConfirm(false)}
+                  >
+                    취소
+                  </button>
+                  <button
+                    className="dm-run-all-btn"
+                    style={{ width: 'auto', padding: '10px 24px' }}
+                    onClick={handleRunAllConfirm}
+                  >
+                    확인, 실행합니다
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
 
           {/* Loading */}
@@ -247,6 +318,26 @@ export default function DataManagementPage() {
             </div>
           )}
 
+          {/* ─── 전체 적재 파이프라인 ─── */}
+          <div className="description-section dm-section">
+            <div className="dm-run-all-panel">
+              <h3>전체 적재 파이프라인</h3>
+              <p>Step 1~6 전체를 순차 실행합니다 (약 60-90분 소요)</p>
+              <ul>
+                <li>종목 마스터 → 주식/ETF → 시계열 5년</li>
+                <li>배당 전체종목 → 기업액션 5년 → 채권 전체</li>
+                <li>재무제표 FY2021~2025 → 금융상품 6종</li>
+              </ul>
+              <button
+                onClick={handleRunAllClick}
+                disabled={isRunAllLoading || loading}
+                className="dm-run-all-btn"
+              >
+                {isRunAllLoading ? '파이프라인 시작 중...' : '전체 적재 실행'}
+              </button>
+            </div>
+          </div>
+
           {/* ─── Step 1: FDR 종목 마스터 ─── */}
           <div className="description-section dm-section">
             <h2>{stepBadge(1, '#64748b')} FDR 종목 마스터</h2>
@@ -284,7 +375,7 @@ export default function DataManagementPage() {
                       });
                       alert(response.data.message);
                     } catch (err) {
-                      alert(err.response?.data?.detail || 'FDR 종목 마스터 적재 실패');
+                      alert(err.response?.data?.error?.message || err.response?.data?.detail || 'FDR 종목 마스터 적재 실패');
                     } finally {
                       setLoading(false);
                     }
@@ -345,15 +436,13 @@ export default function DataManagementPage() {
                   />
                 </div>
                 <div>
-                  <label className="dm-label">수집 기간</label>
-                  <select id="krx-timeseries-days" className="dm-input">
-                    <option value="90">3개월</option>
-                    <option value="180">6개월</option>
-                    <option value="365">1년</option>
-                    <option value="730">2년</option>
-                    <option value="1825">5년</option>
-                    <option value="3650">10년</option>
-                  </select>
+                  <label className="dm-label">적재 시작 년월</label>
+                  <input
+                    type="month"
+                    id="krx-timeseries-start-month"
+                    defaultValue="2021-01"
+                    className="dm-input"
+                  />
                 </div>
               </div>
               <button
@@ -363,13 +452,17 @@ export default function DataManagementPage() {
                     alert('6자리 종목 코드를 입력하세요');
                     return;
                   }
-                  const days = document.getElementById('krx-timeseries-days').value;
+                  const startMonth = document.getElementById('krx-timeseries-start-month').value;
+                  if (!startMonth) {
+                    alert('적재 시작 년월을 선택하세요');
+                    return;
+                  }
                   setLoading(true);
                   setError(null);
                   try {
                     const token = localStorage.getItem('access_token');
                     const response = await fetch(
-                      `${import.meta.env.VITE_API_URL}/admin/krx-timeseries/load-stock/${ticker}?days=${days}`,
+                      `${import.meta.env.VITE_API_URL}/admin/krx-timeseries/load-stock/${ticker}?start_month=${startMonth}`,
                       {
                         method: 'POST',
                         headers: { Authorization: `Bearer ${token}` }
@@ -460,7 +553,7 @@ export default function DataManagementPage() {
                     );
                     await fetchDataStatus();
                   } catch (err) {
-                    alert(err.response?.data?.detail || '증분 적재 시작 실패');
+                    alert(err.response?.data?.error?.message || err.response?.data?.detail || '증분 적재 시작 실패');
                     setCurrentTaskId(null);
                   } finally {
                     setLoading(false);
@@ -507,12 +600,12 @@ export default function DataManagementPage() {
                   <option value="Q2">반기보고서</option>
                   <option value="Q1">1분기보고서</option>
                 </select>
-                <label className="dm-label">종목 수 제한 (테스트)</label>
+                <label className="dm-label">종목 수 제한</label>
                 <input
                   type="number"
                   value={dartFinLimit}
                   onChange={(e) => setDartFinLimit(e.target.value)}
-                  placeholder="빈 칸 = 전체"
+                  placeholder="빈 칸 = 전체 (시가총액 상위 순)"
                   min={1}
                   max={5000}
                   className="dm-input dm-input-mb-lg"
@@ -529,7 +622,7 @@ export default function DataManagementPage() {
                       alert('DART 재무제표 수집 시작됨\ntask_id: ' + res.data.task_id);
                       await fetchDataStatus();
                     } catch (err) {
-                      alert(err.response?.data?.detail || 'DART 재무제표 적재 실패');
+                      alert(err.response?.data?.error?.message || err.response?.data?.detail || 'DART 재무제표 적재 실패');
                     } finally {
                       setLoading(false);
                     }
@@ -539,21 +632,33 @@ export default function DataManagementPage() {
                 >
                   재무제표 적재 (DART)
                 </button>
-                <p className="dm-hint-sm">종목당 ~1초 (DART rate limit)</p>
+                <p className="dm-hint-sm">종목당 ~0.1초 (DART 분당 1,000건 제한)</p>
               </div>
 
               {/* 배당 이력 */}
               <div className="dm-card">
                 <h3>배당 이력</h3>
                 <p className="dm-card-sub">금융위원회 OpenAPI</p>
-                <label className="dm-label">종목 코드 (쉼표 구분)</label>
-                <input
-                  type="text"
-                  value={dividendTickers}
-                  onChange={(e) => setDividendTickers(e.target.value)}
-                  placeholder="005930,000660"
-                  className="dm-input dm-input-mb"
-                />
+                <label className="dm-label" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={dividendTickers === '__ALL__'}
+                    onChange={(e) => setDividendTickers(e.target.checked ? '__ALL__' : '')}
+                  />
+                  전체 종목 (백그라운드 실행)
+                </label>
+                {dividendTickers !== '__ALL__' && (
+                  <>
+                    <label className="dm-label">종목 코드 (쉼표 구분)</label>
+                    <input
+                      type="text"
+                      value={dividendTickers}
+                      onChange={(e) => setDividendTickers(e.target.value)}
+                      placeholder="005930,000660"
+                      className="dm-input dm-input-mb"
+                    />
+                  </>
+                )}
                 <label className="dm-label">기준일 (as_of_date)</label>
                 <input
                   type="date"
@@ -571,8 +676,11 @@ export default function DataManagementPage() {
                 />
                 <button
                   onClick={async () => {
-                    const tickers = dividendTickers.split(',').map((t) => t.trim()).filter(Boolean);
-                    if (tickers.length === 0) {
+                    const isAllMode = dividendTickers === '__ALL__';
+                    const tickers = isAllMode
+                      ? []
+                      : dividendTickers.split(',').map((t) => t.trim()).filter(Boolean);
+                    if (!isAllMode && tickers.length === 0) {
                       alert('종목 코드를 입력하세요');
                       return;
                     }
@@ -584,9 +692,12 @@ export default function DataManagementPage() {
                         bas_dt: dividendBasDt || null,
                         as_of_date: dividendAsOf,
                       });
+                      if (response.data.task_id) {
+                        setCurrentTaskId(response.data.task_id);
+                      }
                       alert(response.data.message);
                     } catch (err) {
-                      alert(err.response?.data?.detail || '배당 이력 적재 실패');
+                      alert(err.response?.data?.error?.message || err.response?.data?.detail || '배당 이력 적재 실패');
                     } finally {
                       setLoading(false);
                     }
@@ -594,8 +705,11 @@ export default function DataManagementPage() {
                   disabled={loading}
                   className="btn btn-primary dm-btn-full"
                 >
-                  배당 이력 적재 (FSC)
+                  {dividendTickers === '__ALL__' ? '배당 이력 전체 적재 (FSC)' : '배당 이력 적재 (FSC)'}
                 </button>
+                {dividendTickers === '__ALL__' && (
+                  <p className="dm-hint-sm">전체 종목 대상 백그라운드 실행 (약 3-5분 소요)</p>
+                )}
               </div>
 
               {/* 기업 액션 */}
@@ -627,14 +741,19 @@ export default function DataManagementPage() {
                   onClick={async () => {
                     setLoading(true);
                     setError(null);
+                    const tempId = `temp_corp_action_${Date.now()}`;
+                    setCurrentTaskId(tempId);
                     try {
                       const response = await api.loadDartCorporateActions({
                         year: actionYear,
                         quarter: actionQuarter,
                       });
-                      alert(response.data.message);
+                      if (response.data.task_id) {
+                        setCurrentTaskId(response.data.task_id);
+                      }
                     } catch (err) {
-                      alert(err.response?.data?.detail || '기업 액션 적재 실패');
+                      alert(err.response?.data?.error?.message || err.response?.data?.detail || '기업 액션 적재 실패');
+                      setCurrentTaskId(null);
                     } finally {
                       setLoading(false);
                     }
@@ -702,7 +821,7 @@ export default function DataManagementPage() {
                         if (res.data.task_id) setCurrentTaskId(res.data.task_id);
                         await fetchDataStatus();
                       } catch (err) {
-                        alert(err.response?.data?.detail || `${title} 적재 실패`);
+                        alert(err.response?.data?.error?.message || err.response?.data?.detail || `${title} 적재 실패`);
                         setCurrentTaskId(null);
                       } finally {
                         setLoading(false);

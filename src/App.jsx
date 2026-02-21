@@ -35,6 +35,7 @@ const DataManagementPage = lazy(() => import('./pages/DataManagementPage'));
 const UserManagementPage = lazy(() => import('./pages/UserManagementPage'));
 const PortfolioManagementPage = lazy(() => import('./pages/PortfolioManagementPage'));
 const PortfolioComparisonPage = lazy(() => import('./pages/PortfolioComparisonPage'));
+const AdminMarketCalendarPage = lazy(() => import('./pages/AdminMarketCalendarPage'));
 const BatchJobsPage = lazy(() => import('./pages/BatchJobsPage'));
 const SchedulerPage = lazy(() => import('./pages/SchedulerPage'));
 const StockDetailPage = lazy(() => import('./pages/StockDetailPage'));
@@ -333,6 +334,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <AdminConsentPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/market-calendar"
+            element={
+              <ProtectedRoute>
+                <AdminMarketCalendarPage />
               </ProtectedRoute>
             }
           />

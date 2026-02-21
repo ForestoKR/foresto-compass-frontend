@@ -29,6 +29,13 @@ export default function AdminPage() {
       color: '#0ea5e9'
     },
     {
+      icon: '\u{1F4C5}',
+      title: '휴장일 관리',
+      description: '한국 주식시장 휴장일 조회, 추가, 거래일 확인',
+      path: '/admin/market-calendar',
+      color: '#14b8a6'
+    },
+    {
       icon: '🔍',
       title: '종목 조회',
       description: '기본 정보, 시계열 데이터, 재무 지표 한눈에 확인',

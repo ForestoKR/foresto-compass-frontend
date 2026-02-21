@@ -91,6 +91,7 @@ function Header() {
           { label: '동의 이력', path: '/admin/consents' },
           { label: '데이터', separator: true },
           { label: '데이터 관리', path: '/admin/data' },
+          { label: '휴장일 관리', path: '/admin/market-calendar' },
           { label: '배치 작업', path: '/admin/batch' },
           { label: '포트폴리오', separator: true },
           { label: '포트폴리오 관리', path: '/admin/portfolio' },
