@@ -19,6 +19,46 @@ const JOB_ICONS = {
   b2b_usage_log_cleanup: '🧹',
 };
 
+const JOB_LABELS_KO = {
+  daily_incremental_prices: '일별 시세 증분 적재',
+  daily_compass_score: 'Compass Score 일괄 계산',
+  weekly_stock_refresh: '주간 종목 마스터 갱신',
+  weekly_dart_financials: 'DART 재무제표 적재',
+  monthly_financial_products: '월간 금융상품 적재',
+  daily_market_email: '일간 시장 요약 이메일',
+  watchlist_score_alerts: '관심종목 점수 변동 알림',
+  b2b_usage_log_cleanup: 'B2B 사용량 로그 정리',
+};
+
+const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
+const DAY_MAP = { mon: '월', tue: '화', wed: '수', thu: '목', fri: '금', sat: '토', sun: '일' };
+
+function formatCron(trigger) {
+  if (!trigger) return '-';
+  // cron[day_of_week='mon-fri', hour='16', minute='30'] 파싱
+  const params = {};
+  const matches = trigger.matchAll(/(\w+)='([^']+)'/g);
+  for (const m of matches) {
+    params[m[1]] = m[2];
+  }
+
+  const hour = params.hour ? `${params.hour}시` : '';
+  const minute = params.minute && params.minute !== '0' ? ` ${params.minute}분` : '';
+  const time = `${hour}${minute}`;
+
+  if (params.day_of_week) {
+    const dow = params.day_of_week;
+    if (dow === 'mon-fri') return `평일 ${time}`;
+    if (dow === 'sat-sun') return `주말 ${time}`;
+    const dayKo = dow.split(',').map((d) => DAY_MAP[d.trim()] || d).join('/');
+    return `매주 ${dayKo}요일 ${time}`;
+  }
+  if (params.day) {
+    return `매월 ${params.day}일 ${time}`;
+  }
+  return `매일 ${time}`;
+}
+
 function formatDuration(seconds) {
   if (!seconds && seconds !== 0) return '-';
   if (seconds < 60) return `${Math.round(seconds)}초`;
@@ -35,6 +75,17 @@ function formatTime(isoString) {
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
   return `${month}/${day} ${hours}:${minutes}`;
+}
+
+function formatNextRun(isoString) {
+  if (!isoString) return '-';
+  const d = new Date(isoString);
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  const dow = DAY_NAMES[d.getDay()];
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${month}월 ${day}일 (${dow}) ${hours}:${minutes}`;
 }
 
 export default function SchedulerPage() {
@@ -207,7 +258,7 @@ function JobCard({ job, triggering, onTrigger }) {
       <div className="sc-job-card-header">
         <div className="sc-job-card-title">
           <span className="sc-job-card-icon">{icon}</span>
-          <span className="sc-job-card-name">{job.job_label}</span>
+          <span className="sc-job-card-name">{JOB_LABELS_KO[job.scheduler_id] || job.job_label}</span>
         </div>
         <span className={`sc-status-badge ${isRunning ? 'sc-status-running' : 'sc-status-idle'}`}>
           {isRunning ? '실행 중' : '대기'}
@@ -218,13 +269,13 @@ function JobCard({ job, triggering, onTrigger }) {
         {job.trigger && (
           <div className="sc-job-info-row">
             <span className="sc-job-info-label">스케줄</span>
-            <span className="sc-job-info-value">{job.trigger}</span>
+            <span className="sc-job-info-value">{formatCron(job.trigger)}</span>
           </div>
         )}
         {job.next_run_time && (
           <div className="sc-job-info-row">
             <span className="sc-job-info-label">다음</span>
-            <span className="sc-job-info-value">{formatTime(job.next_run_time)}</span>
+            <span className="sc-job-info-value">{formatNextRun(job.next_run_time)}</span>
           </div>
         )}
       </div>

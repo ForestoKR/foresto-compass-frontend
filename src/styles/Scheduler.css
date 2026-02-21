@@ -93,6 +93,8 @@
 }
 
 .sc-job-card {
+  display: flex;
+  flex-direction: column;
   padding: 18px;
   border: 1px solid var(--border, #e5e7eb);
   border-radius: 10px;
@@ -269,6 +271,7 @@
 
 /* ── Trigger button ── */
 .sc-trigger-btn {
+  margin-top: auto;
   width: 100%;
   padding: 8px 12px;
   border: none;
