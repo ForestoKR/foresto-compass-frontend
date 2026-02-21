@@ -1071,8 +1071,10 @@ export const getSchedulerStatus = () => {
   return api.get('/admin/scheduler/status');
 };
 
-export const triggerSchedulerJob = (jobId) => {
-  return api.post(`/admin/scheduler/jobs/${jobId}/trigger`);
+export const triggerSchedulerJob = (jobId, { force = false } = {}) => {
+  return api.post(`/admin/scheduler/jobs/${jobId}/trigger`, null, {
+    params: force ? { force: true } : {},
+  });
 };
 
 // ── Market Calendar API ──

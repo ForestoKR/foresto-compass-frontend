@@ -86,7 +86,7 @@ export default function SchedulerPage() {
     if (triggeringJob) return;
     setTriggeringJob(jobId);
     try {
-      await triggerSchedulerJob(jobId);
+      await triggerSchedulerJob(jobId, { force: true });
       // Refresh after short delay to let the task start
       setTimeout(fetchData, 1000);
     } catch (err) {
