@@ -364,27 +364,29 @@ export default function DataManagementPage() {
                   onChange={(e) => setFdrAsOf(e.target.value)}
                   className="dm-input dm-input-mb-lg"
                 />
-                <button
-                  onClick={async () => {
-                    setLoading(true);
-                    setError(null);
-                    try {
-                      const response = await api.loadFdrStockListing({
-                        market: fdrMarket,
-                        as_of_date: fdrAsOf,
-                      });
-                      alert(response.data.message);
-                    } catch (err) {
-                      alert(err.response?.data?.error?.message || err.response?.data?.detail || 'FDR 종목 마스터 적재 실패');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  disabled={loading}
-                  className="btn btn-secondary dm-btn-full"
-                >
-                  FDR 종목 마스터 적재
-                </button>
+                <div className="dm-card-actions">
+                  <button
+                    onClick={async () => {
+                      setLoading(true);
+                      setError(null);
+                      try {
+                        const response = await api.loadFdrStockListing({
+                          market: fdrMarket,
+                          as_of_date: fdrAsOf,
+                        });
+                        alert(response.data.message);
+                      } catch (err) {
+                        alert(err.response?.data?.error?.message || err.response?.data?.detail || 'FDR 종목 마스터 적재 실패');
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                    disabled={loading}
+                    className="btn btn-secondary dm-btn-full"
+                  >
+                    FDR 종목 마스터 적재
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -610,29 +612,31 @@ export default function DataManagementPage() {
                   max={5000}
                   className="dm-input dm-input-mb-lg"
                 />
-                <button
-                  onClick={async () => {
-                    if (!window.confirm(`FY${dartFiscalYear} ${dartReportType} 재무제표를 수집합니까?`)) return;
-                    setLoading(true);
-                    try {
-                      const params = { fiscal_year: dartFiscalYear, report_type: dartReportType };
-                      if (dartFinLimit) params.limit = Number(dartFinLimit);
-                      const res = await api.loadDartFinancials(params);
-                      setCurrentTaskId(res.data.task_id);
-                      alert('DART 재무제표 수집 시작됨\ntask_id: ' + res.data.task_id);
-                      await fetchDataStatus();
-                    } catch (err) {
-                      alert(err.response?.data?.error?.message || err.response?.data?.detail || 'DART 재무제표 적재 실패');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  disabled={loading}
-                  className="btn btn-primary dm-btn-full"
-                >
-                  재무제표 적재 (DART)
-                </button>
-                <p className="dm-hint-sm">종목당 ~0.1초 (DART 분당 1,000건 제한)</p>
+                <div className="dm-card-actions">
+                  <p className="dm-hint-sm">종목당 ~0.1초 (DART 분당 1,000건 제한)</p>
+                  <button
+                    onClick={async () => {
+                      if (!window.confirm(`FY${dartFiscalYear} ${dartReportType} 재무제표를 수집합니까?`)) return;
+                      setLoading(true);
+                      try {
+                        const params = { fiscal_year: dartFiscalYear, report_type: dartReportType };
+                        if (dartFinLimit) params.limit = Number(dartFinLimit);
+                        const res = await api.loadDartFinancials(params);
+                        setCurrentTaskId(res.data.task_id);
+                        alert('DART 재무제표 수집 시작됨\ntask_id: ' + res.data.task_id);
+                        await fetchDataStatus();
+                      } catch (err) {
+                        alert(err.response?.data?.error?.message || err.response?.data?.detail || 'DART 재무제표 적재 실패');
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                    disabled={loading}
+                    className="btn btn-primary dm-btn-full"
+                  >
+                    재무제표 적재 (DART)
+                  </button>
+                </div>
               </div>
 
               {/* 배당 이력 */}
@@ -674,42 +678,44 @@ export default function DataManagementPage() {
                   placeholder="비워두면 전체 조회"
                   className="dm-input dm-input-mb-lg"
                 />
-                <button
-                  onClick={async () => {
-                    const isAllMode = dividendTickers === '__ALL__';
-                    const tickers = isAllMode
-                      ? []
-                      : dividendTickers.split(',').map((t) => t.trim()).filter(Boolean);
-                    if (!isAllMode && tickers.length === 0) {
-                      alert('종목 코드를 입력하세요');
-                      return;
-                    }
-                    setLoading(true);
-                    setError(null);
-                    try {
-                      const response = await api.loadFscDividends({
-                        tickers,
-                        bas_dt: dividendBasDt || null,
-                        as_of_date: dividendAsOf,
-                      });
-                      if (response.data.task_id) {
-                        setCurrentTaskId(response.data.task_id);
+                <div className="dm-card-actions">
+                  {dividendTickers === '__ALL__' && (
+                    <p className="dm-hint-sm">전체 종목 대상 백그라운드 실행 (약 3-5분 소요)</p>
+                  )}
+                  <button
+                    onClick={async () => {
+                      const isAllMode = dividendTickers === '__ALL__';
+                      const tickers = isAllMode
+                        ? []
+                        : dividendTickers.split(',').map((t) => t.trim()).filter(Boolean);
+                      if (!isAllMode && tickers.length === 0) {
+                        alert('종목 코드를 입력하세요');
+                        return;
                       }
-                      alert(response.data.message);
-                    } catch (err) {
-                      alert(err.response?.data?.error?.message || err.response?.data?.detail || '배당 이력 적재 실패');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  disabled={loading}
-                  className="btn btn-primary dm-btn-full"
-                >
-                  {dividendTickers === '__ALL__' ? '배당 이력 전체 적재 (FSC)' : '배당 이력 적재 (FSC)'}
-                </button>
-                {dividendTickers === '__ALL__' && (
-                  <p className="dm-hint-sm">전체 종목 대상 백그라운드 실행 (약 3-5분 소요)</p>
-                )}
+                      setLoading(true);
+                      setError(null);
+                      try {
+                        const response = await api.loadFscDividends({
+                          tickers,
+                          bas_dt: dividendBasDt || null,
+                          as_of_date: dividendAsOf,
+                        });
+                        if (response.data.task_id) {
+                          setCurrentTaskId(response.data.task_id);
+                        }
+                        alert(response.data.message);
+                      } catch (err) {
+                        alert(err.response?.data?.error?.message || err.response?.data?.detail || '배당 이력 적재 실패');
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                    disabled={loading}
+                    className="btn btn-primary dm-btn-full"
+                  >
+                    {dividendTickers === '__ALL__' ? '배당 이력 전체 적재 (FSC)' : '배당 이력 적재 (FSC)'}
+                  </button>
+                </div>
               </div>
 
               {/* 기업 액션 */}
@@ -737,32 +743,34 @@ export default function DataManagementPage() {
                   <option value="Q4">Q4 (10~12월)</option>
                   <option value="ALL">전체 (1~12월)</option>
                 </select>
-                <button
-                  onClick={async () => {
-                    setLoading(true);
-                    setError(null);
-                    const tempId = `temp_corp_action_${Date.now()}`;
-                    setCurrentTaskId(tempId);
-                    try {
-                      const response = await api.loadDartCorporateActions({
-                        year: actionYear,
-                        quarter: actionQuarter,
-                      });
-                      if (response.data.task_id) {
-                        setCurrentTaskId(response.data.task_id);
+                <div className="dm-card-actions">
+                  <button
+                    onClick={async () => {
+                      setLoading(true);
+                      setError(null);
+                      const tempId = `temp_corp_action_${Date.now()}`;
+                      setCurrentTaskId(tempId);
+                      try {
+                        const response = await api.loadDartCorporateActions({
+                          year: actionYear,
+                          quarter: actionQuarter,
+                        });
+                        if (response.data.task_id) {
+                          setCurrentTaskId(response.data.task_id);
+                        }
+                      } catch (err) {
+                        alert(err.response?.data?.error?.message || err.response?.data?.detail || '기업 액션 적재 실패');
+                        setCurrentTaskId(null);
+                      } finally {
+                        setLoading(false);
                       }
-                    } catch (err) {
-                      alert(err.response?.data?.error?.message || err.response?.data?.detail || '기업 액션 적재 실패');
-                      setCurrentTaskId(null);
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  disabled={loading}
-                  className="btn btn-primary dm-btn-full"
-                >
-                  기업 액션 적재
-                </button>
+                    }}
+                    disabled={loading}
+                    className="btn btn-primary dm-btn-full"
+                  >
+                    기업 액션 적재
+                  </button>
+                </div>
               </div>
 
               {/* 채권 */}
@@ -779,14 +787,16 @@ export default function DataManagementPage() {
                   <option value="investment_grade">투자적격등급 (AAA~BBB)</option>
                   <option value="high_quality">최우량 (AAA~A)</option>
                 </select>
-                <button
-                  onClick={handleLoadBonds}
-                  disabled={loading}
-                  className="btn btn-primary dm-btn-full-bold"
-                >
-                  채권 데이터 조회
-                </button>
-                <p className="dm-hint-sm">오늘 기준일로 선택 등급 채권을 조회</p>
+                <div className="dm-card-actions">
+                  <p className="dm-hint-sm">오늘 기준일로 선택 등급 채권을 조회</p>
+                  <button
+                    onClick={handleLoadBonds}
+                    disabled={loading}
+                    className="btn btn-primary dm-btn-full-bold"
+                  >
+                    채권 데이터 조회
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -809,29 +819,31 @@ export default function DataManagementPage() {
               ].map(({ title, fn, taskPrefix }) => (
                 <div key={taskPrefix} className="dm-card">
                   <h3 className="dm-fss-title">{title}</h3>
-                  <button
-                    onClick={async () => {
-                      if (!window.confirm(`FSS ${title} 상품을 조회하시겠습니까?`)) return;
-                      setLoading(true);
-                      setError(null);
-                      const tempId = `temp_${taskPrefix}_${Date.now()}`;
-                      setCurrentTaskId(tempId);
-                      try {
-                        const res = await fn();
-                        if (res.data.task_id) setCurrentTaskId(res.data.task_id);
-                        await fetchDataStatus();
-                      } catch (err) {
-                        alert(err.response?.data?.error?.message || err.response?.data?.detail || `${title} 적재 실패`);
-                        setCurrentTaskId(null);
-                      } finally {
-                        setLoading(false);
-                      }
-                    }}
-                    disabled={loading}
-                    className="btn btn-primary dm-btn-full"
-                  >
-                    {title} 조회
-                  </button>
+                  <div className="dm-card-actions">
+                    <button
+                      onClick={async () => {
+                        if (!window.confirm(`FSS ${title} 상품을 조회하시겠습니까?`)) return;
+                        setLoading(true);
+                        setError(null);
+                        const tempId = `temp_${taskPrefix}_${Date.now()}`;
+                        setCurrentTaskId(tempId);
+                        try {
+                          const res = await fn();
+                          if (res.data.task_id) setCurrentTaskId(res.data.task_id);
+                          await fetchDataStatus();
+                        } catch (err) {
+                          alert(err.response?.data?.error?.message || err.response?.data?.detail || `${title} 적재 실패`);
+                          setCurrentTaskId(null);
+                        } finally {
+                          setLoading(false);
+                        }
+                      }}
+                      disabled={loading}
+                      className="btn btn-primary dm-btn-full"
+                    >
+                      {title} 조회
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

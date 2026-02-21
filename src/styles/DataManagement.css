@@ -13,6 +13,12 @@
   border: 1px solid var(--border, #e5e7eb);
   border-radius: 8px;
   background: var(--card, #ffffff);
+  display: flex;
+  flex-direction: column;
+}
+
+.dm-card-actions {
+  margin-top: auto;
 }
 
 .dm-card h3 {
