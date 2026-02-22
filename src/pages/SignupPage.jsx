@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp as signUpApi } from '../services/api';
 import { useAuth } from '../App';
+import { trackEvent } from '../utils/analytics';
 import '../styles/SignupPage.css';
 
 function SignupPage() {
@@ -43,6 +44,7 @@ function SignupPage() {
       const response = await signUpApi({ email, password });
       const { access_token, user } = response.data;
       login(user, access_token);
+      trackEvent('signup_completed');
       navigate('/dashboard');
     } catch (err) {
       if (err.response?.status === 409) {

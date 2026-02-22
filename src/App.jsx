@@ -1,7 +1,9 @@
 import { useState, useEffect, createContext, useContext, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider, Helmet } from 'react-helmet-async';
 import { getCurrentUser, logout as logoutApi } from './services/api';
 import { ThemeContext, useThemeInit } from './hooks/useTheme';
+import { initAnalytics, identifyUser, resetAnalytics } from './utils/analytics';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -71,8 +73,10 @@ function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 초기 사용자 정보 로드
+  // 초기 사용자 정보 로드 + 애널리틱스 초기화
   useEffect(() => {
+    initAnalytics();
+
     const checkAuth = async () => {
       try {
         const token = localStorage.getItem('access_token');
@@ -81,6 +85,7 @@ function AuthProvider({ children }) {
           const response = await getCurrentUser();
           setUser(response.data);
           setIsAuthenticated(true);
+          identifyUser(response.data);
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -94,15 +99,17 @@ function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
-  const login = (user, token) => {
+  const login = (userData, token) => {
     localStorage.setItem('access_token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setUser(user);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
     setIsAuthenticated(true);
+    identifyUser(userData);
   };
 
   const logout = () => {
     logoutApi();
+    resetAnalytics();
     setUser(null);
     setIsAuthenticated(false);
   };
@@ -156,6 +163,15 @@ function AppContent() {
 
   return (
     <ThemeContext.Provider value={themeValue}>
+    <Helmet>
+      <title>Foresto Compass — 종합 투자 학습 플랫폼</title>
+      <meta name="description" content="Compass Score 기반 종목 분석, 포트폴리오 시뮬레이션, 투자 성향 진단. 교육 목적 참고 정보이며 투자 권유가 아닙니다." />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="Foresto Compass" />
+      <meta property="og:image" content="https://foresto.co.kr/og-image.png" />
+      <meta property="og:locale" content="ko_KR" />
+      <meta name="twitter:card" content="summary_large_image" />
+    </Helmet>
     <div className="app">
       {isAuthenticated && <Header />}
       <main className="main-content">
@@ -458,16 +474,18 @@ function AppContent() {
 
 function App() {
   return (
-    <Router
-      future={{
-        v7_startTransition: true,
-        v7_relativeSplatPath: true,
-      }}
-    >
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </Router>
+    <HelmetProvider>
+      <Router
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </Router>
+    </HelmetProvider>
   );
 }
 

@@ -159,7 +159,7 @@ function Header() {
         <div className="header-logo">
           <button
             className="logo-button"
-            onClick={() => navigate('/survey')}
+            onClick={() => navigate('/dashboard')}
             title="Foresto Compass 홈"
           >
             <span className="logo-icon">🌲</span>

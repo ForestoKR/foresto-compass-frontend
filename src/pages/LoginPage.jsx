@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { login as loginApi } from '../services/api';
 import { useAuth } from '../App';
+import { trackEvent } from '../utils/analytics';
 import '../styles/SignupPage.css';
 
 function LoginPage() {
@@ -34,6 +35,7 @@ function LoginPage() {
       // 성공
       const { access_token, user } = response.data;
       login(user, access_token);
+      trackEvent('login_completed');
 
       // 역할에 따라 다른 페이지로 이동
       if (user.role === 'admin') {

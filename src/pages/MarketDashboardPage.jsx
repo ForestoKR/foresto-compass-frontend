@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
+import { Helmet } from 'react-helmet-async';
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
-import ProfileCompletionModal from '../components/ProfileCompletionModal';
+import { trackPageView } from '../utils/analytics';
 import '../styles/MarketDashboard.css';
 
 /* ── helpers ── */
@@ -116,39 +117,26 @@ function MarketDashboardPage() {
   const [emailSub, setEmailSub] = useState(null);
   const [subLoading, setSubLoading] = useState(false);
   const [watchlistItems, setWatchlistItems] = useState([]);
-  const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileIncomplete, setProfileIncomplete] = useState(false);
   const [profilePercent, setProfilePercent] = useState(0);
 
   useEffect(() => {
+    trackPageView('dashboard');
     fetchMarketData();
     fetchEmailSub();
     fetchWatchlist();
-    checkProfileCompletion();
+    checkProfileStatus();
   }, []);
 
-  const checkProfileCompletion = async () => {
+  const checkProfileStatus = async () => {
     try {
       const res = await getProfileCompletionStatus();
       const { is_complete, completion_percent } = res.data;
       setProfilePercent(completion_percent);
       if (!is_complete) {
         setProfileIncomplete(true);
-        const dismissed = sessionStorage.getItem('profile_modal_dismissed');
-        if (!dismissed) setShowProfileModal(true);
       }
     } catch { /* ignore */ }
-  };
-
-  const handleProfileModalClose = () => {
-    setShowProfileModal(false);
-    sessionStorage.setItem('profile_modal_dismissed', 'true');
-  };
-
-  const handleProfileComplete = () => {
-    setProfileIncomplete(false);
-    setProfilePercent(100);
-    setShowProfileModal(false);
   };
 
   const fetchWatchlist = async () => {
@@ -230,6 +218,12 @@ function MarketDashboardPage() {
 
   return (
     <div className="market-dashboard-v2">
+      <Helmet>
+        <title>시장현황 | Foresto Compass</title>
+        <meta name="description" content="실시간 시장 지수, 등락률 상위 종목, 관심 종목 모니터링." />
+        <meta property="og:title" content="시장현황 | Foresto Compass" />
+        <meta property="og:description" content="실시간 시장 지수, 등락률 상위 종목, 관심 종목 모니터링." />
+      </Helmet>
       <div className="dashboard-redesign">
 
         {/* Profile completion banner */}
@@ -239,7 +233,7 @@ function MarketDashboardPage() {
             <span className="compare-text">
               프로필 완성하고 맞춤 학습을 시작하세요 — 현재 {profilePercent}% 완료
             </span>
-            <button className="refresh-btn" onClick={() => setShowProfileModal(true)}>
+            <button className="refresh-btn" onClick={() => navigate('/profile')}>
               프로필 완성하기
             </button>
           </div>
@@ -512,13 +506,6 @@ function MarketDashboardPage() {
 
       </div>
 
-      {/* Profile completion modal */}
-      {showProfileModal && (
-        <ProfileCompletionModal
-          onClose={handleProfileModalClose}
-          onComplete={handleProfileComplete}
-        />
-      )}
     </div>
   );
 }

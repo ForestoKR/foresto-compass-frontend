@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { screenerStocks, listMarkets, listSectors, getWatchlist, addToWatchlist, removeFromWatchlist } from '../services/api';
+import { Helmet } from 'react-helmet-async';
+import { screenerStocks, listMarkets, listSectors, getWatchlist, addToWatchlist, removeFromWatchlist, getProfileCompletionStatus } from '../services/api';
+import ProfileCompletionModal from '../components/ProfileCompletionModal';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/StockScreener.css';
 
 const GRADES = ['S', 'A+', 'A', 'B+', 'B', 'C+', 'C', 'D', 'F'];
@@ -52,17 +55,29 @@ function StockScreenerPage() {
   const [watchlistSet, setWatchlistSet] = useState(new Set());
   const [togglingTicker, setTogglingTicker] = useState(null);
 
+  // 프로필 모달
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
   // 검색 debounce
   const debounceRef = useRef(null);
 
-  // 초기 드롭다운 + 워치리스트 로드
+  // 초기 드롭다운 + 워치리스트 + 프로필 체크
   useEffect(() => {
+    trackPageView('screener');
     listMarkets().then(res => setMarkets(res.data?.markets || [])).catch(() => {});
     listSectors().then(res => setSectors(res.data?.sectors || [])).catch(() => {});
     getWatchlist().then(res => {
       const tickers = (res.data?.items || []).map(i => i.ticker);
       setWatchlistSet(new Set(tickers));
     }).catch(() => {});
+
+    // 프로필 미완성 시 모달 표시 (세션당 1회)
+    const dismissed = sessionStorage.getItem('profile_modal_dismissed_screener');
+    if (!dismissed) {
+      getProfileCompletionStatus().then(res => {
+        if (!res.data.is_complete) setShowProfileModal(true);
+      }).catch(() => {});
+    }
   }, []);
 
   // 데이터 fetch
@@ -86,6 +101,9 @@ function StockScreenerPage() {
       const res = await screenerStocks(params);
       setStocks(res.data.stocks || []);
       setTotalCount(res.data.total_count || 0);
+      if (search || market || sector || grade || minScore || maxScore) {
+        trackEvent('screener_searched', { search, market, sector, grade, results: res.data.total_count || 0 });
+      }
     } catch (err) {
       setError(err.response?.data?.detail || '데이터를 불러올 수 없습니다.');
     } finally {
@@ -140,6 +158,7 @@ function StockScreenerPage() {
       } else {
         await addToWatchlist(ticker);
         setWatchlistSet(prev => new Set(prev).add(ticker));
+        trackEvent('watchlist_added', { ticker });
       }
     } catch (err) {
       alert(err.response?.data?.detail || '관심 종목 변경에 실패했습니다.');
@@ -152,6 +171,12 @@ function StockScreenerPage() {
 
   return (
     <div className="screener-page">
+      <Helmet>
+        <title>종목 스크리너 | Foresto Compass</title>
+        <meta name="description" content="Compass Score 기반 종목 필터링 및 비교 분석 도구." />
+        <meta property="og:title" content="종목 스크리너 | Foresto Compass" />
+        <meta property="og:description" content="Compass Score 기반 종목 필터링 및 비교 분석 도구." />
+      </Helmet>
       <div className="screener-header">
         <h1>종목 스크리너</h1>
         <p className="screener-subtitle">Compass Score 기반 종목 탐색 (교육 목적 참고 정보)</p>
@@ -210,7 +235,8 @@ function StockScreenerPage() {
       {/* 빈 상태 */}
       {!loading && !error && stocks.length === 0 && (
         <div className="screener-empty">
-          Compass Score가 계산된 종목이 없습니다. 관리자에게 일괄 계산을 요청하세요.
+          <p>검색 결과가 없습니다.</p>
+          <p className="screener-empty-hint">필터를 조정하거나 다른 검색어를 시도해 보세요.</p>
         </div>
       )}
 
@@ -326,6 +352,16 @@ function StockScreenerPage() {
       <p className="screener-disclaimer">
         * 교육 목적 참고 정보이며 투자 권유가 아닙니다.
       </p>
+
+      {showProfileModal && (
+        <ProfileCompletionModal
+          onClose={() => {
+            setShowProfileModal(false);
+            sessionStorage.setItem('profile_modal_dismissed_screener', 'true');
+          }}
+          onComplete={() => setShowProfileModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getProfileCompletionStatus, updateProfile } from '../services/api';
+import { trackEvent } from '../utils/analytics';
 import '../styles/ProfileCompletionModal.css';
 
 const FIELD_CONFIG = {
@@ -83,6 +84,7 @@ function ProfileCompletionModal({ onClose, onComplete }) {
     setSaving(true);
     try {
       await updateProfile({ ...formData });
+      trackEvent('profile_completed');
       onComplete?.();
       onClose();
     } catch {

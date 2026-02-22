@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import '../styles/DiagnosisResult.css';
 
 function DiagnosisResultPage() {
@@ -68,6 +69,12 @@ function DiagnosisResultPage() {
 
   return (
     <div className="result-container">
+      <Helmet>
+        <title>진단 결과 | Foresto Compass</title>
+        <meta name="description" content="투자 학습 성향 분석 결과 및 맞춤 포트폴리오 전략." />
+        <meta property="og:title" content="진단 결과 | Foresto Compass" />
+        <meta property="og:description" content="투자 학습 성향 분석 결과 및 맞춤 포트폴리오 전략." />
+      </Helmet>
       <div className="result-card">
         {/* 읽기 가이드 안내 */}
         <div className="dr-guide-notice">

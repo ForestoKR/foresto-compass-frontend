@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
 import { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import '../styles/LandingPage.css';
 
 function LandingPage() {
@@ -49,6 +50,12 @@ function LandingPage() {
 
   return (
     <div className="landing-container">
+      <Helmet>
+        <title>Foresto Compass — 종합 투자 학습 플랫폼</title>
+        <meta name="description" content="Compass Score 기반 종목 분석과 포트폴리오 시뮬레이션으로 투자를 학습하세요." />
+        <meta property="og:title" content="Foresto Compass — 종합 투자 학습 플랫폼" />
+        <meta property="og:description" content="Compass Score 기반 종목 분석과 포트폴리오 시뮬레이션으로 투자를 학습하세요." />
+      </Helmet>
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">

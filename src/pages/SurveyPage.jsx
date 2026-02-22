@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { getSurveyQuestions, recordConsent, submitDiagnosis, getProfileCompletionStatus } from '../services/api';
 import SurveyQuestion from '../components/SurveyQuestion';
 import Disclaimer from '../components/Disclaimer';
 import ProfileCompletionModal from '../components/ProfileCompletionModal';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/Survey.css';
 
 function SurveyPage() {
@@ -22,6 +24,7 @@ function SurveyPage() {
 
   // 설문 문항 로드
   useEffect(() => {
+  trackPageView('survey');
   const loadQuestions = async () => {
     try {
       const response = await getSurveyQuestions();
@@ -101,6 +104,7 @@ const handleSubmit = async () => {
 
     // 진단 결과를 세션 스토리지에 저장
     sessionStorage.setItem('diagnosisResult', JSON.stringify(response.data));
+    trackEvent('survey_completed');
 
     // 결과 페이지로 이동
     navigate('/result');
@@ -164,6 +168,7 @@ const handleSubmit = async () => {
           '본 서비스는 자본시장과 금융투자업에 관한 법률에 따른 투자자문업 또는 투자일임업에 해당하는 행위를 수행하지 않도록 설계되었습니다.',
       });
       setShowSurvey(true);
+      trackEvent('survey_started');
     } catch (err) {
       setError('유의사항 동의 기록에 실패했습니다.');
     } finally {
@@ -173,6 +178,12 @@ const handleSubmit = async () => {
 
   return (
     <div className="survey-container">
+      <Helmet>
+        <title>투자 성향 진단 | Foresto Compass</title>
+        <meta name="description" content="투자 성향을 분석하고 맞춤 학습 방향을 제안합니다." />
+        <meta property="og:title" content="투자 성향 진단 | Foresto Compass" />
+        <meta property="og:description" content="투자 성향을 분석하고 맞춤 학습 방향을 제안합니다." />
+      </Helmet>
       <div className="survey-card">
         {!showSurvey ? (
           <>

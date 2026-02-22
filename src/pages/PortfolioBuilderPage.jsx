@@ -6,7 +6,10 @@ import {
   listMarkets,
   createPhase7Portfolio,
   listPhase7Portfolios,
+  getProfileCompletionStatus,
 } from '../services/api';
+import ProfileCompletionModal from '../components/ProfileCompletionModal';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/PortfolioBuilder.css';
 
 const PortfolioBuilderPage = () => {
@@ -41,7 +44,8 @@ const PortfolioBuilderPage = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
   const [step, setStep] = useState(1);
 
   // ============================================================
@@ -49,7 +53,16 @@ const PortfolioBuilderPage = () => {
   // ============================================================
 
   useEffect(() => {
+    trackPageView('portfolio_builder');
     loadInitialData();
+
+    // 프로필 미완성 시 모달 표시 (세션당 1회)
+    const dismissed = sessionStorage.getItem('profile_modal_dismissed_portfolio');
+    if (!dismissed) {
+      getProfileCompletionStatus().then(res => {
+        if (!res.data.is_complete) setShowProfileModal(true);
+      }).catch(() => {});
+    }
   }, []);
 
   useEffect(() => {
@@ -214,6 +227,7 @@ const PortfolioBuilderPage = () => {
       };
 
       await createPhase7Portfolio(payload);
+      trackEvent('portfolio_created', { type: portfolioType, items: selectedItems.length });
 
       // 성공 시 평가 페이지로 이동
       navigate('/portfolio-evaluation');
@@ -638,6 +652,16 @@ const PortfolioBuilderPage = () => {
             </button>
           </div>
         </div>
+      )}
+
+      {showProfileModal && (
+        <ProfileCompletionModal
+          onClose={() => {
+            setShowProfileModal(false);
+            sessionStorage.setItem('profile_modal_dismissed_portfolio', 'true');
+          }}
+          onComplete={() => setShowProfileModal(false)}
+        />
       )}
 
       {/* 기존 포트폴리오 목록 */}
