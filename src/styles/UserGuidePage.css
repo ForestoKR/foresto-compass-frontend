@@ -1,0 +1,259 @@
+/* UserGuidePage.css — ug- prefix, theme-aware article layout */
+
+.ug-page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.ug-error {
+  color: var(--stock-down, #dc2626);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+[data-theme="dark"] .ug-error {
+  color: #fca5a5;
+}
+
+/* ── Article card ── */
+.ug-article {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 12px);
+  padding: 2rem 2.5rem;
+  box-shadow: var(--shadow-sm);
+  color: var(--text, #1f2937);
+  line-height: 1.8;
+  font-size: 0.925rem;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* ── Headings ── */
+.ug-article h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  color: var(--text, #1f2937);
+  letter-spacing: -0.01em;
+}
+
+.ug-article h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 2.5rem 0 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--primary, #667eea);
+  color: var(--text, #1f2937);
+}
+
+.ug-article h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 2rem 0 0.5rem;
+  color: var(--text, #1f2937);
+}
+
+.ug-article h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.4rem;
+  color: var(--text, #1f2937);
+}
+
+/* ── Paragraphs & inline ── */
+.ug-article p {
+  margin: 0.6rem 0;
+  color: var(--text-secondary, #6b7280);
+}
+
+.ug-article strong {
+  color: var(--text, #1f2937);
+  font-weight: 600;
+}
+
+.ug-article a {
+  color: var(--primary, #667eea);
+  text-decoration: none;
+}
+
+.ug-article a:hover {
+  text-decoration: underline;
+}
+
+.ug-article em {
+  font-style: italic;
+  color: var(--text-secondary, #6b7280);
+}
+
+/* ── Lists ── */
+.ug-article ul,
+.ug-article ol {
+  padding-left: 1.4rem;
+  margin: 0.5rem 0 1rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.ug-article li {
+  margin: 0.3rem 0;
+  line-height: 1.7;
+}
+
+.ug-article li::marker {
+  color: var(--primary, #667eea);
+}
+
+/* ── Tables ── */
+.ug-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ug-article thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.ug-article tbody {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.ug-article th {
+  background: var(--card-inner, #fafbfc);
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border, #e5e7eb);
+  white-space: nowrap;
+}
+
+.ug-article td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border, #e5e7eb);
+  color: var(--text-secondary, #6b7280);
+  vertical-align: top;
+}
+
+.ug-article tr:nth-child(even) td {
+  background: var(--card-inner, #fafbfc);
+}
+
+[data-theme="dark"] .ug-article th {
+  background: var(--card-inner, #1a2332);
+}
+
+[data-theme="dark"] .ug-article tr:nth-child(even) td {
+  background: var(--card-inner, #1a2332);
+}
+
+/* ── Blockquotes ── */
+.ug-article blockquote {
+  margin: 1rem 0;
+  padding: 0.75rem 1.25rem;
+  border-left: 4px solid var(--primary, #667eea);
+  background: var(--card-inner, #fafbfc);
+  border-radius: 0 8px 8px 0;
+  color: var(--text-secondary, #6b7280);
+}
+
+.ug-article blockquote p {
+  margin: 0.3rem 0;
+}
+
+/* ── Code ── */
+.ug-article code {
+  background: var(--card-inner, #fafbfc);
+  color: var(--accent, #764ba2);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.ug-article pre {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+  font-size: 0.825rem;
+  line-height: 1.6;
+}
+
+.ug-article pre code {
+  background: transparent;
+  padding: 0;
+  color: var(--text, #1f2937);
+}
+
+[data-theme="dark"] .ug-article pre {
+  background: var(--card-inner, #1a2332);
+}
+
+/* ── Images ── */
+.ug-article img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border, #e5e7eb);
+  margin: 1rem 0;
+  display: block;
+}
+
+/* ── Horizontal rules ── */
+.ug-article hr {
+  border: none;
+  border-top: 1px solid var(--border, #e5e7eb);
+  margin: 2rem 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 968px) {
+  .ug-article {
+    padding: 1.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .ug-page {
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  .ug-article {
+    padding: 1.25rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .ug-article h1 {
+    font-size: 1.35rem;
+  }
+
+  .ug-article h2 {
+    font-size: 1.1rem;
+  }
+
+  .ug-article h3 {
+    font-size: 1rem;
+  }
+
+  .ug-article table {
+    font-size: 0.8rem;
+  }
+
+  .ug-article th,
+  .ug-article td {
+    padding: 0.4rem 0.5rem;
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
 
 /**
@@ -21,6 +22,11 @@ const Footer = () => {
           <p className="footer-legal-item">
             • 과거 수익률은 미래 수익을 보장하지 않습니다. 투자 전 전문가와 상담하시기 바랍니다.
           </p>
+        </div>
+
+        {/* 사용 설명서 링크 */}
+        <div className="footer-guide">
+          <Link to="/guide" className="footer-guide-link">사용 설명서</Link>
         </div>
 
         {/* 저작권 */}

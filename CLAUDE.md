@@ -27,8 +27,10 @@ npm run lint     # ESLint
 
 ```
 src/
-├── pages/               # Page components (20+ pages)
-├── components/          # Reusable: ProgressModal, ProfileCompletionModal, DataTable, Disclaimer, Footer
+├── pages/               # Page components (38 pages)
+├── components/          # Reusable (14): Header, Footer, ErrorBoundary, Disclaimer, OnboardingTour,
+│                        #   ProgressModal, ProfileCompletionModal, DataTable, ProgressBar, SurveyQuestion,
+│                        #   FinancialAnalysis, Valuation, QuantAnalysis, InvestmentReport
 ├── hooks/useTheme.js    # Dark mode toggle hook (localStorage + system preference)
 ├── services/api.js      # Axios client with JWT injection + idempotency keys
 └── styles/
@@ -103,6 +105,7 @@ const { theme, toggleTheme } = useThemeInit();
 - `/` — LandingPage (feature cards, Compass showcase, mini diagnosis, how-it-works)
 - `/login` — LoginPage
 - `/signup` — SignupPage
+- `/verify-email` — EmailVerificationPage
 - `/explore` — GuestScreenerPage (public stock screener, no auth required)
 
 ### Protected (React.lazy — code split)
@@ -110,18 +113,33 @@ const { theme, toggleTheme } = useThemeInit();
 - `/survey` — SurveyPage (investment profile diagnosis)
 - `/result`, `/history` — DiagnosisResultPage, DiagnosisHistoryPage
 - `/portfolio` — PortfolioRecommendationPage
+- `/portfolio-builder` — PortfolioBuilderPage (직접 포트폴리오 구성)
+- `/portfolio-evaluation` — Phase7PortfolioEvaluationPage (성과 평가/비교)
 - `/backtest` — BacktestPage
 - `/scenarios` — ScenarioSimulationPage
+- `/analysis` — PortfolioExplanationPage (성과 해석 & 리포트)
 - `/screener` — StockScreenerPage
 - `/watchlist` — WatchlistPage
 - `/stock-comparison` — StockComparisonPage
+- `/report-history` — ReportHistoryPage
 - `/profile` — ProfilePage
+- `/terminology` — TerminologyPage (JSON-LD 구조화 데이터)
+- `/subscription` — SubscriptionPage (구독 플랜)
+- `/payment/success`, `/payment/fail` — 결제 결과 콜백
 
 ### Admin (role-based, lazy-loaded)
+- `/admin` — AdminPage (대시보드)
 - `/admin/data` — DataManagementPage (batch data collection + progress monitoring)
+- `/admin/batch` — BatchJobsPage (백그라운드 Job 진행)
+- `/admin/scheduler` — SchedulerPage (APScheduler 상태/트리거)
 - `/admin/users` — UserManagementPage
+- `/admin/consents` — AdminConsentPage (법적 동의 이력)
+- `/admin/market-calendar` — AdminMarketCalendarPage (휴장일 관리)
 - `/admin/stock-detail` — StockDetailPage
 - `/admin/financial-analysis`, `/admin/valuation`, `/admin/quant` — Analysis pages
+- `/admin/portfolio` — PortfolioManagementPage (프리셋 관리)
+- `/admin/portfolio-comparison` — PortfolioComparisonPage
+- `/admin/report` — ReportPage (투자 리포트 생성)
 
 `ProtectedRoute` checks `isAuthenticated` from AuthContext; redirects to `/login` if false.
 `ErrorBoundary` catches `ChunkLoadError` from failed lazy imports.
@@ -177,5 +195,7 @@ VITE_MIXPANEL_TOKEN=your-mixpanel-token
 - **Code splitting**: React.lazy + ErrorBoundary for chunk loading failures
 - **Analytics**: Mixpanel (via `utils/analytics.js`)
 - **Onboarding**: Shepherd.js guided tour
-- **SEO**: React Helmet (meta tags, JSON-LD) + build-time prerendering
+- **SEO**: react-helmet-async (meta tags, JSON-LD) + build-time prerendering
 - **Prerendering**: `@prerenderer/rollup-plugin` + `@prerenderer/renderer-jsdom`
+- **Payments**: Toss Payments SDK (`VITE_TOSS_CLIENT_KEY`)
+- **Build optimization**: Manual chunks — `vendor` (React core), `charts` (Chart.js) 분리

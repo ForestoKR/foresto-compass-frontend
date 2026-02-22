@@ -19,7 +19,9 @@
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.5",
+    "react-markdown": "^10.1.0",
     "react-router-dom": "^6.20.0",
+    "remark-gfm": "^4.0.1",
     "shepherd.js": "^15.0.0"
   },
   "devDependencies": {

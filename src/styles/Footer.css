@@ -34,6 +34,22 @@
   margin-bottom: 0;
 }
 
+.footer-guide {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.footer-guide-link {
+  color: var(--primary, #667eea);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-guide-link:hover {
+  text-decoration: underline;
+}
+
 .footer-copyright {
   padding-top: 16px;
   border-top: 1px solid var(--border, #e0e0e0);

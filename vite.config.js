@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     prerender({
-      routes: ['/', '/login', '/signup', '/explore', '/terminology'],
+      routes: ['/', '/login', '/signup', '/explore', '/terminology', '/guide'],
       renderer: '@prerenderer/renderer-jsdom',
     }),
     VitePWA({
