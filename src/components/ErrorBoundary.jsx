@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { useLocation } from 'react-router-dom';
 import '../styles/ErrorBoundary.css';
 
 function isChunkLoadError(error) {
@@ -7,7 +8,20 @@ function isChunkLoadError(error) {
   return msg.includes('Loading chunk') || msg.includes('Failed to fetch dynamically imported module');
 }
 
-class ErrorBoundary extends Component {
+/**
+ * Wrapper that passes location.pathname to the class component
+ * so it can reset error state on route changes.
+ */
+function ErrorBoundary({ children }) {
+  const location = useLocation();
+  return (
+    <ErrorBoundaryInner key={location.pathname}>
+      {children}
+    </ErrorBoundaryInner>
+  );
+}
+
+class ErrorBoundaryInner extends Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -19,6 +33,17 @@ class ErrorBoundary extends Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('[ErrorBoundary]', error, errorInfo);
+
+    // Chunk load error → auto reload once
+    if (isChunkLoadError(error)) {
+      const key = 'chunk_reload_attempted';
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, '1');
+        window.location.reload();
+        return;
+      }
+      sessionStorage.removeItem(key);
+    }
   }
 
   render() {
