@@ -7,6 +7,7 @@ import {
   createPhase7Portfolio,
   listPhase7Portfolios,
   getProfileCompletionStatus,
+  getPresetPortfolio,
 } from '../services/api';
 import ProfileCompletionModal from '../components/ProfileCompletionModal';
 import { trackEvent, trackPageView } from '../utils/analytics';
@@ -187,6 +188,37 @@ const PortfolioBuilderPage = () => {
   };
 
   // ============================================================
+  // Preset Templates
+  // ============================================================
+
+  const loadPreset = async (presetType) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await getPresetPortfolio(presetType);
+      const preset = res.data;
+
+      setPortfolioType('SECURITY');
+      setPortfolioName(preset.preset_name);
+      setDescription(preset.description);
+      setSelectedItems(preset.items.map(item => ({
+        id: item.ticker,
+        name: item.name,
+        weight: item.weight,
+        ticker: item.ticker,
+        compassScore: item.compass_score,
+        compassGrade: item.compass_grade,
+      })));
+      setStep(2);
+      trackEvent('preset_loaded', { type: presetType, items: preset.items.length });
+    } catch {
+      setError('프리셋을 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ============================================================
   // Portfolio Save
   // ============================================================
 
@@ -323,6 +355,27 @@ const PortfolioBuilderPage = () => {
 
       {step === 1 && (
         <div className="step-section">
+          <div className="preset-templates">
+            <h3>빠른 시작 — 프리셋 포트폴리오</h3>
+            <div className="preset-cards">
+              <div className="preset-card" onClick={() => loadPreset('stable')}>
+                <div className="preset-icon">🛡️</div>
+                <div className="preset-name">안정형</div>
+                <div className="preset-desc">배당 우량주 중심, 낮은 변동성</div>
+              </div>
+              <div className="preset-card" onClick={() => loadPreset('balanced')}>
+                <div className="preset-icon">⚖️</div>
+                <div className="preset-name">균형형</div>
+                <div className="preset-desc">Compass Score 상위 종목</div>
+              </div>
+              <div className="preset-card" onClick={() => loadPreset('growth')}>
+                <div className="preset-icon">🚀</div>
+                <div className="preset-name">성장형</div>
+                <div className="preset-desc">수익률 + Compass Score 상위</div>
+              </div>
+            </div>
+          </div>
+
           <div className="step-header">
             <h2>검색</h2>
           </div>

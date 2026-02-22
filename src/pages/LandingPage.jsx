@@ -1,12 +1,26 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../App';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { getTopCompassScores } from '../services/api';
 import '../styles/LandingPage.css';
+
+const GRADE_CLASS_MAP = {
+  'S': 'grade-s',
+  'A+': 'grade-aplus',
+  'A': 'grade-a',
+  'B+': 'grade-bplus',
+  'B': 'grade-b',
+  'C+': 'grade-cplus',
+  'C': 'grade-c',
+  'D': 'grade-d',
+  'F': 'grade-f',
+};
 
 function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [topStocks, setTopStocks] = useState([]);
 
   // 이미 로그인한 사용자는 설문조사 페이지로 리다이렉트
   useEffect(() => {
@@ -14,6 +28,13 @@ function LandingPage() {
       navigate('/survey');
     }
   }, [isAuthenticated, navigate]);
+
+  // Compass Score 상위 종목 로드
+  useEffect(() => {
+    getTopCompassScores(5)
+      .then(res => setTopStocks(res.data.stocks || []))
+      .catch(() => {});
+  }, []);
 
   const features = [
     {
@@ -125,6 +146,80 @@ function LandingPage() {
           ))}
         </div>
       </section>
+
+      {/* Compass Score Showcase Section */}
+      {topStocks.length > 0 && (
+        <section className="compass-showcase-section">
+          <div className="section-header">
+            <h2>실시간 Compass Score</h2>
+            <p>AI 기반 4축 분석으로 평가된 상위 종목</p>
+          </div>
+          <div className="compass-cards-grid">
+            {topStocks.map(stock => (
+              <div key={stock.ticker} className="compass-card">
+                <div className="compass-card-header">
+                  <span className="compass-ticker">{stock.ticker}</span>
+                  <span className={`compass-grade ${GRADE_CLASS_MAP[stock.compass_grade] || ''}`}>
+                    {stock.compass_grade}
+                  </span>
+                </div>
+                <div className="compass-card-name">{stock.name}</div>
+                <div className="compass-score-display">
+                  {stock.compass_score?.toFixed(1)}
+                </div>
+                <div className="compass-axes">
+                  <div className="compass-axis">
+                    <span className="compass-axis-label">재무</span>
+                    <div className="compass-axis-bar">
+                      <div
+                        className="compass-axis-fill axis-financial"
+                        style={{ width: `${Math.min(stock.compass_financial_score || 0, 100)}%` }}
+                      />
+                    </div>
+                    <span className="compass-axis-value">{stock.compass_financial_score?.toFixed(0)}</span>
+                  </div>
+                  <div className="compass-axis">
+                    <span className="compass-axis-label">밸류</span>
+                    <div className="compass-axis-bar">
+                      <div
+                        className="compass-axis-fill axis-valuation"
+                        style={{ width: `${Math.min(stock.compass_valuation_score || 0, 100)}%` }}
+                      />
+                    </div>
+                    <span className="compass-axis-value">{stock.compass_valuation_score?.toFixed(0)}</span>
+                  </div>
+                  <div className="compass-axis">
+                    <span className="compass-axis-label">기술</span>
+                    <div className="compass-axis-bar">
+                      <div
+                        className="compass-axis-fill axis-technical"
+                        style={{ width: `${Math.min(stock.compass_technical_score || 0, 100)}%` }}
+                      />
+                    </div>
+                    <span className="compass-axis-value">{stock.compass_technical_score?.toFixed(0)}</span>
+                  </div>
+                  <div className="compass-axis">
+                    <span className="compass-axis-label">리스크</span>
+                    <div className="compass-axis-bar">
+                      <div
+                        className="compass-axis-fill axis-risk"
+                        style={{ width: `${Math.min(stock.compass_risk_score || 0, 100)}%` }}
+                      />
+                    </div>
+                    <span className="compass-axis-value">{stock.compass_risk_score?.toFixed(0)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="compass-cta">
+            <button onClick={() => navigate('/explore')}>
+              더 많은 종목 탐색하기
+            </button>
+          </div>
+          <p className="compass-disclaimer">교육 목적 참고 정보이며 투자 권유가 아닙니다</p>
+        </section>
+      )}
 
       {/* How It Works Section */}
       <section className="how-it-works-section">

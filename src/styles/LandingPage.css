@@ -243,6 +243,211 @@
   margin: 0;
 }
 
+/* ── Compass Score Showcase Section ── */
+.landing-container .compass-showcase-section {
+  background: var(--bg, #ffffff);
+  padding: 6rem 2rem;
+}
+
+.landing-container .compass-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.landing-container .compass-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+}
+
+.landing-container .compass-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+  border-color: var(--primary, #667eea);
+}
+
+.landing-container .compass-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.landing-container .compass-ticker {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  font-weight: 600;
+}
+
+.landing-container .compass-grade {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.landing-container .grade-s {
+  background: rgba(234, 179, 8, 0.15);
+  color: #b45309;
+}
+[data-theme="dark"] .landing-container .grade-s {
+  background: rgba(234, 179, 8, 0.2);
+  color: #fbbf24;
+}
+
+.landing-container .grade-aplus {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563eb;
+}
+[data-theme="dark"] .landing-container .grade-aplus {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+.landing-container .grade-a {
+  background: rgba(34, 197, 94, 0.12);
+  color: #16a34a;
+}
+[data-theme="dark"] .landing-container .grade-a {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+.landing-container .grade-bplus {
+  background: rgba(249, 115, 22, 0.12);
+  color: #ea580c;
+}
+[data-theme="dark"] .landing-container .grade-bplus {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+}
+
+.landing-container .grade-b,
+.landing-container .grade-cplus,
+.landing-container .grade-c {
+  background: rgba(107, 114, 128, 0.12);
+  color: var(--text-secondary, #6b7280);
+}
+
+.landing-container .grade-d,
+.landing-container .grade-f {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--stock-down, #dc2626);
+}
+
+.landing-container .compass-card-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text, #1f2937);
+  margin-bottom: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.landing-container .compass-score-display {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--primary, #667eea);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.landing-container .compass-axes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.landing-container .compass-axis {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.landing-container .compass-axis-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #6b7280);
+  width: 36px;
+  flex-shrink: 0;
+}
+
+.landing-container .compass-axis-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--border, #e5e7eb);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.landing-container .compass-axis-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.landing-container .axis-financial {
+  background: #3b82f6;
+}
+
+.landing-container .axis-valuation {
+  background: #8b5cf6;
+}
+
+.landing-container .axis-technical {
+  background: #f59e0b;
+}
+
+.landing-container .axis-risk {
+  background: #10b981;
+}
+
+.landing-container .compass-axis-value {
+  font-size: 0.75rem;
+  color: var(--text-muted, #9ca3af);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.landing-container .compass-cta {
+  text-align: center;
+  margin-top: 2.5rem;
+}
+
+.landing-container .compass-cta button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.landing-container .compass-cta button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.landing-container .compass-disclaimer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted, #9ca3af);
+}
+
 /* ── How It Works Section ── */
 .landing-container .how-it-works-section {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -423,5 +628,9 @@
 
   .landing-container .section-header h2 {
     font-size: 1.8rem;
+  }
+
+  .landing-container .compass-cards-grid {
+    grid-template-columns: 1fr;
   }
 }

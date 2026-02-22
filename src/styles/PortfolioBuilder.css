@@ -24,6 +24,68 @@
   margin: 0;
 }
 
+/* Preset Templates */
+.preset-templates {
+  margin-bottom: 24px;
+}
+
+.preset-templates h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  margin: 0 0 1rem 0;
+}
+
+.preset-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.preset-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preset-card:hover {
+  border-color: var(--primary, #667eea);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.1));
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .preset-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.preset-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.preset-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  margin-bottom: 0.35rem;
+}
+
+.preset-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .preset-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Error Banner */
 .portfolio-builder-page .error-banner {
   display: flex;

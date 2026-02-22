@@ -989,6 +989,28 @@ export const unsubscribeMarketEmail = () => {
 };
 
 // ============================================================
+// Public API (인증 불필요)
+// ============================================================
+
+export const getTopCompassScores = (limit = 5) => {
+  return api.get(`/api/v1/public/top-scores?limit=${limit}`);
+};
+
+export const publicScreenerStocks = (params = {}) => {
+  const queryParams = new URLSearchParams();
+  if (params.search) queryParams.append('search', params.search);
+  if (params.sector) queryParams.append('sector', params.sector);
+  if (params.market) queryParams.append('market', params.market);
+  if (params.limit) queryParams.append('limit', params.limit);
+  if (params.offset != null) queryParams.append('offset', params.offset);
+  return api.get(`/api/v1/public/screener?${queryParams.toString()}`);
+};
+
+export const getPresetPortfolio = (presetType) => {
+  return api.get(`/api/v1/public/preset-portfolios/${presetType}`);
+};
+
+// ============================================================
 // Screener API
 // ============================================================
 
