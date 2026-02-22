@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../App';
 import { Helmet } from 'react-helmet-async';
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
 import { trackPageView } from '../utils/analytics';
@@ -109,7 +108,6 @@ function DashboardSkeleton() {
 
 /* ── Main component ── */
 function MarketDashboardPage() {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const [marketData, setMarketData] = useState(null);
   const [loading, setLoading] = useState(true);
