@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
 import { trackPageView } from '../utils/analytics';
+import OnboardingTour from '../components/OnboardingTour';
 import '../styles/MarketDashboard.css';
 
 /* ── helpers ── */
@@ -504,6 +505,7 @@ function MarketDashboardPage() {
 
       </div>
 
+      <OnboardingTour />
     </div>
   );
 }

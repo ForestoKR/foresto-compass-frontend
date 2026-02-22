@@ -448,6 +448,116 @@
   color: var(--text-muted, #9ca3af);
 }
 
+/* ── Mini Diagnosis Section ── */
+.landing-container .mini-diagnosis-section {
+  background: var(--bg, #ffffff);
+  padding: 6rem 2rem;
+}
+
+.landing-container .mini-diagnosis-widget {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.landing-container .mini-q-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s;
+}
+
+.landing-container .mini-q-card:not(.active) {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.landing-container .mini-q-card.done {
+  opacity: 0.6;
+}
+
+.landing-container .mini-q-number {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary, #667eea);
+  margin-bottom: 0.5rem;
+}
+
+.landing-container .mini-q-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  margin: 0 0 1rem 0;
+}
+
+.landing-container .mini-q-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.landing-container .mini-q-option {
+  background: var(--card-inner, #f9fafb);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  color: var(--text, #1f2937);
+  font-size: 0.95rem;
+}
+
+.landing-container .mini-q-option:hover {
+  border-color: var(--primary, #667eea);
+  background: rgba(102, 126, 234, 0.08);
+}
+
+.landing-container .mini-diagnosis-result {
+  text-align: center;
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  padding: 3rem;
+}
+
+.landing-container .mini-result-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.landing-container .mini-diagnosis-result h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text, #1f2937);
+  margin: 0 0 1rem 0;
+}
+
+.landing-container .mini-diagnosis-result p {
+  font-size: 1.05rem;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+}
+
+.landing-container .mini-result-cta {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.landing-container .mini-result-cta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
 /* ── How It Works Section ── */
 .landing-container .how-it-works-section {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

@@ -222,6 +222,18 @@ body {
   font-weight: 600;
 }
 
+.nav-recommended-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
 .header-user {
   flex: 0 0 auto;
   display: flex;

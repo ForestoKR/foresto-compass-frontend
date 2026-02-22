@@ -5,6 +5,39 @@ import { Helmet } from 'react-helmet-async';
 import { getTopCompassScores } from '../services/api';
 import '../styles/LandingPage.css';
 
+const MINI_QUESTIONS = [
+  {
+    question: '투자 경험은 어느 정도인가요?',
+    options: [
+      { value: 'A', text: '처음입니다', score: 1 },
+      { value: 'B', text: '약간의 경험이 있습니다', score: 2 },
+      { value: 'C', text: '충분한 경험이 있습니다', score: 3 },
+    ],
+  },
+  {
+    question: '자산 가격의 변동성을 어느 정도까지 감내할 수 있나요?',
+    options: [
+      { value: 'A', text: '거의 감내하기 어렵습니다', score: 1 },
+      { value: 'B', text: '어느 정도는 감내할 수 있습니다', score: 2 },
+      { value: 'C', text: '높은 변동성도 감내할 수 있습니다', score: 3 },
+    ],
+  },
+  {
+    question: '주로 고려하는 투자 기간은?',
+    options: [
+      { value: 'A', text: '1년 이하', score: 1 },
+      { value: 'B', text: '1~3년', score: 2 },
+      { value: 'C', text: '3년 이상', score: 3 },
+    ],
+  },
+];
+
+const DIAGNOSIS_RESULTS = {
+  conservative: { type: '안정형', icon: '\u{1F6E1}\uFE0F', description: '원금 보존을 중시하며, 안정적인 수익을 추구하는 성향입니다.' },
+  moderate: { type: '중립형', icon: '\u2696\uFE0F', description: '안정성과 수익성의 균형을 추구하는 성향입니다.' },
+  aggressive: { type: '공격형', icon: '\u{1F680}', description: '높은 수익을 위해 적극적인 위험 감수를 선호하는 성향입니다.' },
+};
+
 const GRADE_CLASS_MAP = {
   'S': 'grade-s',
   'A+': 'grade-aplus',
@@ -21,6 +54,23 @@ function LandingPage() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [topStocks, setTopStocks] = useState([]);
+  const [miniAnswers, setMiniAnswers] = useState([]);
+  const [diagnosisResult, setDiagnosisResult] = useState(null);
+
+  const miniStep = miniAnswers.filter(a => a != null).length;
+
+  const handleMiniAnswer = (questionIndex, score) => {
+    const newAnswers = [...miniAnswers];
+    newAnswers[questionIndex] = score;
+    setMiniAnswers(newAnswers);
+
+    if (newAnswers.filter(a => a != null).length === 3) {
+      const total = newAnswers.reduce((sum, s) => sum + s, 0);
+      if (total <= 4) setDiagnosisResult(DIAGNOSIS_RESULTS.conservative);
+      else if (total <= 7) setDiagnosisResult(DIAGNOSIS_RESULTS.moderate);
+      else setDiagnosisResult(DIAGNOSIS_RESULTS.aggressive);
+    }
+  };
 
   // 이미 로그인한 사용자는 설문조사 페이지로 리다이렉트
   useEffect(() => {
@@ -220,6 +270,43 @@ function LandingPage() {
           <p className="compass-disclaimer">교육 목적 참고 정보이며 투자 권유가 아닙니다</p>
         </section>
       )}
+
+      {/* Mini Diagnosis Section */}
+      <section className="mini-diagnosis-section">
+        <div className="section-header">
+          <h2>나의 투자 성향은?</h2>
+          <p>3개의 질문으로 간단히 알아보세요</p>
+        </div>
+        <div className="mini-diagnosis-widget">
+          {!diagnosisResult ? (
+            <div className="mini-diagnosis-questions">
+              {MINI_QUESTIONS.map((q, idx) => (
+                <div key={idx} className={`mini-q-card ${miniStep === idx ? 'active' : miniStep > idx ? 'done' : ''}`}>
+                  <div className="mini-q-number">{idx + 1}/3</div>
+                  <p className="mini-q-text">{q.question}</p>
+                  <div className="mini-q-options">
+                    {q.options.map(opt => (
+                      <button key={opt.value} className="mini-q-option" onClick={() => handleMiniAnswer(idx, opt.score)}>
+                        {opt.text}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="mini-diagnosis-result">
+              <div className="mini-result-icon">{diagnosisResult.icon}</div>
+              <h3>{diagnosisResult.type}</h3>
+              <p>{diagnosisResult.description}</p>
+              <button className="mini-result-cta" onClick={() => navigate('/signup')}>
+                전체 15문항 정밀 진단 받기
+              </button>
+            </div>
+          )}
+        </div>
+        <p className="compass-disclaimer">교육 목적 참고 정보이며 투자 권유가 아닙니다</p>
+      </section>
 
       {/* How It Works Section */}
       <section className="how-it-works-section">

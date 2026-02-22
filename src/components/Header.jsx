@@ -44,12 +44,13 @@ function Header() {
           { label: '종목 비교', path: '/stock-comparison' },
           { label: '시나리오', path: '/scenarios' },
           { label: '용어학습', path: '/terminology' },
+          { label: '시작 가이드', action: 'startTour' },
         ],
       },
       {
         label: '진단',
         items: [
-          { label: '투자성향진단', path: '/survey' },
+          { label: '투자성향진단', path: '/survey', recommended: true },
           { label: '진단결과', path: '/result' },
           { label: '진단이력', path: '/history' },
         ],
@@ -58,7 +59,7 @@ function Header() {
         label: '포트폴리오',
         items: [
           { label: '직접 구성', separator: true },
-          { label: '포트폴리오 구성', path: '/portfolio-builder' },
+          { label: '포트폴리오 구성', path: '/portfolio-builder', recommended: true },
           {
             label: '포트폴리오 평가',
             path: '/portfolio-evaluation',
@@ -117,6 +118,15 @@ function Header() {
     setOpenGroup(null);
     setMobileMenuOpen(false);
     navigate(path);
+  };
+
+  const handleAction = (action) => {
+    setOpenGroup(null);
+    setMobileMenuOpen(false);
+    if (action === 'startTour') {
+      localStorage.removeItem('onboarding_tour_completed');
+      window.dispatchEvent(new CustomEvent('startOnboardingTour'));
+    }
   };
 
   useEffect(() => {
@@ -183,7 +193,7 @@ function Header() {
         <nav className="header-nav" ref={navRef}>
           {navGroups.map((group) => {
             const groupPaths = group.items
-              .filter((item) => !item.separator)
+              .filter((item) => !item.separator && !item.action)
               .flatMap((item) =>
                 item.activePaths ? item.activePaths : [item.path]
               );
@@ -211,6 +221,18 @@ function Header() {
                           </div>
                         );
                       }
+                      if (item.action) {
+                        return (
+                          <button
+                            key={item.label}
+                            type="button"
+                            className="nav-dropdown-item"
+                            onClick={() => handleAction(item.action)}
+                          >
+                            {item.label}
+                          </button>
+                        );
+                      }
                       const itemPaths = item.activePaths || [item.path];
                       const isItemActive = isAnyActive(itemPaths);
                       return (
@@ -221,6 +243,7 @@ function Header() {
                           onClick={() => handleNavigate(item.path)}
                         >
                           {item.label}
+                          {item.recommended && <span className="nav-recommended-badge">시작</span>}
                         </button>
                       );
                     })}
@@ -343,6 +366,17 @@ function Header() {
                           </div>
                         );
                       }
+                      if (item.action) {
+                        return (
+                          <button
+                            key={item.label}
+                            className="mobile-nav-item"
+                            onClick={() => handleAction(item.action)}
+                          >
+                            {item.label}
+                          </button>
+                        );
+                      }
                       const itemPaths = item.activePaths || [item.path];
                       const isItemActive = isAnyActive(itemPaths);
                       return (
@@ -352,6 +386,7 @@ function Header() {
                           onClick={() => handleNavigate(item.path)}
                         >
                           {item.label}
+                          {item.recommended && <span className="nav-recommended-badge">시작</span>}
                         </button>
                       );
                     })}

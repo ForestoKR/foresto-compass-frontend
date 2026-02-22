@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import '../styles/TerminologyPage.css';
 
 const parseMarkdown = (text) => {
@@ -161,8 +162,39 @@ function TerminologyPage() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const jsonLd = useMemo(() => {
+    if (!entries.length) return null;
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'DefinedTermSet',
+      'name': '투자 용어 사전',
+      'description': 'Foresto Compass에서 사용되는 주요 투자 용어 설명',
+      'url': 'https://foresto.co.kr/terminology',
+      'inDefinedTermSet': entries.map(entry => ({
+        '@type': 'DefinedTerm',
+        'name': entry.title,
+        'description': entry.blocks
+          .filter(b => b.type === 'p')
+          .map(b => b.text)
+          .join(' ')
+          .slice(0, 200),
+      })),
+    };
+  }, [entries]);
+
   return (
     <div className="terminology-page">
+      <Helmet>
+        <title>투자 용어 사전 — Foresto Compass</title>
+        <meta name="description" content="PER, PBR, ROE, CAGR, MDD, 샤프 비율 등 주요 투자 용어를 쉽게 이해하세요. 교육 목적 참고 정보입니다." />
+        <meta property="og:title" content="투자 용어 사전 — Foresto Compass" />
+        <meta property="og:description" content="투자 성향, 수익률, 리스크, 재무 지표, 포트폴리오 용어를 학습하세요." />
+        {jsonLd && (
+          <script type="application/ld+json">
+            {JSON.stringify(jsonLd)}
+          </script>
+        )}
+      </Helmet>
       <div className="terminology-card">
         <div className="terminology-search" ref={searchRef}>
           <input
