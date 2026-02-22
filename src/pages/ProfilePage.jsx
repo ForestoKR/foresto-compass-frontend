@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { changePassword, listConsents, getMarketSubscriptionStatus, subscribeMarketEmail, unsubscribeMarketEmail, getProfileCompletionStatus } from '../services/api';
+import { trackEvent } from '../utils/analytics';
 import '../styles/ProfilePage.css';
 
 function ProfilePage() {
@@ -140,6 +141,7 @@ function ProfilePage() {
       setIsEditing(false);
       fetchCompletionStatus();
       setSuccessMessage('프로필이 성공적으로 업데이트되었습니다.');
+      trackEvent('profile_completed');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Failed to update profile:', err);

@@ -2,12 +2,17 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import prerender from '@prerenderer/rollup-plugin'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    prerender({
+      routes: ['/', '/login', '/signup', '/explore', '/terminology'],
+      renderer: '@prerenderer/renderer-jsdom',
+    }),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
