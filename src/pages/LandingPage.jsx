@@ -3,6 +3,7 @@ import { useAuth } from '../App';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { getTopCompassScores } from '../services/api';
+import Disclaimer from '../components/Disclaimer';
 import '../styles/LandingPage.css';
 
 const MINI_QUESTIONS = [
@@ -72,52 +73,17 @@ function LandingPage() {
     }
   };
 
-  // 이미 로그인한 사용자는 설문조사 페이지로 리다이렉트
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/survey');
-    }
-  }, [isAuthenticated, navigate]);
-
-  // Compass Score 상위 종목 로드
   useEffect(() => {
     getTopCompassScores(5)
       .then(res => setTopStocks(res.data.stocks || []))
       .catch(() => {});
   }, []);
 
-  const features = [
-    {
-      icon: '📊',
-      title: '학습 성향 분석',
-      description: '교육 목적의 성향 분석과 다양한 전략 구성 예시를 제공합니다'
-    },
-    {
-      icon: '💼',
-      title: '재무 데이터 학습',
-      description: 'CAGR, ROE, 부채비율 등 재무지표를 이해하고 학습합니다'
-    },
-    {
-      icon: '📈',
-      title: '퀀트 지표 학습',
-      description: '데이터 기반 분석 기법을 이해하고 학습할 수 있습니다'
-    },
-    {
-      icon: '🎯',
-      title: '전략 시뮬레이션',
-      description: '다양한 자산 배분 전략을 시뮬레이션으로 학습합니다 (교육용)'
-    },
-    {
-      icon: '📰',
-      title: '정보 분석 학습',
-      description: 'AI 기반 감성 분석 기법과 시장 정보를 학습합니다'
-    },
-    {
-      icon: '📉',
-      title: '리스크 개념 학습',
-      description: '포트폴리오의 리스크 개념과 분석 방법을 이해합니다'
-    }
-  ];
+  const ctaAction = () => {
+    navigate(isAuthenticated ? '/dashboard' : '/signup');
+  };
+
+  const ctaLabel = isAuthenticated ? '대시보드로 이동' : '무료로 시작하기';
 
   return (
     <div className="landing-container">
@@ -127,236 +93,247 @@ function LandingPage() {
         <meta property="og:title" content="Foresto Compass — 종합 투자 학습 플랫폼" />
         <meta property="og:description" content="Compass Score 기반 종목 분석과 포트폴리오 시뮬레이션으로 투자를 학습하세요." />
       </Helmet>
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="hero-badge">🌲 Foresto Compass</div>
-          <h1 className="hero-title">
-            투자 전략을 학습하는
+
+      {/* Section 1: Hero */}
+      <section className="lp-hero">
+        <div className="lp-hero-inner">
+          <p className="lp-hero-eyebrow">투자, 어디서부터 시작해야 할지 모르겠다면</p>
+          <h1 className="lp-hero-title">
+            Foresto Compass가
             <br />
-            <span className="gradient-text">교육용 시뮬레이션 플랫폼</span>
+            <span className="lp-gradient-text">당신의 첫 번째 나침반이 됩니다</span>
           </h1>
-          <p className="hero-description">
-            AI 기반 분석 기법을 이해하고 다양한 전략을 학습합니다.
+          <p className="lp-hero-sub">
+            데이터 기반 학습과 시뮬레이션으로
             <br />
-            지금 시작하여 자산 운용 지식을 쌓아보세요.
+            투자의 기초부터 차근차근 배워보세요.
           </p>
-          <div className="hero-actions">
-            <button
-              className="btn-primary-large"
-              onClick={() => navigate('/signup')}
-            >
-              무료로 시작하기
+          <div className="lp-hero-actions">
+            <button className="lp-btn-primary" onClick={ctaAction}>
+              {ctaLabel}
             </button>
-            <button
-              className="btn-secondary-large"
-              onClick={() => navigate('/login')}
-            >
-              로그인
-            </button>
-            <a
-              href="https://blog.foresto.co.kr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-blog-link"
-            >
-              📝 블로그
-            </a>
-          </div>
-        </div>
-        <div className="hero-illustration">
-          <div className="illustration-card card-1">
-            <div className="card-icon">📊</div>
-            <div className="card-text">성향 분석</div>
-          </div>
-          <div className="illustration-card card-2">
-            <div className="card-icon">📈</div>
-            <div className="card-text">전략 시뮬레이션</div>
-          </div>
-          <div className="illustration-card card-3">
-            <div className="card-icon">🎯</div>
-            <div className="card-text">지식 학습</div>
+            {!isAuthenticated && (
+              <button className="lp-btn-secondary" onClick={() => navigate('/explore')}>
+                먼저 둘러보기
+              </button>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="section-header">
-          <h2>Foresto Compass의 특별한 기능</h2>
-          <p>다양한 분석 기법과 투자 지식을 학습해보세요</p>
-        </div>
-        <div className="features-grid">
-          {features.map((feature, index) => (
-            <div key={index} className="feature-card">
-              <div className="feature-icon">{feature.icon}</div>
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
+      {/* Section 2: 문제 인식 */}
+      <section className="lp-problems">
+        <div className="lp-section-inner">
+          <div className="lp-section-header">
+            <h2>혹시 이런 경험, 있으신가요?</h2>
+          </div>
+          <div className="lp-problems-grid">
+            <div className="lp-problem-card">
+              <div className="lp-problem-icon">&#x1F4F1;</div>
+              <p className="lp-problem-text">
+                유튜브, 블로그 정보가 너무 많아서
+                <br />
+                뭘 믿어야 할지 모르겠다
+              </p>
             </div>
-          ))}
+            <div className="lp-problem-card">
+              <div className="lp-problem-icon">&#x1F4D6;</div>
+              <p className="lp-problem-text">
+                주식 용어가 어렵고,
+                <br />
+                재무제표는 외국어 같다
+              </p>
+            </div>
+            <div className="lp-problem-card">
+              <div className="lp-problem-icon">&#x1F3AF;</div>
+              <p className="lp-problem-text">
+                모의투자를 해보고 싶은데
+                <br />
+                안전한 연습 환경이 없다
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Compass Score Showcase Section */}
-      {topStocks.length > 0 && (
-        <section className="compass-showcase-section">
-          <div className="section-header">
-            <h2>실시간 Compass Score</h2>
-            <p>AI 기반 4축 분석으로 평가된 상위 종목</p>
+      {/* Section 3: 3분 투자 진단 */}
+      <section className="lp-diagnosis">
+        <div className="lp-section-inner">
+          <div className="lp-section-header">
+            <h2>3분이면 충분합니다</h2>
+            <p>간단한 질문 3개로 나의 투자 성향을 파악해보세요</p>
           </div>
-          <div className="compass-cards-grid">
-            {topStocks.map(stock => (
-              <div key={stock.ticker} className="compass-card">
-                <div className="compass-card-header">
-                  <span className="compass-ticker">{stock.ticker}</span>
-                  <span className={`compass-grade ${GRADE_CLASS_MAP[stock.compass_grade] || ''}`}>
-                    {stock.compass_grade}
-                  </span>
-                </div>
-                <div className="compass-card-name">{stock.name}</div>
-                <div className="compass-score-display">
-                  {stock.compass_score?.toFixed(1)}
-                </div>
-                <div className="compass-axes">
-                  <div className="compass-axis">
-                    <span className="compass-axis-label">재무</span>
-                    <div className="compass-axis-bar">
-                      <div
-                        className="compass-axis-fill axis-financial"
-                        style={{ width: `${Math.min(stock.compass_financial_score || 0, 100)}%` }}
-                      />
+          <div className="lp-diagnosis-widget">
+            {!diagnosisResult ? (
+              <div className="lp-diagnosis-questions">
+                {MINI_QUESTIONS.map((q, idx) => (
+                  <div key={idx} className={`lp-q-card ${miniStep === idx ? 'active' : miniStep > idx ? 'done' : ''}`}>
+                    <div className="lp-q-number">{idx + 1}/3</div>
+                    <p className="lp-q-text">{q.question}</p>
+                    <div className="lp-q-options">
+                      {q.options.map(opt => (
+                        <button key={opt.value} className="lp-q-option" onClick={() => handleMiniAnswer(idx, opt.score)}>
+                          {opt.text}
+                        </button>
+                      ))}
                     </div>
-                    <span className="compass-axis-value">{stock.compass_financial_score?.toFixed(0)}</span>
                   </div>
-                  <div className="compass-axis">
-                    <span className="compass-axis-label">밸류</span>
-                    <div className="compass-axis-bar">
-                      <div
-                        className="compass-axis-fill axis-valuation"
-                        style={{ width: `${Math.min(stock.compass_valuation_score || 0, 100)}%` }}
-                      />
-                    </div>
-                    <span className="compass-axis-value">{stock.compass_valuation_score?.toFixed(0)}</span>
-                  </div>
-                  <div className="compass-axis">
-                    <span className="compass-axis-label">기술</span>
-                    <div className="compass-axis-bar">
-                      <div
-                        className="compass-axis-fill axis-technical"
-                        style={{ width: `${Math.min(stock.compass_technical_score || 0, 100)}%` }}
-                      />
-                    </div>
-                    <span className="compass-axis-value">{stock.compass_technical_score?.toFixed(0)}</span>
-                  </div>
-                  <div className="compass-axis">
-                    <span className="compass-axis-label">리스크</span>
-                    <div className="compass-axis-bar">
-                      <div
-                        className="compass-axis-fill axis-risk"
-                        style={{ width: `${Math.min(stock.compass_risk_score || 0, 100)}%` }}
-                      />
-                    </div>
-                    <span className="compass-axis-value">{stock.compass_risk_score?.toFixed(0)}</span>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="lp-diagnosis-result">
+                <div className="lp-result-icon">{diagnosisResult.icon}</div>
+                <h3>{diagnosisResult.type}</h3>
+                <p>{diagnosisResult.description}</p>
+                <button className="lp-btn-primary" onClick={() => navigate(isAuthenticated ? '/survey' : '/signup')}>
+                  자세한 진단 받기
+                </button>
+              </div>
+            )}
           </div>
-          <div className="compass-cta">
-            <button onClick={() => navigate('/explore')}>
-              더 많은 종목 탐색하기
-            </button>
-          </div>
-          <p className="compass-disclaimer">교육 목적 참고 정보이며 투자 권유가 아닙니다</p>
-        </section>
-      )}
-
-      {/* Mini Diagnosis Section */}
-      <section className="mini-diagnosis-section">
-        <div className="section-header">
-          <h2>나의 투자 성향은?</h2>
-          <p>3개의 질문으로 간단히 알아보세요</p>
+          <p className="lp-disclaimer-text">교육 목적 참고 정보이며 투자 권유가 아닙니다</p>
         </div>
-        <div className="mini-diagnosis-widget">
-          {!diagnosisResult ? (
-            <div className="mini-diagnosis-questions">
-              {MINI_QUESTIONS.map((q, idx) => (
-                <div key={idx} className={`mini-q-card ${miniStep === idx ? 'active' : miniStep > idx ? 'done' : ''}`}>
-                  <div className="mini-q-number">{idx + 1}/3</div>
-                  <p className="mini-q-text">{q.question}</p>
-                  <div className="mini-q-options">
-                    {q.options.map(opt => (
-                      <button key={opt.value} className="mini-q-option" onClick={() => handleMiniAnswer(idx, opt.score)}>
-                        {opt.text}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+      </section>
+
+      {/* Section 4: 데이터 연습장 + Compass Score 축소판 */}
+      <section className="lp-playground">
+        <div className="lp-section-inner">
+          <div className="lp-section-header">
+            <h2>실제 데이터로 연습하세요</h2>
+            <p>가상의 숫자가 아닌, 진짜 시장 데이터로 학습합니다</p>
+          </div>
+          <div className="lp-playground-grid">
+            <div className="lp-playground-card">
+              <div className="lp-playground-icon">&#x1F4BC;</div>
+              <h3>포트폴리오 시뮬레이션</h3>
+              <p>실제 수익률 기반 모의 투자</p>
             </div>
-          ) : (
-            <div className="mini-diagnosis-result">
-              <div className="mini-result-icon">{diagnosisResult.icon}</div>
-              <h3>{diagnosisResult.type}</h3>
-              <p>{diagnosisResult.description}</p>
-              <button className="mini-result-cta" onClick={() => navigate('/signup')}>
-                전체 15문항 정밀 진단 받기
+            <div className="lp-playground-card">
+              <div className="lp-playground-icon">&#x1F4C8;</div>
+              <h3>백테스팅</h3>
+              <p>과거 데이터로 전략 검증</p>
+            </div>
+            <div className="lp-playground-card">
+              <div className="lp-playground-icon">&#x1F50D;</div>
+              <h3>종목 스크리너</h3>
+              <p>조건별 종목 필터링</p>
+            </div>
+            <div className="lp-playground-card">
+              <div className="lp-playground-icon">&#x1F30D;</div>
+              <h3>시나리오 분석</h3>
+              <p>금리 변동, 환율 변화 시뮬레이션</p>
+            </div>
+          </div>
+
+          {/* Compass Score 축소판 */}
+          {topStocks.length > 0 && (
+            <div className="lp-compass-mini">
+              <h3 className="lp-compass-mini-title">Compass Score 상위 종목</h3>
+              <div className="lp-compass-mini-list">
+                {topStocks.map(stock => (
+                  <div key={stock.ticker} className="lp-compass-mini-card">
+                    <span className="lp-compass-mini-name">{stock.name}</span>
+                    <span className="lp-compass-mini-score">{stock.compass_score?.toFixed(1)}</span>
+                    <span className={`lp-compass-mini-grade ${GRADE_CLASS_MAP[stock.compass_grade] || ''}`}>
+                      {stock.compass_grade}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <button className="lp-btn-link" onClick={() => navigate('/explore')}>
+                전체 스크리너 보기 &rarr;
               </button>
             </div>
           )}
         </div>
-        <p className="compass-disclaimer">교육 목적 참고 정보이며 투자 권유가 아닙니다</p>
       </section>
 
-      {/* How It Works Section */}
-      <section className="how-it-works-section">
-        <div className="section-header">
-          <h2>간단한 3단계로 시작하세요</h2>
-          <p>복잡한 절차 없이 빠르게 학습 성향 분석을 받아보실 수 있습니다</p>
-        </div>
-        <div className="steps-container">
-          <div className="step-card">
-            <div className="step-number">1</div>
-            <h3 className="step-title">회원가입</h3>
-            <p className="step-description">
-              간단한 정보 입력으로 계정을 만들고 학습 환경을 설정합니다
-            </p>
+      {/* Section 5: AI 해설 */}
+      <section className="lp-ai">
+        <div className="lp-section-inner">
+          <div className="lp-section-header lp-section-header-light">
+            <h2>AI가 쉽게 설명해줍니다</h2>
+            <p>어려운 재무 데이터, AI가 한국어로 풀어서 알려드려요</p>
           </div>
-          <div className="step-arrow">→</div>
-          <div className="step-card">
-            <div className="step-number">2</div>
-            <h3 className="step-title">학습 성향 진단</h3>
-            <p className="step-description">
-              설문조사를 통해 학습 성향과 관심 분야를 분석합니다
-            </p>
+          <div className="lp-ai-features">
+            <div className="lp-ai-card">
+              <div className="lp-ai-card-icon">&#x1F4CA;</div>
+              <h3>재무제표 핵심 지표 자동 해석</h3>
+              <p>ROE, 부채비율, 영업이익률 등 핵심 수치를 한눈에 이해할 수 있도록 정리합니다</p>
+            </div>
+            <div className="lp-ai-card">
+              <div className="lp-ai-card-icon">&#x1F4AC;</div>
+              <h3>투자 판단에 필요한 맥락 설명</h3>
+              <p>숫자 뒤에 숨겨진 의미와 산업 내 위치를 비교 분석합니다</p>
+            </div>
+            <div className="lp-ai-card">
+              <div className="lp-ai-card-icon">&#x1F4DD;</div>
+              <h3>교육 목적의 참고 분석 제공</h3>
+              <p>학습용 리포트로 투자 분석의 기초를 다질 수 있습니다</p>
+            </div>
           </div>
-          <div className="step-arrow">→</div>
-          <div className="step-card">
-            <div className="step-number">3</div>
-            <h3 className="step-title">전략 시뮬레이션</h3>
-            <p className="step-description">
-              다양한 자산 배분 전략의 구성 예시를 시뮬레이션으로 확인합니다
-            </p>
+          {/* AI 분석 예시 모킹 */}
+          <div className="lp-ai-mock">
+            <div className="lp-ai-mock-header">AI 분석 예시</div>
+            <div className="lp-ai-mock-bubble">
+              <span className="lp-ai-mock-label">AI</span>
+              <p>
+                이 기업의 ROE는 15.2%로, 동종 업계 평균(10.8%)을 상회하며
+                자기자본을 효율적으로 활용하고 있습니다. 다만, 부채비율이
+                120%로 다소 높은 편이니 재무 안정성도 함께 고려해보세요.
+              </p>
+            </div>
+            <p className="lp-ai-mock-note">* 실제 서비스에서 제공되는 분석 예시입니다</p>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="cta-section">
-        <div className="cta-content">
-          <h2 className="cta-title">지금 바로 시작하세요</h2>
-          <p className="cta-description">
-            무료 회원가입으로 투자 전략 학습과 시뮬레이션을 경험해보세요
+      {/* Section 6: 안전하고 합법적 */}
+      <section className="lp-safety">
+        <div className="lp-section-inner">
+          <div className="lp-section-header">
+            <h2>안전하게, 합법적으로</h2>
+          </div>
+          <div className="lp-safety-grid">
+            <div className="lp-safety-card">
+              <div className="lp-safety-icon">&#x1F393;</div>
+              <h3>교육 목적 플랫폼</h3>
+              <p>투자 권유 없이 순수하게 학습과 시뮬레이션에 집중합니다</p>
+            </div>
+            <div className="lp-safety-card">
+              <div className="lp-safety-icon">&#x2696;&#xFE0F;</div>
+              <h3>자본시장법 제6조 준수</h3>
+              <p>관련 법규를 철저히 준수하여 안전한 교육 환경을 제공합니다</p>
+            </div>
+            <div className="lp-safety-card">
+              <div className="lp-safety-icon">&#x1F512;</div>
+              <h3>개인정보 암호화 보관</h3>
+              <p>모든 개인정보는 암호화되어 안전하게 관리됩니다</p>
+            </div>
+          </div>
+          <div className="lp-safety-disclaimer">
+            <Disclaimer />
+          </div>
+        </div>
+      </section>
+
+      {/* Section 7: CTA */}
+      <section className="lp-final-cta">
+        <div className="lp-section-inner">
+          <h2 className="lp-final-cta-title">지금 시작하세요</h2>
+          <p className="lp-final-cta-sub">
+            무료로 투자 진단을 받고, 나만의 포트폴리오를 만들어보세요
           </p>
-          <button
-            className="btn-cta"
-            onClick={() => navigate('/signup')}
-          >
-            무료로 시작하기
-          </button>
+          <div className="lp-final-cta-actions">
+            <button className="lp-btn-primary lp-btn-lg" onClick={ctaAction}>
+              {ctaLabel}
+            </button>
+            <button className="lp-btn-ghost" onClick={() => navigate('/explore')}>
+              먼저 둘러보기
+            </button>
+          </div>
         </div>
       </section>
-
     </div>
   );
 }
