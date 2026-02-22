@@ -15,9 +15,8 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
 import GuestScreenerPage from './pages/GuestScreenerPage';
-import UserGuidePage from './pages/UserGuidePage';
-
 // Protected — lazy import (온디맨드 로딩)
+const UserGuidePage = lazy(() => import('./pages/UserGuidePage'));
 const MarketDashboardPage = lazy(() => import('./pages/MarketDashboardPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const SurveyPage = lazy(() => import('./pages/SurveyPage'));
@@ -186,7 +185,6 @@ function AppContent() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/verify-email" element={<EmailVerificationPage />} />
           <Route path="/explore" element={<GuestScreenerPage />} />
-          <Route path="/guide" element={<UserGuidePage />} />
 
           {/* Protected Routes */}
           <Route
@@ -218,6 +216,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <TerminologyPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/guide"
+            element={
+              <ProtectedRoute>
+                <UserGuidePage />
               </ProtectedRoute>
             }
           />
