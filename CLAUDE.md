@@ -69,6 +69,27 @@ const { theme, toggleTheme } = useThemeInit();
 // Persists to localStorage, listens to system prefers-color-scheme
 ```
 
+## Analytics (`utils/analytics.js`)
+
+- **Mixpanel** integration via `VITE_MIXPANEL_TOKEN`
+- Functions: `initAnalytics()`, `identifyUser()`, `resetAnalytics()`, `trackEvent()`, `trackPageView()`
+- Initialized in `App.jsx`; gracefully no-ops if token is missing
+- Key events: `signup_completed`, `login_completed`, `survey_started`, `survey_completed`, `profile_completed`, `preset_loaded`
+
+## Onboarding & UX Components
+
+- **OnboardingTour** (`components/OnboardingTour.jsx`): Shepherd.js 5-step guided tour, auto-triggers on first visit (`localStorage: onboarding_tour_completed`), restartable via Header menu
+- **ProfileCompletionModal** (`components/ProfileCompletionModal.jsx`): Prompts incomplete profiles; used in SurveyPage, PortfolioBuilderPage, StockScreenerPage
+- **Mini Diagnosis**: 3-question quick assessment embedded in LandingPage (lines 8-309)
+- **GuestScreenerPage** (`/explore`): Public stock screener — no login required, limited to 20 results
+- **JSON-LD**: TerminologyPage injects Schema.org `DefinedTermSet` structured data via React Helmet
+
+## Prerendering & Vercel
+
+- **Build-time prerender**: `@prerenderer/rollup-plugin` with `@prerenderer/renderer-jsdom` in `vite.config.js`
+- **Prerendered routes**: `/`, `/login`, `/signup`, `/explore`, `/terminology`
+- **`vercel.json`**: SPA fallback rewrite (`/(.*) → /index.html`); Vercel serves prerendered HTML first
+
 ## API Client (`services/api.js`)
 
 - Axios instance with `VITE_API_URL` base
@@ -79,9 +100,10 @@ const { theme, toggleTheme } = useThemeInit();
 ## Routing (`App.jsx`)
 
 ### Public (static import — fast first paint)
-- `/` — LandingPage
+- `/` — LandingPage (feature cards, Compass showcase, mini diagnosis, how-it-works)
 - `/login` — LoginPage
 - `/signup` — SignupPage
+- `/explore` — GuestScreenerPage (public stock screener, no auth required)
 
 ### Protected (React.lazy — code split)
 - `/dashboard` — MarketDashboardPage (KPI cards, watchlist, news)
@@ -119,18 +141,6 @@ const { theme, toggleTheme } = useThemeInit();
 - No Redux/Zustand — all state is local `useState` or Context
 - `useCallback` for memoizing API fetch functions; `useEffect` with dependency arrays
 
-## Environment Variables
-
-`.env.development`:
-```
-VITE_API_URL=http://localhost:8000
-```
-
-`.env.production`:
-```
-VITE_API_URL=https://foresto-compass-backend.onrender.com
-```
-
 ## Deployment
 
 | Component | Service | URL |
@@ -144,6 +154,20 @@ VITE_API_URL=https://foresto-compass-backend.onrender.com
 - `VITE_API_URL` set in Vercel Environment Variables
 - Cloudflare DNS: A `foresto.co.kr` → `76.76.21.21`, CNAME `www` → `cname.vercel-dns.com`
 
+## Environment Variables
+
+`.env.development`:
+```
+VITE_API_URL=http://localhost:8000
+VITE_MIXPANEL_TOKEN=your-mixpanel-token   # optional, analytics
+```
+
+`.env.production`:
+```
+VITE_API_URL=https://foresto-compass-backend.onrender.com
+VITE_MIXPANEL_TOKEN=your-mixpanel-token
+```
+
 ## Tech Stack
 
 - **Framework**: React 18, Vite 5, React Router 6
@@ -151,3 +175,7 @@ VITE_API_URL=https://foresto-compass-backend.onrender.com
 - **Styling**: CSS custom properties (theme.css) — no CSS-in-JS, no Tailwind utility classes in components
 - **PWA**: Workbox + standalone + offline caching (NetworkFirst for API, autoUpdate SW)
 - **Code splitting**: React.lazy + ErrorBoundary for chunk loading failures
+- **Analytics**: Mixpanel (via `utils/analytics.js`)
+- **Onboarding**: Shepherd.js guided tour
+- **SEO**: React Helmet (meta tags, JSON-LD) + build-time prerendering
+- **Prerendering**: `@prerenderer/rollup-plugin` + `@prerenderer/renderer-jsdom`

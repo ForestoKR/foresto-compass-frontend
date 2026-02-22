@@ -11,6 +11,33 @@ import '../styles/SubscriptionPage.css';
 
 const TOSS_SDK_URL = 'https://js.tosspayments.com/v2/standard';
 
+function formatFeatures(features) {
+  if (Array.isArray(features)) return features;
+  if (!features || typeof features !== 'object') return [];
+  const labels = {
+    monthly_ai_requests: (v) => `AI 분석 월 ${v}회`,
+    monthly_reports: (v) => `리포트 월 ${v}건`,
+    max_portfolios: (v) => `포트폴리오 최대 ${v}개`,
+    screener: (v) => (v ? '고급 종목 스크리닝' : null),
+    watchlist_alerts: (v) => (v ? '실시간 관심 종목 알림' : null),
+  };
+  return Object.entries(features)
+    .map(([key, val]) => (labels[key] ? labels[key](val) : null))
+    .filter(Boolean);
+}
+
+function mapPlan(p) {
+  return {
+    id: p.plan_id ?? p.id,
+    slug: p.plan_code ?? p.slug,
+    name: p.plan_name ?? p.name,
+    price: p.monthly_price ?? p.price ?? 0,
+    yearly_price: p.annual_price ?? p.yearly_price,
+    description: p.description,
+    features: formatFeatures(p.features),
+  };
+}
+
 function SubscriptionPage() {
   const navigate = useNavigate();
 
@@ -49,7 +76,8 @@ function SubscriptionPage() {
           getPaymentPlans(),
           getSubscription().catch(() => null),
         ]);
-        setPlans(plansRes.data?.plans || plansRes.data || []);
+        const rawPlans = plansRes.data?.plans || plansRes.data || [];
+        setPlans(rawPlans.map(mapPlan));
         const sub = subRes?.data?.subscription || subRes?.data || null;
         setSubscription(sub);
 
@@ -100,11 +128,11 @@ function SubscriptionPage() {
     try {
       const billingCycle = isAnnual ? 'yearly' : 'monthly';
       const res = await createCheckout({
-        plan_id: plan.id,
+        plan_code: plan.slug,
         billing_cycle: billingCycle,
       });
 
-      const { order_id, amount, customer_key, order_name } = res.data;
+      const { order_id, amount, customer_key, plan_name } = res.data;
 
       const tossPayments = window.TossPayments(clientKey);
       const payment = tossPayments.payment({ customerKey: customer_key });
@@ -113,7 +141,7 @@ function SubscriptionPage() {
         method: 'CARD',
         amount: { currency: 'KRW', value: amount },
         orderId: order_id,
-        orderName: order_name || plan.name,
+        orderName: plan_name || plan.name,
         successUrl: `${window.location.origin}/payment/success`,
         failUrl: `${window.location.origin}/payment/fail`,
       });
