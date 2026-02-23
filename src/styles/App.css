@@ -58,6 +58,13 @@ body {
   width: 100%;
 }
 
+/* 랜딩/인증 페이지: full-width, 패딩 제거 */
+.main-content:has(> .landing-container),
+.main-content:has(> .auth-container) {
+  padding: 0;
+  max-width: none;
+}
+
 /* ============================================================
    Header
    ============================================================ */
