@@ -89,7 +89,7 @@ const { theme, toggleTheme } = useThemeInit();
 ## Prerendering & Vercel
 
 - **Build-time prerender**: `@prerenderer/rollup-plugin` with `@prerenderer/renderer-jsdom` in `vite.config.js`
-- **Prerendered routes**: `/`, `/login`, `/signup`, `/explore`, `/terminology`
+- **Prerendered routes**: `/`, `/login`, `/signup`, `/explore`, `/terminology`, `/guide`
 - **`vercel.json`**: SPA fallback rewrite (`/(.*) → /index.html`); Vercel serves prerendered HTML first
 
 ## API Client (`services/api.js`)
@@ -107,6 +107,7 @@ const { theme, toggleTheme } = useThemeInit();
 - `/signup` — SignupPage
 - `/verify-email` — EmailVerificationPage
 - `/explore` — GuestScreenerPage (public stock screener, no auth required)
+- `/guide` — UserGuidePage (사용 설명서, react-markdown + remark-gfm, fetches `/user-guide.md`)
 
 ### Protected (React.lazy — code split)
 - `/dashboard` — MarketDashboardPage (KPI cards, watchlist, news)
