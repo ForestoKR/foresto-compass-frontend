@@ -60,7 +60,7 @@ function ProfilePage() {
       setConsentError('');
       const response = await listConsents();
       setConsents(response.data.consents || []);
-    } catch (err) {
+    } catch {
       setConsentError('동의 이력을 불러오는데 실패했습니다.');
     } finally {
       setConsentLoading(false);
@@ -110,6 +110,7 @@ function ProfilePage() {
     fetchConsents();
     fetchMarketSub();
     fetchCompletionStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 프로필 수정
@@ -159,19 +160,6 @@ function ProfilePage() {
   // 입력 변경
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  // 나이 계산
-  const calculateAge = (birthDate) => {
-    if (!birthDate) return null;
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    return age;
   };
 
   // 비밀번호 변경 처리

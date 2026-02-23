@@ -30,7 +30,7 @@ function AdminConsentPage() {
 
       const response = await listAdminConsents(params);
       setConsents(response.data.consents || []);
-    } catch (err) {
+    } catch {
       setError('동의 이력을 불러오는데 실패했습니다.');
     } finally {
       setLoading(false);
@@ -39,6 +39,7 @@ function AdminConsentPage() {
 
   useEffect(() => {
     fetchConsents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (field, value) => {

@@ -121,7 +121,7 @@ function TerminologyPage() {
         const parsed = parseMarkdown(text);
         setBlocks(parsed);
         setEntries(buildEntries(parsed));
-      } catch (err) {
+      } catch {
         setError('용어 페이지를 불러오는데 실패했습니다.');
       } finally {
         setLoading(false);

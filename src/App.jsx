@@ -1,9 +1,8 @@
-import { useState, useEffect, createContext, useContext, lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider, Helmet } from 'react-helmet-async';
-import { getCurrentUser, logout as logoutApi } from './services/api';
 import { ThemeContext, useThemeInit } from './hooks/useTheme';
-import { initAnalytics, identifyUser, resetAnalytics } from './utils/analytics';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -50,86 +49,6 @@ const StockComparisonPage = lazy(() => import('./pages/StockComparisonPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage'));
 const PaymentFailPage = lazy(() => import('./pages/PaymentFailPage'));
-
-// ============================================================
-// Auth Context
-// ============================================================
-
-export const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-};
-
-// ============================================================
-// Auth Provider
-// ============================================================
-
-function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // 초기 사용자 정보 로드 + 애널리틱스 초기화
-  useEffect(() => {
-    initAnalytics();
-
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('access_token');
-
-        if (token) {
-          const response = await getCurrentUser();
-          setUser(response.data);
-          setIsAuthenticated(true);
-          identifyUser(response.data);
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        localStorage.removeItem('access_token');
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  const login = (userData, token) => {
-    localStorage.setItem('access_token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-    setIsAuthenticated(true);
-    identifyUser(userData);
-  };
-
-  const logout = () => {
-    logoutApi();
-    resetAnalytics();
-    setUser(null);
-    setIsAuthenticated(false);
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        setUser,
-        isAuthenticated,
-        isLoading,
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-}
 
 // ============================================================
 // Protected Route

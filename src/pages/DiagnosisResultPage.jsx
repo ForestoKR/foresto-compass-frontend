@@ -4,25 +4,28 @@ import { Helmet } from 'react-helmet-async';
 import '../styles/DiagnosisResult.css';
 
 function DiagnosisResultPage() {
-  const [result, setResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // sessionStorage에서 진단 결과 로드
+  const [result] = useState(() => {
     const savedResult = sessionStorage.getItem('diagnosisResult');
     if (savedResult) {
       try {
-        setResult(JSON.parse(savedResult));
+        return JSON.parse(savedResult);
       } catch (error) {
         console.error('Failed to parse diagnosis result:', error);
-        navigate('/survey');
+        return null;
       }
-    } else {
+    }
+    return null;
+  });
+
+  const [isLoading] = useState(false);
+
+  useEffect(() => {
+    if (!result) {
       navigate('/survey');
     }
-    setIsLoading(false);
-  }, [navigate]);
+  }, [result, navigate]);
 
   if (isLoading) {
     return (

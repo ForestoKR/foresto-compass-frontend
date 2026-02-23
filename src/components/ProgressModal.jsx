@@ -21,7 +21,7 @@ const PIPELINE_STEPS = [
 function ProgressModal({ taskId, onComplete, onClose }) {
   const [progress, setProgress] = useState(null);
   const [error, setError] = useState(null);
-  const [logs, setLogs] = useState([]);
+  const [, setLogs] = useState([]);
   const lastHistoryLenRef = useRef(0);
 
   const getEstimatedTime = (tid) => {

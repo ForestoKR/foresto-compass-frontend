@@ -1,6 +1,6 @@
 // frontend/src/pages/StockDetailPage.jsx
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api, { getAiCommentary } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
@@ -133,7 +133,7 @@ export default function StockDetailPage() {
       if (response.data?.success) {
         setAiCommentary(response.data.commentary);
       }
-    } catch (err) {
+    } catch {
       setAiCommentary('AI 해설 생성에 실패했습니다.');
     } finally {
       setAiLoading(false);

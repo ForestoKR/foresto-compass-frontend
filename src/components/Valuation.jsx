@@ -14,9 +14,9 @@ const Valuation = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('comprehensive');
-  const [multiples, setMultiples] = useState(null);
-  const [dcf, setDcf] = useState(null);
-  const [ddm, setDdm] = useState(null);
+  const [, setMultiples] = useState(null);
+  const [, setDcf] = useState(null);
+  const [, setDdm] = useState(null);
   const [comprehensive, setComprehensive] = useState(null);
 
   // 섹션 ref

@@ -15,6 +15,7 @@ function PortfolioRecommendationPage() {
 
   useEffect(() => {
     fetchPortfolio();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchPortfolio = async () => {

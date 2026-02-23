@@ -251,7 +251,6 @@ function MarketDashboardPage() {
         <div className="kpi-grid">
           {marketData?.indices?.map((idx, i) => {
             const isUp = idx.change >= 0;
-            const color = isUp ? 'var(--stock-up)' : 'var(--stock-down)';
             return (
               <div key={i} className="kpi-card">
                 <div className="kpi-label">{idx.name}</div>

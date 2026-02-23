@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../App';
+import { useAuth } from '../contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { getTopCompassScores } from '../services/api';

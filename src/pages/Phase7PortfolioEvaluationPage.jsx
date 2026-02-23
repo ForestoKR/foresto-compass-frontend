@@ -12,7 +12,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import {
-  createPhase7Portfolio,
   listPhase7Portfolios,
   evaluatePhase7Portfolio,
   listPhase7Evaluations,
@@ -48,13 +47,7 @@ const downsampleNavSeries = (series, maxPoints = MAX_NAV_POINTS) => {
   return sampled;
 };
 
-const emptyItem = () => ({ id: '', name: '', weight: '' });
-
 function Phase7PortfolioEvaluationPage() {
-  const [portfolioType, setPortfolioType] = useState('SECURITY');
-  const [portfolioName, setPortfolioName] = useState('');
-  const [portfolioDescription, setPortfolioDescription] = useState('');
-  const [items, setItems] = useState([emptyItem()]);
   const [portfolios, setPortfolios] = useState([]);
   const [selectedPortfolioId, setSelectedPortfolioId] = useState('');
   const [periodStart, setPeriodStart] = useState('');
@@ -428,10 +421,6 @@ function Phase7PortfolioEvaluationPage() {
     };
   }, [evaluationResult]);
 
-  const weightSum = useMemo(() => {
-    return items.reduce((sum, item) => sum + Number(item.weight || 0), 0);
-  }, [items]);
-
   const refreshPortfolios = async () => {
     const response = await listPhase7Portfolios();
     setPortfolios(response.data.portfolios || []);
@@ -476,58 +465,6 @@ function Phase7PortfolioEvaluationPage() {
   useEffect(() => {
     refreshHistory(selectedPortfolioId);
   }, [selectedPortfolioId]);
-
-  const handleItemChange = (index, field, value) => {
-    const next = items.map((item, idx) =>
-      idx === index ? { ...item, [field]: value } : item
-    );
-    setItems(next);
-  };
-
-  const addItem = () => {
-    setItems([...items, emptyItem()]);
-  };
-
-  const removeItem = (index) => {
-    if (items.length === 1) {
-      return;
-    }
-    setItems(items.filter((_, idx) => idx !== index));
-  };
-
-  const handleCreatePortfolio = async () => {
-    setStatusMessage('');
-    const normalizedItems = items
-      .filter((item) => item.id && item.name)
-      .map((item) => ({
-        id: item.id.trim(),
-        name: item.name.trim(),
-        weight: Number(item.weight || 0),
-      }));
-
-    if (normalizedItems.length === 0) {
-      setStatusMessage('구성 항목을 입력해 주세요.');
-      return;
-    }
-
-    if (Math.abs(weightSum - 1) > 0.0001) {
-      setStatusMessage('비중 합계는 1.0이어야 합니다.');
-      return;
-    }
-
-    await createPhase7Portfolio({
-      portfolio_type: portfolioType,
-      portfolio_name: portfolioName,
-      description: portfolioDescription || null,
-      items: normalizedItems,
-    });
-
-    setPortfolioName('');
-    setPortfolioDescription('');
-    setItems([emptyItem()]);
-    await refreshPortfolios();
-    setStatusMessage('포트폴리오가 저장되었습니다.');
-  };
 
   const handleEvaluate = async () => {
     setStatusMessage('');

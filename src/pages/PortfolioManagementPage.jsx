@@ -23,6 +23,7 @@ export default function PortfolioManagementPage() {
       loadDetailPortfolio();
       loadTopSecurities();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType]);
 
   const loadStrategies = async () => {

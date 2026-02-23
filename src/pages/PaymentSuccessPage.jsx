@@ -6,20 +6,20 @@ import '../styles/SubscriptionPage.css';
 function PaymentSuccessPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState('processing'); // processing | success | error
+
+  const authKey = searchParams.get('authKey');
+  const customerKey = searchParams.get('customerKey');
+  const orderId = searchParams.get('orderId');
+  const missingParams = !authKey || !customerKey || !orderId;
+
+  const [status, setStatus] = useState(missingParams ? 'error' : 'processing');
   const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(
+    missingParams ? { message: '필수 파라미터가 누락되었습니다.' } : null
+  );
 
   useEffect(() => {
-    const authKey = searchParams.get('authKey');
-    const customerKey = searchParams.get('customerKey');
-    const orderId = searchParams.get('orderId');
-
-    if (!authKey || !customerKey || !orderId) {
-      setStatus('error');
-      setError({ message: '필수 파라미터가 누락되었습니다.' });
-      return;
-    }
+    if (missingParams) return;
 
     const confirm = async () => {
       try {
@@ -40,7 +40,7 @@ function PaymentSuccessPage() {
     };
 
     confirm();
-  }, [searchParams]);
+  }, [searchParams, missingParams, authKey, customerKey, orderId]);
 
   if (status === 'processing') {
     return (

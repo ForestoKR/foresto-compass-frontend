@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { signUp as signUpApi } from '../services/api';
-import { useAuth } from '../App';
+import { useAuth } from '../contexts/AuthContext';
 import { trackEvent } from '../utils/analytics';
 import '../styles/SignupPage.css';
 

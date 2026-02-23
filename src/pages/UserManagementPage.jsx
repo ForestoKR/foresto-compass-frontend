@@ -32,6 +32,7 @@ function UserManagementPage() {
 
   useEffect(() => {
     fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 역할 변경
@@ -71,19 +72,6 @@ function UserManagementPage() {
       setError(err.response?.data?.detail || '사용자 삭제에 실패했습니다.');
       setTimeout(() => setError(null), 5000);
     }
-  };
-
-  // 나이 계산
-  const calculateAge = (birthDate) => {
-    if (!birthDate) return null;
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-    return age;
   };
 
   if (loading) {

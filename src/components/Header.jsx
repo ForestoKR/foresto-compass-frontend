@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../App';
+import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../hooks/useTheme';
 import { getProfileCompletionStatus } from '../services/api';
 
@@ -157,10 +157,12 @@ function Header() {
   }, [mobileMenuOpen]);
 
   // 라우트 변경 시 메뉴 닫기
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
+  if (location.pathname !== prevPathname) {
+    setPrevPathname(location.pathname);
     setMobileMenuOpen(false);
     setOpenGroup(null);
-  }, [location.pathname]);
+  }
 
   return (
     <header className="header">

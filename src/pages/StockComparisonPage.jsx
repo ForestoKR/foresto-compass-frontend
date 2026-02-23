@@ -298,7 +298,7 @@ function StockComparisonPage() {
         <div className="sc-result-section">
           {/* Score Cards */}
           <div className="sc-score-cards">
-            {compareResult.stocks.map((s, idx) => (
+            {compareResult.stocks.map((s) => (
               <div key={s.ticker} className="sc-score-card">
                 <div className="sc-score-card-name">{s.name}</div>
                 <div className="sc-score-card-ticker">{s.ticker} · {s.market}</div>

@@ -169,7 +169,7 @@ const handleSubmit = async () => {
       });
       setShowSurvey(true);
       trackEvent('survey_started');
-    } catch (err) {
+    } catch {
       setError('유의사항 동의 기록에 실패했습니다.');
     } finally {
       setIsRecordingConsent(false);

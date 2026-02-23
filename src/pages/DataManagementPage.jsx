@@ -39,6 +39,7 @@ export default function DataManagementPage() {
 
   useEffect(() => {
     fetchDataStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchDataStatus = async () => {
@@ -148,8 +149,9 @@ export default function DataManagementPage() {
     }
   };
 
-  const handleProgressComplete = useCallback(async (progressData) => {
+  const handleProgressComplete = useCallback(async () => {
     await fetchDataStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseModal = useCallback(() => {

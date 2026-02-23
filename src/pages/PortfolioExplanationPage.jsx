@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   explainDirect,
-  explainPortfolio,
   downloadExplanationPDF,
   downloadPremiumReportPDF,
   saveExplanationHistory
@@ -18,7 +17,6 @@ import '../styles/PortfolioExplanation.css';
  * - 결과 해석 및 맥락 제공 O
  */
 function PortfolioExplanationPage() {
-  const navigate = useNavigate();
   const location = useLocation();
 
   const [isLoading, setIsLoading] = useState(false);

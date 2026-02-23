@@ -32,6 +32,7 @@ function ReportHistoryPage() {
   // 히스토리 목록 로드
   useEffect(() => {
     loadHistories();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const loadHistories = async () => {

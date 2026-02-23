@@ -33,7 +33,7 @@ const PortfolioBuilderPage = () => {
   // 검색 및 필터
   const [searchQuery, setSearchQuery] = useState('');
   const [marketFilter, setMarketFilter] = useState('');
-  const [sectorFilter, setSectorFilter] = useState('');
+  const [sectorFilter] = useState('');
 
   // 데이터
   const [stocks, setStocks] = useState([]);
@@ -72,6 +72,7 @@ const PortfolioBuilderPage = () => {
     } else {
       loadSectors();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [portfolioType, searchQuery, marketFilter, sectorFilter]);
 
   const loadInitialData = async () => {

@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   getPaymentPlans,
   getSubscription,
@@ -39,8 +38,6 @@ function mapPlan(p) {
 }
 
 function SubscriptionPage() {
-  const navigate = useNavigate();
-
   // tabs
   const [activeTab, setActiveTab] = useState('plans'); // plans | my | history
 
@@ -85,7 +82,7 @@ function SubscriptionPage() {
         if (sub && sub.status === 'active') {
           setActiveTab('my');
         }
-      } catch (err) {
+      } catch {
         setError('데이터를 불러오는 데 실패했습니다.');
       } finally {
         setLoading(false);

@@ -26,6 +26,7 @@ export default function DataTable({ type, fetchData }) {
     if (!data) {
       fetchDataItems();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getTypeInfo = () => {
