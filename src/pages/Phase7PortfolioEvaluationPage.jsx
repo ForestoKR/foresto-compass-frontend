@@ -19,6 +19,7 @@ import {
   comparePhase7Portfolios,
   getPhase7AvailablePeriod,
 } from '../services/api';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/Phase7PortfolioEvaluation.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler);
@@ -437,6 +438,7 @@ function Phase7PortfolioEvaluationPage() {
 
   useEffect(() => {
     refreshPortfolios();
+    trackPageView('portfolio_evaluation');
   }, []);
 
   useEffect(() => {
@@ -493,6 +495,7 @@ function Phase7PortfolioEvaluationPage() {
       extensions: Object.keys(extensions).length ? extensions : undefined,
     });
     setEvaluationResult(response.data);
+    trackEvent('portfolio_evaluated', { portfolio_id: selectedPortfolioId, rebalance });
     console.log(
       'Phase7 evaluation extensions.nav_series length:',
       response.data?.extensions?.nav_series?.length
@@ -536,6 +539,7 @@ function Phase7PortfolioEvaluationPage() {
       portfolio_ids: selectedIds,
     });
     setComparisonResult(response.data);
+    trackEvent('portfolios_compared', { portfolio_count: selectedIds.length });
     try {
     const seriesResponses = await Promise.all(
         selectedIds.map(async (portfolioId) => {

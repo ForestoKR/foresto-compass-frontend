@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getScenarios, getScenarioDetail, runBacktest } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/ScenarioSimulation.css';
 
 function ScenarioSimulationPage() {
@@ -21,6 +22,7 @@ function ScenarioSimulationPage() {
   // 시나리오 목록 로드
   useEffect(() => {
     loadScenarios();
+    trackPageView('scenario_simulation');
   }, []);
 
   // 선택된 시나리오 상세 로드
@@ -73,6 +75,7 @@ function ScenarioSimulationPage() {
         rebalance_frequency: 'quarterly'
       });
 
+      trackEvent('scenario_simulation_run', { scenario_id: selectedScenario, period_years: periodYears });
       // 결과 페이지로 이동
       navigate('/backtest', {
         state: {

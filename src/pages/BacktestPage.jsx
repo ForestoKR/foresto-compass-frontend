@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { runBacktest as runBacktestAPI, comparePortfolios as comparePortfoliosAPI } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/Backtest.css';
 
 function BacktestPage() {
@@ -27,6 +28,10 @@ function BacktestPage() {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    trackPageView('backtest');
+  }, []);
+
   const runBacktest = async () => {
     try {
       setLoading(true);
@@ -40,6 +45,7 @@ function BacktestPage() {
       });
 
       setResult(response.data.data);
+      trackEvent('backtest_executed', { investment_type: investmentType, period_years: periodYears });
     } catch (err) {
       console.error('Backtest error:', err);
       if (err.response?.status === 429) {
@@ -64,6 +70,7 @@ function BacktestPage() {
       });
 
       setResult(response.data.data);
+      trackEvent('portfolio_comparison_executed', { types_count: selectedTypes.length, period_years: periodYears });
     } catch (err) {
       console.error('Comparison error:', err);
       if (err.response?.status === 429) {

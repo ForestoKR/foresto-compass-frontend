@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { trackPageView } from '../utils/analytics';
 import '../styles/DiagnosisResult.css';
 
 function DiagnosisResultPage() {
@@ -24,6 +25,8 @@ function DiagnosisResultPage() {
   useEffect(() => {
     if (!result) {
       navigate('/survey');
+    } else {
+      trackPageView('diagnosis_result');
     }
   }, [result, navigate]);
 

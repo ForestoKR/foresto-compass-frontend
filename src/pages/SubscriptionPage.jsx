@@ -6,6 +6,7 @@ import {
   cancelSubscription,
   getPaymentHistory,
 } from '../services/api';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/SubscriptionPage.css';
 
 const TOSS_SDK_URL = 'https://js.tosspayments.com/v2/standard';
@@ -111,6 +112,10 @@ function SubscriptionPage() {
     }
   }, [activeTab, loadHistory]);
 
+  useEffect(() => {
+    trackPageView('subscription');
+  }, []);
+
   // ── Checkout flow ──
   const handleCheckout = async (plan) => {
     const clientKey = import.meta.env.VITE_TOSS_CLIENT_KEY;
@@ -129,6 +134,7 @@ function SubscriptionPage() {
         billing_cycle: billingCycle,
       });
 
+      trackEvent('checkout_initiated', { plan_slug: plan.slug, billing_cycle: billingCycle });
       const { order_id, amount, customer_key, plan_name } = res.data;
 
       const tossPayments = window.TossPayments(clientKey);
@@ -156,6 +162,7 @@ function SubscriptionPage() {
     setCancelLoading(true);
     try {
       await cancelSubscription();
+      trackEvent('subscription_cancelled');
       const subRes = await getSubscription().catch(() => null);
       setSubscription(subRes?.data?.subscription || subRes?.data || null);
       setCancelConfirm(false);

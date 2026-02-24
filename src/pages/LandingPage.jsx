@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { getTopCompassScores } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/LandingPage.css';
 
 const MINI_QUESTIONS = [
@@ -67,9 +68,9 @@ function LandingPage() {
 
     if (newAnswers.filter(a => a != null).length === 3) {
       const total = newAnswers.reduce((sum, s) => sum + s, 0);
-      if (total <= 4) setDiagnosisResult(DIAGNOSIS_RESULTS.conservative);
-      else if (total <= 7) setDiagnosisResult(DIAGNOSIS_RESULTS.moderate);
-      else setDiagnosisResult(DIAGNOSIS_RESULTS.aggressive);
+      const resultType = total <= 4 ? 'conservative' : total <= 7 ? 'moderate' : 'aggressive';
+      setDiagnosisResult(DIAGNOSIS_RESULTS[resultType]);
+      trackEvent('mini_diagnosis_completed', { result_type: resultType });
     }
   };
 
@@ -77,9 +78,11 @@ function LandingPage() {
     getTopCompassScores(5)
       .then(res => setTopStocks(res.data.stocks || []))
       .catch(() => {});
+    trackPageView('landing');
   }, []);
 
   const ctaAction = () => {
+    trackEvent('landing_cta_clicked', { destination: isAuthenticated ? 'dashboard' : 'signup' });
     navigate(isAuthenticated ? '/dashboard' : '/signup');
   };
 

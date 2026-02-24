@@ -10,6 +10,7 @@ import {
 } from 'chart.js';
 import { searchStocks, compareStocks } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
+import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/StockComparison.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -78,6 +79,10 @@ function StockComparisonPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    trackPageView('stock_comparison');
+  }, []);
+
   const handleSearchChange = useCallback((e) => {
     const q = e.target.value;
     setSearchQuery(q);
@@ -129,6 +134,7 @@ function StockComparisonPage() {
       const tickers = selectedStocks.map((s) => s.ticker);
       const res = await compareStocks(tickers);
       setCompareResult(res.data);
+      trackEvent('stocks_compared', { stock_count: tickers.length });
     } catch (err) {
       setError(err.response?.data?.detail || '비교 데이터를 불러오지 못했습니다');
     } finally {

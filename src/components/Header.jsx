@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../hooks/useTheme';
 import { getProfileCompletionStatus } from '../services/api';
+import { trackEvent } from '../utils/analytics';
 
 function Header() {
   const navigate = useNavigate();
@@ -259,7 +260,7 @@ function Header() {
         {/* 다크모드 토글 */}
         <button
           className="theme-toggle"
-          onClick={toggleTheme}
+          onClick={() => { toggleTheme(); trackEvent('theme_toggled', { new_theme: theme === 'light' ? 'dark' : 'light' }); }}
           title={theme === 'dark' ? '라이트모드로 전환' : '다크모드로 전환'}
           aria-label="테마 전환"
         >

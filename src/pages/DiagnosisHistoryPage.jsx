@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDiagnosisHistory, getDiagnosis, downloadDiagnosisPDF } from '../services/api';
+import { trackPageView } from '../utils/analytics';
 import '../styles/DiagnosisHistory.css';
 
 function DiagnosisHistoryPage() {
@@ -13,6 +14,7 @@ function DiagnosisHistoryPage() {
 
   useEffect(() => {
     loadDiagnosisHistory();
+    trackPageView('diagnosis_history');
   }, []);
 
   const loadDiagnosisHistory = async () => {
