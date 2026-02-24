@@ -15,6 +15,7 @@ import SignupPage from './pages/SignupPage';
 import EmailVerificationPage from './pages/EmailVerificationPage';
 import GuestScreenerPage from './pages/GuestScreenerPage';
 import UserGuidePage from './pages/UserGuidePage';
+import NotFoundPage from './pages/NotFoundPage';
 // Protected — lazy import (온디맨드 로딩)
 const MarketDashboardPage = lazy(() => import('./pages/MarketDashboardPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
@@ -383,7 +384,7 @@ function AppContent() {
           />
 
           {/* Default Route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
         </Suspense>
         </ErrorBoundary>
