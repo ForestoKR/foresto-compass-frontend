@@ -50,6 +50,7 @@ const StockComparisonPage = lazy(() => import('./pages/StockComparisonPage'));
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'));
 const PaymentSuccessPage = lazy(() => import('./pages/PaymentSuccessPage'));
 const PaymentFailPage = lazy(() => import('./pages/PaymentFailPage'));
+const SystemHealthPage = lazy(() => import('./pages/SystemHealthPage'));
 
 // ============================================================
 // Protected Route
@@ -353,6 +354,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <ReportPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/system"
+            element={
+              <ProtectedRoute>
+                <SystemHealthPage />
               </ProtectedRoute>
             }
           />

@@ -29,6 +29,13 @@ export default function AdminPage() {
       color: '#0ea5e9'
     },
     {
+      icon: '\u{1F4E1}',
+      title: '시스템 모니터링',
+      description: 'DB 풀, 메모리, 스케줄러, API 성능 실시간 확인',
+      path: '/admin/system',
+      color: '#8b5cf6'
+    },
+    {
       icon: '\u{1F4C5}',
       title: '휴장일 관리',
       description: '한국 주식시장 휴장일 조회, 추가, 거래일 확인',

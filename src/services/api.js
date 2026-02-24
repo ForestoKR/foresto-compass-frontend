@@ -1112,6 +1112,10 @@ export const bulkUploadHolidays = (data) =>
 export const checkTradingDay = (date) =>
   api.get(`/admin/market-calendar/check?check_date=${date}`);
 
+// ── System Monitoring API ──
+export const getSystemHealth = () => api.get('/admin/system/health');
+export const getApiPerformance = () => api.get('/admin/system/api-performance');
+
 // ── Payments API ──
 export const getPaymentPlans = () => api.get('/payments/plans');
 export const createCheckout = (data) => api.post('/payments/checkout', data);
