@@ -2,6 +2,7 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { getCurrentUser, logout as logoutApi } from '../services/api';
 import { initAnalytics, identifyUser, resetAnalytics } from '../utils/analytics';
+import { initSentry, setSentryUser, clearSentryUser } from '../utils/sentry';
 
 export const AuthContext = createContext();
 
@@ -21,6 +22,7 @@ export function AuthProvider({ children }) {
   // 초기 사용자 정보 로드 + 애널리틱스 초기화
   useEffect(() => {
     initAnalytics();
+    initSentry();
 
     const checkAuth = async () => {
       try {
@@ -31,6 +33,7 @@ export function AuthProvider({ children }) {
           setUser(response.data);
           setIsAuthenticated(true);
           identifyUser(response.data);
+          setSentryUser(response.data);
         }
       } catch (error) {
         console.error('Auth check failed:', error);
@@ -50,11 +53,13 @@ export function AuthProvider({ children }) {
     setUser(userData);
     setIsAuthenticated(true);
     identifyUser(userData);
+    setSentryUser(userData);
   };
 
   const logout = () => {
     logoutApi();
     resetAnalytics();
+    clearSentryUser();
     setUser(null);
     setIsAuthenticated(false);
   };
