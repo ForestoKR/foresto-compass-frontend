@@ -229,7 +229,7 @@ export default function StockDetailPage() {
 
           {/* 에러 메시지 */}
           {error && (
-            <div className="sd-error">
+            <div className="sd-error" role="alert">
               ❌ {error}
             </div>
           )}
@@ -426,7 +426,7 @@ export default function StockDetailPage() {
 
               {/* 가격 차트 */}
               {stockData.timeseries.data_count > 0 && (
-                <div className="sd-section">
+                <div className="sd-section" role="img" aria-label="주가 추이 차트">
                   <h2 className="sd-section-title">
                     📈 가격 차트
                   </h2>
@@ -514,7 +514,7 @@ export default function StockDetailPage() {
 
               {/* 거래량 차트 */}
               {stockData.timeseries.data_count > 0 && (
-                <div className="sd-section">
+                <div className="sd-section" role="img" aria-label="거래량 차트">
                   <h2 className="sd-section-title">
                     📊 거래량 차트
                   </h2>

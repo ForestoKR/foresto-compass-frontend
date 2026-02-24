@@ -105,7 +105,7 @@ function WatchlistPage() {
         </div>
       </div>
 
-      {error && <div className="watchlist-error">{error}</div>}
+      {error && <div className="watchlist-error" role="alert">{error}</div>}
 
       {!loading && !error && items.length === 0 && (
         <div className="watchlist-empty">

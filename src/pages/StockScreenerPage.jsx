@@ -230,7 +230,7 @@ function StockScreenerPage() {
       </div>
 
       {/* 에러 */}
-      {error && <div className="screener-error">{error}</div>}
+      {error && <div className="screener-error" role="alert">{error}</div>}
 
       {/* 빈 상태 */}
       {!loading && !error && stocks.length === 0 && (

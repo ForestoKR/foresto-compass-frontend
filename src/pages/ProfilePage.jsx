@@ -275,7 +275,7 @@ function ProfilePage() {
         </div>
       )}
 
-      {error && <div className="alert alert-error">{error}</div>}
+      {error && <div className="alert alert-error" role="alert">{error}</div>}
       {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
       <form onSubmit={handleUpdate}>
@@ -580,7 +580,7 @@ function ProfilePage() {
         <div className="profile-section">
           <h2>동의 이력</h2>
           {consentLoading && <div className="info-message">불러오는 중...</div>}
-          {consentError && <div className="error-message">{consentError}</div>}
+          {consentError && <div className="error-message" role="alert">{consentError}</div>}
           {!consentLoading && !consentError && consents.length === 0 && (
             <div className="info-message">동의 이력이 없습니다.</div>
           )}
@@ -662,7 +662,7 @@ function ProfilePage() {
         ) : (
           <form onSubmit={handlePasswordChange} className="password-form">
             {passwordError && (
-              <div className="error-message">{passwordError}</div>
+              <div className="error-message" role="alert">{passwordError}</div>
             )}
 
             <div className="profile-field">

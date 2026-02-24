@@ -79,7 +79,7 @@ function ProgressBar({ taskId, onComplete }) {
       </div>
 
       {error && (
-        <div className="progress-error">{error}</div>
+        <div className="progress-error" role="alert">{error}</div>
       )}
 
       {progress.error_message && (

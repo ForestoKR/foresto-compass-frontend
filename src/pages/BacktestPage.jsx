@@ -234,7 +234,7 @@ function BacktestPage() {
 
       {/* 에러 메시지 */}
       {error && (
-        <div className="backtest-error">
+        <div className="backtest-error" role="alert">
           <p>{error}</p>
         </div>
       )}

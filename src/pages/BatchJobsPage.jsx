@@ -356,7 +356,7 @@ export default function BatchJobsPage() {
 
               {/* Error */}
               {currentJob.status === 'failed' && currentJob.error && (
-                <div className="bj-result-error">
+                <div className="bj-result-error" role="alert">
                   <h3>❌ 작업 실패</h3>
                   <div className="bj-result-error-msg">
                     {currentJob.error}

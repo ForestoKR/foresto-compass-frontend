@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { getProfileCompletionStatus, updateProfile } from '../services/api';
 import { trackEvent } from '../utils/analytics';
 import '../styles/ProfileCompletionModal.css';
@@ -46,10 +46,54 @@ function ProfileCompletionModal({ onClose, onComplete }) {
   const [formData, setFormData] = useState({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const modalRef = useRef(null);
 
   useEffect(() => {
     loadStatus();
   }, []);
+
+  // Esc 키 핸들러
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  // 포커스 트랩
+  const handleFocusTrap = useCallback((e) => {
+    if (e.key !== 'Tab' || !modalRef.current) return;
+    const focusable = modalRef.current.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }, []);
+
+  // 마운트 시 첫 포커스 가능 요소로 이동 + 포커스 트랩 등록
+  useEffect(() => {
+    if (!modalRef.current) return;
+    const focusable = modalRef.current.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length > 0) focusable[0].focus();
+
+    document.addEventListener('keydown', handleFocusTrap);
+    return () => document.removeEventListener('keydown', handleFocusTrap);
+  }, [status, handleFocusTrap]);
 
   const loadStatus = async () => {
     try {
@@ -99,13 +143,13 @@ function ProfileCompletionModal({ onClose, onComplete }) {
 
   return (
     <div className="pcm-overlay" onClick={onClose}>
-      <div className="pcm-modal" onClick={(e) => e.stopPropagation()}>
+      <div className="pcm-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="pcm-title" onClick={(e) => e.stopPropagation()}>
         <button className="pcm-close" onClick={onClose} aria-label="닫기">
           &times;
         </button>
 
         <div className="pcm-header">
-          <h2>30초면 나만의 투자 학습이 시작됩니다</h2>
+          <h2 id="pcm-title">30초면 나만의 투자 학습이 시작됩니다</h2>
           <p className="pcm-subtitle">
             {status.missing_fields.length}개 항목만 입력하면 바로 이용할 수 있어요
           </p>
@@ -123,7 +167,7 @@ function ProfileCompletionModal({ onClose, onComplete }) {
           <span className="pcm-progress-text">{status.completion_percent}% 완료</span>
         </div>
 
-        {error && <div className="pcm-error">{error}</div>}
+        {error && <div className="pcm-error" role="alert">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           {status.missing_fields.map((f) => {

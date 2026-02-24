@@ -283,7 +283,7 @@ function StockComparisonPage() {
       </div>
 
       {/* 에러 */}
-      {error && <div className="sc-error">{error}</div>}
+      {error && <div className="sc-error" role="alert">{error}</div>}
 
       {/* 로딩 */}
       {loading && (
@@ -324,7 +324,7 @@ function StockComparisonPage() {
           </div>
 
           {/* 4축 바 차트 */}
-          <div className="sc-chart-box">
+          <div className="sc-chart-box" role="img" aria-label="종목 비교 차트">
             <h3 className="sc-chart-title">Compass Score 4축 비교</h3>
             <div className="sc-chart-wrap">
               <Bar data={getChartData()} options={chartOptions} />

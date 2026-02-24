@@ -583,7 +583,7 @@ function Phase7PortfolioEvaluationPage() {
         사용자가 직접 구성한 포트폴리오의 과거 데이터 기반 성과·리스크를 확인합니다.
       </p>
 
-      {statusMessage && <div className="phase7-status">{statusMessage}</div>}
+      {statusMessage && <div className="phase7-status" role="alert">{statusMessage}</div>}
 
       <section className="phase7-card">
         <h2>1) 평가 실행</h2>
@@ -763,7 +763,7 @@ function Phase7PortfolioEvaluationPage() {
                       이 지표들은 과거 데이터를 기반으로 한 학습용 분석입니다. 실제 투자 시 시장 변동성을 고려해 주세요.
                     </p>
                   </div>
-                  <div className="phase7-summary-chart">
+                  <div className="phase7-summary-chart" role="img" aria-label="포트폴리오 평가 차트">
                     {summaryChartData ? (
                       <Line data={summaryChartData} options={summaryChartOptions} />
                     ) : (
@@ -949,7 +949,7 @@ function Phase7PortfolioEvaluationPage() {
           </ul>
         )}
         {historyDetailLoading && <p className="phase7-muted">상세 정보를 불러오는 중입니다...</p>}
-        {historyDetailError && <p className="phase7-error">{historyDetailError}</p>}
+        {historyDetailError && <p className="phase7-error" role="alert">{historyDetailError}</p>}
       </section>
 
       <section className="phase7-card">
@@ -972,7 +972,7 @@ function Phase7PortfolioEvaluationPage() {
         {comparisonResult && (
           <div className="phase7-result">
             <h3>비교 결과</h3>
-            <div className="phase7-compare-chart">
+            <div className="phase7-compare-chart" role="img" aria-label="포트폴리오 비교 차트">
               {comparisonResult?.common_period && (
                 <p className="phase7-compare-period">
                   공통 비교 기간: {comparisonResult.common_period.start} ~{' '}

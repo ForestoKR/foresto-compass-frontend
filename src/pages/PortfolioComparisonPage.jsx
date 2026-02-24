@@ -262,7 +262,7 @@ export default function PortfolioComparisonPage() {
 
           {/* 에러 메시지 */}
           {error && (
-            <div className="pc-error">
+            <div className="pc-error" role="alert">
               ❌ {error}
             </div>
           )}
@@ -271,7 +271,7 @@ export default function PortfolioComparisonPage() {
           {comparisonData && (
             <div className="pc-results">
               {/* 기간 수익률 추이 차트 */}
-              <div className="pc-chart-box">
+              <div className="pc-chart-box" role="img" aria-label="포트폴리오 수익률 비교 차트">
                 <h2 className="pc-chart-title">
                   📈 수익률 추이 ({days}일)
                 </h2>
@@ -317,7 +317,7 @@ export default function PortfolioComparisonPage() {
               </div>
 
               {/* 총 수익률 비교 */}
-              <div className="pc-chart-box">
+              <div className="pc-chart-box" role="img" aria-label="기간별 수익률 차트">
                 <h2 className="pc-chart-title">
                   📊 기간 수익률 비교
                 </h2>

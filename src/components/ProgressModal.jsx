@@ -135,18 +135,25 @@ function ProgressModal({ taskId, onComplete, onClose }) {
     };
   }, [taskId, onComplete, onClose]);
 
-  // 자동 종료 제거 - 사용자 버튼 클릭 대기
+  // Esc 키 핸들러
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   if (!progress) {
     return (
       <div className="modal-overlay">
-        <div className="progress-modal">
+        <div className="progress-modal" role="dialog" aria-modal="true" aria-labelledby="pm-title-loading">
           <div className="modal-header">
-            <h3>📊 데이터 적재</h3>
+            <h3 id="pm-title-loading">📊 데이터 적재</h3>
             <button className="close-button" onClick={onClose}>×</button>
           </div>
           <div className="modal-body">
-            <div className="progress-section">
+            <div className="progress-section" aria-live="polite">
               <div className="loading-spinner">
                 <div className="spinner-animation"></div>
               </div>
@@ -185,14 +192,14 @@ function ProgressModal({ taskId, onComplete, onClose }) {
   if (isPhase1) {
     return (
       <div className="modal-overlay">
-        <div className="progress-modal">
+        <div className="progress-modal" role="dialog" aria-modal="true" aria-labelledby="pm-title-phase1">
           <div className="modal-header">
-            <h3>📊 {progress.description}</h3>
+            <h3 id="pm-title-phase1">📊 {progress.description}</h3>
             <button className="close-button" onClick={onClose}>×</button>
           </div>
 
           <div className="modal-body">
-            <div className="progress-section">
+            <div className="progress-section" aria-live="polite">
               <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
                 <span style={{ backgroundColor: '#4CAF50', color: 'white', padding: '5px 15px', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold' }}>
                   Phase 1
@@ -221,15 +228,15 @@ function ProgressModal({ taskId, onComplete, onClose }) {
 
   return (
     <div className="modal-overlay">
-      <div className="progress-modal">
+      <div className="progress-modal" role="dialog" aria-modal="true" aria-labelledby="pm-title-main">
         <div className="modal-header">
-          <h3>📊 {progress.description}</h3>
+          <h3 id="pm-title-main">📊 {progress.description}</h3>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
 
         <div className="modal-body">
           {/* Progress Bar */}
-          <div className="progress-section">
+          <div className="progress-section" aria-live="polite">
             <div className="progress-stats">
               <span className="stats-text">
                 {progress.current} / {progress.total} 완료
@@ -324,13 +331,13 @@ function ProgressModal({ taskId, onComplete, onClose }) {
 
           {/* Error Messages */}
           {error && (
-            <div className="error-banner">
+            <div className="error-banner" role="alert">
               ⚠️ {error}
             </div>
           )}
 
           {progress.error_message && (
-            <div className="error-banner">
+            <div className="error-banner" role="alert">
               ⚠️ {progress.error_message}
             </div>
           )}
