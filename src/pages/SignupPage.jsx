@@ -50,7 +50,7 @@ function SignupPage() {
       if (err.response?.status === 409) {
         setError('이미 사용 중인 이메일입니다.');
       } else {
-        setError(err.response?.data?.detail || '회원가입에 실패했습니다.');
+        setError(err.response?.data?.error?.message || err.response?.data?.detail || '회원가입에 실패했습니다.');
       }
     } finally {
       setIsLoading(false);

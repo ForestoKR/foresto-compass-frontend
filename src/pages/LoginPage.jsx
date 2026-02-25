@@ -44,8 +44,10 @@ function LoginPage() {
         navigate('/dashboard');
       }
     } catch (err) {
-      // 에러 처리 - 백엔드에서 전달된 메시지 우선 사용
-      const errorMessage = err.response?.data?.detail || '로그인에 실패했습니다.';
+      // 에러 처리 - 백엔드 에러 응답 형식: {"error": {"message": "..."}}
+      const errorMessage = err.response?.data?.error?.message
+        || err.response?.data?.detail
+        || '로그인에 실패했습니다.';
       setError(errorMessage);
       console.error('Login error:', err);
     } finally {
