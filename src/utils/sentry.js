@@ -25,3 +25,8 @@ export function clearSentryUser() {
   if (!initialized) return;
   Sentry.setUser(null);
 }
+
+export function captureException(error, context = {}) {
+  if (!initialized) return;
+  Sentry.captureException(error, { extra: context });
+}

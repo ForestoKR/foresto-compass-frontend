@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { login as loginApi } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { trackEvent } from '../utils/analytics';
+import { captureException } from '../utils/sentry';
 import '../styles/SignupPage.css';
 
 function LoginPage() {
@@ -44,15 +45,22 @@ function LoginPage() {
         navigate('/dashboard');
       }
     } catch (err) {
+      let errorType;
       if (!err.response) {
         setError(err.code === 'ECONNABORTED'
           ? '서버 응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.'
           : '네트워크 연결을 확인해주세요. 서버에 연결할 수 없습니다.');
+        errorType = err.code === 'ECONNABORTED' ? 'timeout' : 'network_error';
+        captureException(err, { action: 'login', error_type: errorType });
       } else if (err.response.status >= 500) {
         setError('서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        errorType = 'server_error';
+        captureException(err, { action: 'login', error_type: errorType, status: err.response.status });
       } else {
         setError(err.response.data?.error?.message || err.response.data?.detail || '로그인에 실패했습니다.');
+        errorType = `http_${err.response.status}`;
       }
+      trackEvent('login_failed', { error_type: errorType });
       console.error('Login error:', err);
     } finally {
       setIsLoading(false);
