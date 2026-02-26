@@ -34,7 +34,7 @@ function WatchlistPage() {
       const res = await getWatchlist();
       setItems(res.data.items || []);
     } catch (err) {
-      setError(err.response?.data?.detail || '관심 종목을 불러올 수 없습니다.');
+      setError(err.response?.data?.error?.message || err.response?.data?.detail || '관심 종목을 불러올 수 없습니다.');
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,7 @@ function WatchlistPage() {
       setAlertEnabled(res.data.enabled);
       trackEvent('watchlist_alerts_toggled', { enabled: res.data.enabled });
     } catch (err) {
-      alert(err.response?.data?.detail || '알림 설정 변경에 실패했습니다.');
+      alert(err.response?.data?.error?.message || err.response?.data?.detail || '알림 설정 변경에 실패했습니다.');
     } finally {
       setAlertLoading(false);
     }
@@ -78,7 +78,7 @@ function WatchlistPage() {
       setItems(prev => prev.filter(item => item.ticker !== ticker));
       trackEvent('watchlist_item_removed', { ticker });
     } catch (err) {
-      alert(err.response?.data?.detail || '삭제에 실패했습니다.');
+      alert(err.response?.data?.error?.message || err.response?.data?.detail || '삭제에 실패했습니다.');
     } finally {
       setRemovingTicker(null);
     }

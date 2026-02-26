@@ -1043,11 +1043,11 @@ export const screenerStocks = (params = {}) => {
 // ============================================================
 
 export const getWatchlist = () => {
-  return api.get('/api/v1/watchlist');
+  return api.get('/api/v1/watchlist/');
 };
 
 export const addToWatchlist = (ticker) => {
-  return api.post('/api/v1/watchlist', { ticker });
+  return api.post('/api/v1/watchlist/', { ticker });
 };
 
 export const removeFromWatchlist = (ticker) => {

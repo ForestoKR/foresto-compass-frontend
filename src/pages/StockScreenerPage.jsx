@@ -161,7 +161,7 @@ function StockScreenerPage() {
         trackEvent('watchlist_added', { ticker });
       }
     } catch (err) {
-      alert(err.response?.data?.detail || '관심 종목 변경에 실패했습니다.');
+      alert(err.response?.data?.error?.message || err.response?.data?.detail || '관심 종목 변경에 실패했습니다.');
     } finally {
       setTogglingTicker(null);
     }
