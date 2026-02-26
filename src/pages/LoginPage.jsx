@@ -44,11 +44,15 @@ function LoginPage() {
         navigate('/dashboard');
       }
     } catch (err) {
-      // 에러 처리 - 백엔드 에러 응답 형식: {"error": {"message": "..."}}
-      const errorMessage = err.response?.data?.error?.message
-        || err.response?.data?.detail
-        || '로그인에 실패했습니다.';
-      setError(errorMessage);
+      if (!err.response) {
+        setError(err.code === 'ECONNABORTED'
+          ? '서버 응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.'
+          : '네트워크 연결을 확인해주세요. 서버에 연결할 수 없습니다.');
+      } else if (err.response.status >= 500) {
+        setError('서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      } else {
+        setError(err.response.data?.error?.message || err.response.data?.detail || '로그인에 실패했습니다.');
+      }
       console.error('Login error:', err);
     } finally {
       setIsLoading(false);
