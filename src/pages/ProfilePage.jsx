@@ -530,10 +530,11 @@ function ProfilePage() {
             <div className={fieldClass('investment_experience')}>
               <label>{fieldLabel('자산 운용 학습 수준', 'investment_experience')}</label>
               <select
-                value={formData.investment_experience || '초보'}
+                value={formData.investment_experience || ''}
                 onChange={(e) => handleChange('investment_experience', e.target.value)}
                 disabled={!isEditing}
               >
+                <option value="">선택해주세요</option>
                 <option value="초보">초보 - 자산 운용 지식이 거의 없음</option>
                 <option value="중급">중급 - 기초적인 학습 완료</option>
                 <option value="고급">고급 - 중급 이상의 학습 완료</option>
@@ -544,10 +545,11 @@ function ProfilePage() {
             <div className={fieldClass('risk_tolerance')}>
               <label>{fieldLabel('리스크 학습 선호도', 'risk_tolerance')}</label>
               <select
-                value={formData.risk_tolerance || '중립적'}
+                value={formData.risk_tolerance || ''}
                 onChange={(e) => handleChange('risk_tolerance', e.target.value)}
                 disabled={!isEditing}
               >
+                <option value="">선택해주세요</option>
                 <option value="보수적">보수적 - 안정성 중심 전략 학습 선호</option>
                 <option value="중립적">중립적 - 균형잡힌 전략 학습 선호</option>
                 <option value="공격적">공격적 - 성장성 중심 전략 학습 선호</option>
@@ -742,6 +744,13 @@ function ProfilePage() {
           </form>
         )}
       </div>
+
+      {isEditing && (
+        <div className="pp-sticky-actions">
+          <button className="btn-cancel" onClick={handleCancel}>취소</button>
+          <button className="btn-save" onClick={handleUpdate}>저장</button>
+        </div>
+      )}
     </div>
   );
 }
