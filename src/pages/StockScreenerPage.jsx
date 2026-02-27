@@ -8,6 +8,16 @@ import '../styles/StockScreener.css';
 
 const GRADES = ['S', 'A+', 'A', 'B+', 'B', 'C+', 'C', 'D', 'F'];
 const PAGE_SIZE = 20;
+const MARKET_LABELS = { KOSPI: '코스피', KOSDAQ: '코스닥', KONEX: '코넥스' };
+
+const SCORE_PRESETS = [
+  { key: 'all', label: '전체', min: '', max: '', color: null },
+  { key: 's90', label: 'S 90+', min: '90', max: '', color: '#16a34a' },
+  { key: 'a70', label: 'A등급 70+', min: '70', max: '', color: '#16a34a' },
+  { key: 'b50', label: 'B등급 50+', min: '50', max: '', color: '#2563eb' },
+  { key: 'c30', label: 'C등급 30+', min: '30', max: '', color: '#ea580c' },
+  { key: 'custom', label: '직접 입력', min: null, max: null, color: null },
+];
 
 function gradeColor(grade) {
   if (!grade) return '#6b7280';
@@ -35,6 +45,8 @@ function StockScreenerPage() {
   const [grade, setGrade] = useState('');
   const [minScore, setMinScore] = useState('');
   const [maxScore, setMaxScore] = useState('');
+  const [scorePreset, setScorePreset] = useState('all');
+  const [showCustomScore, setShowCustomScore] = useState(false);
 
   // 정렬
   const [sortBy, setSortBy] = useState('compass_score');
@@ -147,6 +159,19 @@ function StockScreenerPage() {
     setPage(0);
   };
 
+  // 점수 프리셋 핸들러
+  const handleScorePreset = (preset) => {
+    setScorePreset(preset.key);
+    if (preset.key === 'custom') {
+      setShowCustomScore(true);
+    } else {
+      setShowCustomScore(false);
+      setMinScore(preset.min);
+      setMaxScore(preset.max);
+      setPage(0);
+    }
+  };
+
   const handleWatchlistToggle = async (ticker, e) => {
     e.stopPropagation();
     if (togglingTicker) return;
@@ -193,7 +218,7 @@ function StockScreenerPage() {
           />
           <select value={market} onChange={handleFilterChange(setMarket)} className="filter-select">
             <option value="">전체 시장</option>
-            {markets.map(m => <option key={m} value={m}>{m}</option>)}
+            {markets.map(m => <option key={m} value={m}>{MARKET_LABELS[m] || m}</option>)}
           </select>
           <select value={sector} onChange={handleFilterChange(setSector)} className="filter-select">
             <option value="">전체 섹터</option>
@@ -211,22 +236,40 @@ function StockScreenerPage() {
           </select>
         </div>
         <div className="filter-row filter-row-secondary">
-          <label className="filter-label">
-            점수:
-            <input
-              type="number" min="0" max="100" placeholder="최소"
-              value={minScore} onChange={handleFilterChange(setMinScore)}
-              className="filter-number"
-            />
-            ~
-            <input
-              type="number" min="0" max="100" placeholder="최대"
-              value={maxScore} onChange={handleFilterChange(setMaxScore)}
-              className="filter-number"
-            />
-          </label>
+          <div className="score-preset-group">
+            <span className="filter-label">점수:</span>
+            {SCORE_PRESETS.map(preset => (
+              <button
+                key={preset.key}
+                className={`score-preset-btn ${scorePreset === preset.key ? 'active' : ''}`}
+                style={preset.color && scorePreset === preset.key ? { borderColor: preset.color, color: preset.color } : undefined}
+                onClick={() => handleScorePreset(preset)}
+                type="button"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
           <span className="filter-count">{totalCount}건</span>
         </div>
+        {showCustomScore && (
+          <div className="filter-row filter-row-secondary">
+            <label className="filter-label">
+              범위:
+              <input
+                type="number" min="0" max="100" placeholder="최소"
+                value={minScore} onChange={handleFilterChange(setMinScore)}
+                className="filter-number"
+              />
+              ~
+              <input
+                type="number" min="0" max="100" placeholder="최대"
+                value={maxScore} onChange={handleFilterChange(setMaxScore)}
+                className="filter-number"
+              />
+            </label>
+          </div>
+        )}
       </div>
 
       {/* 에러 */}
@@ -293,7 +336,7 @@ function StockScreenerPage() {
                   </td>
                   <td className="stock-name">{stock.name || '-'}</td>
                   <td className="stock-ticker">{stock.ticker}</td>
-                  <td>{stock.market || '-'}</td>
+                  <td>{MARKET_LABELS[stock.market] || stock.market || '-'}</td>
                   <td>
                     <span
                       className="compass-badge"

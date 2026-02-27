@@ -5,6 +5,8 @@ import { publicScreenerStocks } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
 import '../styles/GuestScreener.css';
 
+const MARKET_LABELS = { KOSPI: '코스피', KOSDAQ: '코스닥', KONEX: '코넥스' };
+
 const SECTORS = [
   '음식료품', '섬유의복', '종이목재', '화학', '의약품', '비금속광물',
   '철강금속', '기계', '전기전자', '의료정밀', '운수장비', '유통업',
@@ -76,8 +78,8 @@ function GuestScreenerPage() {
           onChange={(e) => setMarketFilter(e.target.value)}
         >
           <option value="">전체 시장</option>
-          <option value="KOSPI">KOSPI</option>
-          <option value="KOSDAQ">KOSDAQ</option>
+          <option value="KOSPI">코스피</option>
+          <option value="KOSDAQ">코스닥</option>
         </select>
         <select
           className="guest-screener-select"
@@ -122,7 +124,7 @@ function GuestScreenerPage() {
                       <td className="guest-screener-ticker">{stock.ticker}</td>
                       <td className="guest-screener-name">{stock.name}</td>
                       <td>{stock.sector || '-'}</td>
-                      <td>{stock.market || '-'}</td>
+                      <td>{MARKET_LABELS[stock.market] || stock.market || '-'}</td>
                       <td className="guest-screener-price">{formatPrice(stock.current_price)}</td>
                       <td className="guest-screener-score">
                         {stock.compass_score != null ? stock.compass_score.toFixed(1) : '-'}
