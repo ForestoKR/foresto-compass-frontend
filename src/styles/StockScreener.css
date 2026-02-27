@@ -292,7 +292,7 @@
 .grade-slider-track-container {
   position: relative;
   height: 32px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 /* Track background */
@@ -302,23 +302,29 @@
   top: 50%;
   left: 0;
   right: 0;
-  height: 8px;
+  height: 10px;
   transform: translateY(-50%);
   background: var(--border, #e5e7eb);
-  border-radius: 4px;
+  border-radius: 5px;
   pointer-events: none;
 }
 
-/* Active fill */
-.grade-slider-fill {
+/* Per-grade colored fill segments */
+.grade-slider-fill-seg {
   position: absolute;
   top: 50%;
-  height: 8px;
+  height: 10px;
   transform: translateY(-50%);
-  background: var(--primary, #667eea);
-  border-radius: 4px;
   pointer-events: none;
   z-index: 1;
+}
+
+.grade-slider-fill-seg:first-of-type {
+  border-radius: 5px 0 0 5px;
+}
+
+.grade-slider-fill-seg:last-of-type {
+  border-radius: 0 5px 5px 0;
 }
 
 /* Grade boundary ticks */
@@ -326,25 +332,31 @@
   position: absolute;
   top: 50%;
   width: 1px;
-  height: 16px;
+  height: 18px;
   transform: translate(-50%, -50%);
   background: var(--text-muted, #9ca3af);
-  opacity: 0.4;
+  opacity: 0.3;
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* Grade labels below track */
 .grade-tick-label {
   position: absolute;
   top: 100%;
-  margin-top: 4px;
+  margin-top: 5px;
   transform: translateX(-50%);
-  font-size: 0.625rem;
-  font-weight: 600;
+  font-size: 0.6875rem;
+  font-weight: 500;
   color: var(--text-muted, #9ca3af);
   pointer-events: none;
   white-space: nowrap;
+  transition: color 0.15s, font-weight 0.15s;
+}
+
+.grade-tick-label-active {
+  color: var(--text, #111827);
+  font-weight: 700;
 }
 
 /* Range input reset */
@@ -360,11 +372,11 @@
   appearance: none;
   background: transparent;
   pointer-events: none;
-  z-index: 2;
+  z-index: 3;
 }
 
 .slider-thumb::-webkit-slider-runnable-track {
-  height: 8px;
+  height: 10px;
   background: transparent;
 }
 
@@ -374,21 +386,21 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--primary, #667eea);
+  background: var(--text, #374151);
   border: 3px solid var(--card, #ffffff);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   pointer-events: auto;
-  margin-top: -7px;
+  margin-top: -6px;
   transition: transform 0.1s;
 }
 
 .slider-thumb::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
+  transform: scale(1.2);
 }
 
 .slider-thumb::-moz-range-track {
-  height: 8px;
+  height: 10px;
   background: transparent;
   border: none;
 }
@@ -397,16 +409,16 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--primary, #667eea);
+  background: var(--text, #374151);
   border: 3px solid var(--card, #ffffff);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   pointer-events: auto;
   transition: transform 0.1s;
 }
 
 .slider-thumb::-moz-range-thumb:hover {
-  transform: scale(1.15);
+  transform: scale(1.2);
 }
 
 /* Dark mode */
@@ -415,11 +427,17 @@
 }
 
 [data-theme="dark"] .slider-thumb::-webkit-slider-thumb {
+  background: var(--text, #e2e8f0);
   border-color: var(--card, #1e293b);
 }
 
 [data-theme="dark"] .slider-thumb::-moz-range-thumb {
+  background: var(--text, #e2e8f0);
   border-color: var(--card, #1e293b);
+}
+
+[data-theme="dark"] .grade-tick-label-active {
+  color: var(--text, #f1f5f9);
 }
 
 /* ── Disclaimer ── */

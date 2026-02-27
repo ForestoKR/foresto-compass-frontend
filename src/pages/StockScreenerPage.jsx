@@ -8,31 +8,22 @@ import '../styles/StockScreener.css';
 
 const PAGE_SIZE = 20;
 
-const GRADE_BOUNDARIES = [
-  { score: 90, grade: 'S',  color: '#16a34a' },
-  { score: 80, grade: 'A+', color: '#16a34a' },
-  { score: 70, grade: 'A',  color: '#22c55e' },
-  { score: 60, grade: 'B+', color: '#2563eb' },
-  { score: 50, grade: 'B',  color: '#3b82f6' },
-  { score: 40, grade: 'C+', color: '#ea580c' },
-  { score: 30, grade: 'C',  color: '#f97316' },
-  { score: 20, grade: 'D',  color: '#dc2626' },
-  { score: 0,  grade: 'F',  color: '#dc2626' },
+// 등급 세그먼트: index 순서대로 (F=0 ~ S=8), 각 세그먼트 동일 폭
+const GRADE_SEGMENTS = [
+  { grade: 'F',  score: 0,   color: '#dc2626' },
+  { grade: 'D',  score: 20,  color: '#ef4444' },
+  { grade: 'C',  score: 30,  color: '#f97316' },
+  { grade: 'C+', score: 40,  color: '#ea580c' },
+  { grade: 'B',  score: 50,  color: '#3b82f6' },
+  { grade: 'B+', score: 60,  color: '#2563eb' },
+  { grade: 'A',  score: 70,  color: '#22c55e' },
+  { grade: 'A+', score: 80,  color: '#16a34a' },
+  { grade: 'S',  score: 90,  color: '#15803d' },
 ];
-const SNAP_POINTS = [0, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const BOUNDARY_SCORES = [...GRADE_SEGMENTS.map(s => s.score), 100]; // [0,20,30,...,90,100]
+const SEG_COUNT = GRADE_SEGMENTS.length; // 9
 
-function snapToGrade(value) {
-  return SNAP_POINTS.reduce((prev, curr) =>
-    Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
-  );
-}
-
-function scoreToGrade(score) {
-  for (const b of GRADE_BOUNDARIES) {
-    if (score >= b.score) return b.grade;
-  }
-  return 'F';
-}
+function idxToPct(idx) { return (idx / SEG_COUNT) * 100; }
 const MARKET_LABELS = { KOSPI: '코스피', KOSDAQ: '코스닥', KONEX: '코넥스' };
 const SECTOR_LABELS = {
   'Unknown': '미분류',
@@ -73,8 +64,8 @@ function StockScreenerPage() {
   const [search, setSearch] = useState('');
   const [market, setMarket] = useState('');
   const [sector, setSector] = useState('');
-  const [minScore, setMinScore] = useState('90');
-  const [maxScore, setMaxScore] = useState('100');
+  const [minIdx, setMinIdx] = useState(8);  // S등급 시작
+  const [maxIdx, setMaxIdx] = useState(9);  // S등급 끝
 
   // 정렬
   const [sortBy, setSortBy] = useState('compass_score');
@@ -134,21 +125,23 @@ function StockScreenerPage() {
       if (search) params.search = search;
       if (market) params.market = market;
       if (sector) params.sector = sector;
-      if (minScore !== '' && minScore !== '0') params.minScore = minScore;
-      if (maxScore !== '' && maxScore !== '100') params.maxScore = maxScore;
+      const scoreMin = BOUNDARY_SCORES[minIdx];
+      const scoreMax = BOUNDARY_SCORES[maxIdx];
+      if (scoreMin > 0) params.minScore = scoreMin;
+      if (scoreMax < 100) params.maxScore = scoreMax;
 
       const res = await screenerStocks(params);
       setStocks(res.data.stocks || []);
       setTotalCount(res.data.total_count || 0);
-      if (search || market || sector || minScore !== '90' || maxScore !== '100') {
-        trackEvent('screener_searched', { search, market, sector, minScore, maxScore, results: res.data.total_count || 0 });
+      if (search || market || sector || minIdx !== 8 || maxIdx !== 9) {
+        trackEvent('screener_searched', { search, market, sector, minScore: scoreMin, maxScore: scoreMax, results: res.data.total_count || 0 });
       }
     } catch (err) {
       setError(err.response?.data?.detail || '데이터를 불러올 수 없습니다.');
     } finally {
       setLoading(false);
     }
-  }, [search, market, sector, minScore, maxScore, sortBy, sortOrder, page]);
+  }, [search, market, sector, minIdx, maxIdx, sortBy, sortOrder, page]);
 
   useEffect(() => {
     fetchData();
@@ -186,25 +179,19 @@ function StockScreenerPage() {
     setPage(0);
   };
 
-  // 듀얼 슬라이더 핸들러 (등급 경계 스냅)
-  const sliderDebounceRef = useRef(null);
+  // 등급 슬라이더 핸들러 (인덱스 기반)
   const handleSliderChange = (type, value) => {
-    const snapped = snapToGrade(Number(value));
+    const idx = Number(value);
     if (type === 'min') {
-      const clamped = Math.min(snapped, Number(maxScore));
-      setMinScore(String(clamped));
+      setMinIdx(Math.min(idx, maxIdx));
     } else {
-      const clamped = Math.max(snapped, Number(minScore));
-      setMaxScore(String(clamped));
+      setMaxIdx(Math.max(idx, minIdx));
     }
-    if (sliderDebounceRef.current) clearTimeout(sliderDebounceRef.current);
-    sliderDebounceRef.current = setTimeout(() => setPage(0), 200);
+    setPage(0);
   };
 
-  const sliderMinPct = Number(minScore);
-  const sliderMaxPct = Number(maxScore);
-  const minGrade = scoreToGrade(Number(minScore));
-  const maxGrade = scoreToGrade(Math.max(0, Number(maxScore) - 1));
+  const minGrade = GRADE_SEGMENTS[minIdx]?.grade || 'F';
+  const maxGrade = GRADE_SEGMENTS[Math.min(maxIdx, SEG_COUNT) - 1]?.grade || 'S';
 
   const handleWatchlistToggle = async (ticker, e) => {
     e.stopPropagation();
@@ -271,39 +258,50 @@ function StockScreenerPage() {
           <div className="screener-grade-slider">
             <div className="grade-slider-range-label">
               {minGrade === maxGrade ? minGrade : `${minGrade} ~ ${maxGrade}`}
-              <span className="grade-slider-score-hint">({minScore}~{maxScore}점)</span>
+              <span className="grade-slider-score-hint">
+                ({BOUNDARY_SCORES[minIdx]}~{BOUNDARY_SCORES[maxIdx]}점)
+              </span>
             </div>
             <div className="grade-slider-track-container">
-              {GRADE_BOUNDARIES.map((b) => (
-                <div
-                  key={b.score}
-                  className="grade-tick"
-                  style={{ left: `${b.score}%` }}
-                />
+              {/* 등급 경계 틱 */}
+              {BOUNDARY_SCORES.map((_, i) => (
+                <div key={i} className="grade-tick" style={{ left: `${idxToPct(i)}%` }} />
               ))}
-              <div className="grade-tick" style={{ left: '100%' }} />
-              {GRADE_BOUNDARIES.map((b, i) => {
-                const next = i === 0 ? 100 : GRADE_BOUNDARIES[i - 1].score;
-                const mid = (b.score + next) / 2;
+              {/* 등급별 컬러 세그먼트 (선택 범위만) */}
+              {GRADE_SEGMENTS.map((seg, i) => {
+                if (i < minIdx || i >= maxIdx) return null;
                 return (
-                  <span key={b.grade} className="grade-tick-label" style={{ left: `${mid}%` }}>
-                    {b.grade}
-                  </span>
+                  <div
+                    key={seg.grade}
+                    className="grade-slider-fill-seg"
+                    style={{
+                      left: `${idxToPct(i)}%`,
+                      width: `${idxToPct(1)}%`,
+                      background: seg.color,
+                    }}
+                  />
                 );
               })}
-              <div
-                className="grade-slider-fill"
-                style={{ left: `${sliderMinPct}%`, width: `${sliderMaxPct - sliderMinPct}%` }}
-              />
+              {/* 등급 라벨 */}
+              {GRADE_SEGMENTS.map((seg, i) => (
+                <span
+                  key={seg.grade}
+                  className={`grade-tick-label ${i >= minIdx && i < maxIdx ? 'grade-tick-label-active' : ''}`}
+                  style={{ left: `${idxToPct(i) + idxToPct(1) / 2}%` }}
+                >
+                  {seg.grade}
+                </span>
+              ))}
+              {/* 듀얼 썸 */}
               <input
-                type="range" min="0" max="100" step="1"
-                value={minScore}
+                type="range" min="0" max={SEG_COUNT} step="1"
+                value={minIdx}
                 onChange={(e) => handleSliderChange('min', e.target.value)}
                 className="slider-thumb slider-thumb-min"
               />
               <input
-                type="range" min="0" max="100" step="1"
-                value={maxScore}
+                type="range" min="0" max={SEG_COUNT} step="1"
+                value={maxIdx}
                 onChange={(e) => handleSliderChange('max', e.target.value)}
                 className="slider-thumb slider-thumb-max"
               />
