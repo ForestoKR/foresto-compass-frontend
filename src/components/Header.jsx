@@ -126,7 +126,13 @@ function Header() {
     setMobileMenuOpen(false);
     if (action === 'startTour') {
       localStorage.removeItem('onboarding_tour_completed');
-      window.dispatchEvent(new CustomEvent('startOnboardingTour'));
+      if (location.pathname !== '/dashboard') {
+        // OnboardingTour는 대시보드에서만 렌더링되므로 먼저 이동
+        navigate('/dashboard');
+        // 대시보드 마운트 후 투어 자동 시작 (localStorage 제거됨 → startTour 통과)
+      } else {
+        window.dispatchEvent(new CustomEvent('startOnboardingTour'));
+      }
     }
   };
 

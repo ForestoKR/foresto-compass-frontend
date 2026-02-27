@@ -250,7 +250,7 @@ function MarketDashboardPage() {
         )}
 
         {/* Subscription banner */}
-        {emailSub && !emailSub.subscribed && emailSub.is_email_verified !== false && !subBannerDismissed && (
+        {emailSub && !emailSub.subscribed && !subBannerDismissed && (
           <div className="compare-banner dash-sub-banner">
             <span className="compare-label dash-sub-label">이메일</span>
             <span className="compare-text">
