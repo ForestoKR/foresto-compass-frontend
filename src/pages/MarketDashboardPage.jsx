@@ -78,8 +78,8 @@ function DashboardSkeleton() {
         <div className="skeleton skel-text" style={{ width: '60%' }} />
       </div>
 
-      <div className="two-col">
-        {[1, 2].map((i) => (
+      <div className="three-col">
+        {[1, 2, 3].map((i) => (
           <div key={i} className="section-card">
             <div className="skeleton skel-title" style={{ marginBottom: 16 }} />
             {[1, 2, 3, 4, 5].map((j) => (
@@ -331,8 +331,8 @@ function MarketDashboardPage() {
           </div>
         )}
 
-        {/* ── Gainers / Losers ── */}
-        <div className="two-col">
+        {/* ── Gainers / Losers / Volume ── */}
+        <div className="three-col">
           <div className="section-card">
             <div className="section-title">
               <span className="icon" style={{ color: 'var(--stock-up)' }}>&#9650;</span>
@@ -387,6 +387,39 @@ function MarketDashboardPage() {
                   <div className="mover-values">
                     <div className="mover-price">{formatNumber(stock.price)}원</div>
                     <div className="mover-change down">{stock.change}%</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="section-card">
+            <div className="section-title">
+              <span className="icon" style={{ color: 'var(--primary)' }}>&#9644;</span>
+              거래량 Top 5
+            </div>
+            {marketData?.topVolume?.map((stock, i) => {
+              const vol = stock.volume;
+              const maxVol = marketData.topVolume[0]?.volume || 1;
+              const barW = Math.max(10, (vol / maxVol) * 100);
+              const isUp = stock.change >= 0;
+              return (
+                <div key={i} className="mover-item">
+                  <div className="mover-rank volume">{i + 1}</div>
+                  <div className="mover-info">
+                    <div className="mover-name">{stock.name}</div>
+                    <div className="mover-code">{stock.symbol}</div>
+                  </div>
+                  <div className="mover-bar-wrap">
+                    <div className="mover-bar-bg">
+                      <div className="mover-bar volume" style={{ width: `${barW}%` }} />
+                    </div>
+                  </div>
+                  <div className="mover-values">
+                    <div className="mover-price">{formatNumber(stock.volume)}주</div>
+                    <div className={`mover-change ${isUp ? 'up' : 'down'}`}>
+                      {isUp ? '+' : ''}{stock.change}%
+                    </div>
                   </div>
                 </div>
               );
