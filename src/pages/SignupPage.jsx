@@ -56,20 +56,27 @@ function SignupPage() {
       if (err.response?.status === 409) {
         setError('이미 사용 중인 이메일입니다.');
         errorType = 'duplicate_email';
+      } else if (err.response?.status === 429) {
+        setError('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+        errorType = 'rate_limit';
       } else if (!err.response) {
         setError(err.code === 'ECONNABORTED'
           ? '서버 응답 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.'
           : '네트워크 연결을 확인해주세요. 서버에 연결할 수 없습니다.');
         errorType = err.code === 'ECONNABORTED' ? 'timeout' : 'network_error';
-        captureException(err, { action: 'signup', error_type: errorType });
       } else if (err.response.status >= 500) {
         setError('서버에 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
         errorType = 'server_error';
-        captureException(err, { action: 'signup', error_type: errorType, status: err.response.status });
       } else {
         setError(err.response.data?.error?.message || err.response.data?.detail || '회원가입에 실패했습니다.');
         errorType = `http_${err.response.status}`;
       }
+      captureException(err, {
+        action: 'signup',
+        error_type: errorType,
+        status: err.response?.status,
+        email,
+      });
       trackEvent('signup_failed', { error_type: errorType });
       console.error('Signup error:', err);
     } finally {
