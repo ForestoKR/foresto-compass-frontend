@@ -9,6 +9,20 @@ import '../styles/StockScreener.css';
 const GRADES = ['S', 'A+', 'A', 'B+', 'B', 'C+', 'C', 'D', 'F'];
 const PAGE_SIZE = 20;
 const MARKET_LABELS = { KOSPI: '코스피', KOSDAQ: '코스닥', KONEX: '코넥스' };
+const SECTOR_LABELS = {
+  'Unknown': '미분류',
+  'Technology': '기술',
+  'Industrials': '산업재',
+  'Healthcare': '헬스케어',
+  'Consumer Cyclical': '경기소비재',
+  'Basic Materials': '소재',
+  'Consumer Defensive': '필수소비재',
+  'Financial Services': '금융서비스',
+  'Communication Services': '커뮤니케이션서비스',
+  'Real Estate': '부동산',
+  'Utilities': '유틸리티',
+  'Energy': '에너지',
+};
 
 const SCORE_PRESETS = [
   { key: 'all', label: '전체', min: '', max: '', color: null },
@@ -225,8 +239,9 @@ function StockScreenerPage() {
             {sectors.map(s => {
               const code = typeof s === 'string' ? s : (s.sector_code || '');
               const name = typeof s === 'string' ? s : (s.sector_name || s.sector_code || '');
+              const label = SECTOR_LABELS[name] || name;
               return (
-                <option key={code} value={code}>{name}</option>
+                <option key={code} value={code}>{label}</option>
               );
             })}
           </select>
