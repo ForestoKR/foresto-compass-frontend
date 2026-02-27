@@ -17,22 +17,31 @@ Foresto Compass Frontend — React SPA for the Foresto Compass investment educat
 ## Commands
 
 ```bash
-npm install      # Install dependencies
-npm run dev      # Dev server (port 5173)
-npm run build    # Production build
-npm run lint     # ESLint
+npm install             # Install dependencies
+npm run dev             # Dev server (port 5173)
+npm run build           # Production build
+npm run lint            # ESLint (flat config, --max-warnings 0)
+npm run generate-icons  # Regenerate PWA icons from public/icon.svg (uses sharp)
 ```
+
+## CI
+
+`.github/workflows/ci.yml` — runs on push/PR to `main`: `npm ci` → `npm run lint` → `npm run build` (Node 20).
 
 ## Architecture
 
 ```
 src/
-├── pages/               # Page components (38 pages)
+├── pages/               # Page components (41 pages)
 ├── components/          # Reusable (14): Header, Footer, ErrorBoundary, Disclaimer, OnboardingTour,
 │                        #   ProgressModal, ProfileCompletionModal, DataTable, ProgressBar, SurveyQuestion,
 │                        #   FinancialAnalysis, Valuation, QuantAnalysis, InvestmentReport
+├── contexts/            # AuthContext.jsx (auth state + Sentry integration)
 ├── hooks/useTheme.js    # Dark mode toggle hook (localStorage + system preference)
 ├── services/api.js      # Axios client with JWT injection + idempotency keys
+├── utils/
+│   ├── analytics.js     # Mixpanel (VITE_MIXPANEL_TOKEN)
+│   └── sentry.js        # Sentry error tracking (VITE_SENTRY_DSN)
 └── styles/
     ├── theme.css        # CSS design tokens (:root light + [data-theme="dark"])
     └── *.css            # Per-page/component CSS (all theme-aware)
@@ -43,7 +52,7 @@ src/
 ### Architecture
 - **Design tokens**: `src/styles/theme.css` — `:root` (light) + `[data-theme="dark"]` (dark)
 - **Toggle hook**: `src/hooks/useTheme.js` — `useThemeInit()` for App.jsx, `useTheme()` for components
-- **Legacy bridge**: App.css `:root` maps `--primary-color` → `var(--primary)` for backward compat
+- **Global stylesheet**: `App.css` — ~1,900 lines covering header/nav, mobile drawer, buttons, forms, auth pages, loading spinner, admin shared styles, disclaimer box, and a `--primary-color` → `var(--primary)` legacy bridge
 
 ### CSS Variable Categories
 | Category | Variables | Light Example | Dark Example |
@@ -52,8 +61,12 @@ src/
 | Text | `--text`, `--text-secondary`, `--text-muted` | `#1f2937`, `#6b7280` | `#f1f5f9`, `#94a3b8` |
 | Border | `--border`, `--border-light` | `#e5e7eb`, `#f3f4f6` | `#334155`, `#1e293b` |
 | Shadow | `--shadow-sm`, `--shadow-md`, `--shadow-lg` | light rgba | dark rgba |
-| Brand | `--primary`, `--primary-dark`, `--accent` | `#667eea`, `#5a6fd1` | same values |
-| Stock | `--stock-up`, `--stock-down` | `#16a34a`, `#dc2626` | same values |
+| Brand | `--primary`, `--primary-dark`, `--primary-light`, `--accent` | `#667eea`, `#5568d3`, `#8b9cf7` | same values |
+| Stock | `--stock-up`, `--stock-down` | `#e53935` (red), `#1e88e5` (blue) | `#ff6b6b`, `#64b5f6` |
+| Grade | `--grade-a`, `--grade-b`, `--grade-c`, `--grade-d` | grade-specific colors | — |
+| Skeleton | `--skeleton-base`, `--skeleton-shine` | loading placeholders | — |
+
+**Stock color convention**: Korean market standard — **red = up, blue = down** (opposite of US convention).
 
 ### Rules for CSS
 - **All colors MUST use CSS variables**. No hardcoded `white`, `#333`, `#e0e0e0`.
@@ -71,12 +84,12 @@ const { theme, toggleTheme } = useThemeInit();
 // Persists to localStorage, listens to system prefers-color-scheme
 ```
 
-## Analytics (`utils/analytics.js`)
+## Analytics & Error Tracking
 
-- **Mixpanel** integration via `VITE_MIXPANEL_TOKEN`
-- Functions: `initAnalytics()`, `identifyUser()`, `resetAnalytics()`, `trackEvent()`, `trackPageView()`
-- Initialized in `App.jsx`; gracefully no-ops if token is missing
-- Key events: `signup_completed`, `login_completed`, `survey_started`, `survey_completed`, `profile_completed`, `preset_loaded`
+- **Mixpanel** (`utils/analytics.js`): via `VITE_MIXPANEL_TOKEN`. Functions: `initAnalytics()`, `identifyUser()`, `resetAnalytics()`, `trackEvent()`, `trackPageView()`. No-ops if token missing.
+- **Sentry** (`utils/sentry.js`): via `VITE_SENTRY_DSN`. Functions: `initSentry()`, `setSentryUser()`, `clearSentryUser()`, `captureException()`. `tracesSampleRate: 0.1`, `sendDefaultPii: false`. No-ops if DSN missing.
+- Both initialized in `AuthContext.jsx` on mount; Sentry user set/cleared on login/logout.
+- Key Mixpanel events: `signup_completed`, `login_completed`, `survey_started`, `survey_completed`, `profile_completed`, `preset_loaded`
 
 ## Onboarding & UX Components
 
@@ -98,6 +111,7 @@ const { theme, toggleTheme } = useThemeInit();
 - Request interceptor: JWT token injection from localStorage
 - Idempotency keys: auto-generated for POST/PUT/PATCH/DELETE (header `X-Idempotency-Key`)
 - Response interceptor: 401 → clear token + redirect to login
+- **PDF downloads**: Use raw `fetch` (not Axios) for binary blob responses — `downloadPortfolioPDF`, `downloadDiagnosisPDF`, `downloadExplanationPDF`, `downloadPortfolioExplanationPDF`, `downloadPremiumReportPDF`
 
 ## Routing (`App.jsx`)
 
@@ -115,7 +129,7 @@ const { theme, toggleTheme } = useThemeInit();
 - `/result`, `/history` — DiagnosisResultPage, DiagnosisHistoryPage
 - `/portfolio` — PortfolioRecommendationPage
 - `/portfolio-builder` — PortfolioBuilderPage (직접 포트폴리오 구성)
-- `/portfolio-evaluation` — Phase7PortfolioEvaluationPage (성과 평가/비교)
+- `/portfolio-evaluation`, `/phase7-evaluation` — Phase7PortfolioEvaluationPage (성과 평가/비교)
 - `/backtest` — BacktestPage
 - `/scenarios` — ScenarioSimulationPage
 - `/analysis` — PortfolioExplanationPage (성과 해석 & 리포트)
@@ -141,9 +155,14 @@ const { theme, toggleTheme } = useThemeInit();
 - `/admin/portfolio` — PortfolioManagementPage (프리셋 관리)
 - `/admin/portfolio-comparison` — PortfolioComparisonPage
 - `/admin/report` — ReportPage (투자 리포트 생성)
+- `/admin/system` — SystemHealthPage (백엔드 상태 & API 성능)
 
-`ProtectedRoute` checks `isAuthenticated` from AuthContext; redirects to `/login` if false.
+### Catch-all
+- `*` — NotFoundPage (404)
+
+`ProtectedRoute` checks `isAuthenticated` + `isLoading` from AuthContext; shows spinner while loading, redirects to `/login` if not authenticated.
 `ErrorBoundary` catches `ChunkLoadError` from failed lazy imports.
+React Router v7 future flags enabled: `v7_startTransition`, `v7_relativeSplatPath`.
 
 ## Component Conventions
 
@@ -155,7 +174,7 @@ const { theme, toggleTheme } = useThemeInit();
 
 ## State Management
 
-- **AuthContext** (App.jsx): `user`, `isAuthenticated`, `login()`, `logout()`
+- **AuthContext** (`contexts/AuthContext.jsx`): `user`, `setUser`, `isAuthenticated`, `isLoading`, `login()`, `logout()`. Initializes analytics + Sentry on mount; validates token via `GET /auth/me` on load.
 - **ThemeContext** (useTheme.js): `theme`, `toggleTheme()` — persists to localStorage
 - No Redux/Zustand — all state is local `useState` or Context
 - `useCallback` for memoizing API fetch functions; `useEffect` with dependency arrays
@@ -178,13 +197,17 @@ const { theme, toggleTheme } = useThemeInit();
 `.env.development`:
 ```
 VITE_API_URL=http://localhost:8000
-VITE_MIXPANEL_TOKEN=your-mixpanel-token   # optional, analytics
+VITE_MIXPANEL_TOKEN=your-mixpanel-token   # optional, analytics no-ops if missing
+VITE_SENTRY_DSN=your-sentry-dsn           # optional, error tracking no-ops if missing
+VITE_TOSS_CLIENT_KEY=your-toss-key        # optional, payments
 ```
 
 `.env.production`:
 ```
 VITE_API_URL=https://foresto-compass-backend.onrender.com
 VITE_MIXPANEL_TOKEN=your-mixpanel-token
+VITE_SENTRY_DSN=your-sentry-dsn
+VITE_TOSS_CLIENT_KEY=your-toss-key
 ```
 
 ## Tech Stack
@@ -198,5 +221,20 @@ VITE_MIXPANEL_TOKEN=your-mixpanel-token
 - **Onboarding**: Shepherd.js guided tour
 - **SEO**: react-helmet-async (meta tags, JSON-LD) + build-time prerendering
 - **Prerendering**: `@prerenderer/rollup-plugin` + `@prerenderer/renderer-jsdom`
+- **Error tracking**: Sentry (`@sentry/react`, via `utils/sentry.js`)
 - **Payments**: Toss Payments SDK (`VITE_TOSS_CLIENT_KEY`)
 - **Build optimization**: Manual chunks — `vendor` (React core), `charts` (Chart.js) 분리
+- **PWA detail**: Service Worker `controllerchange` listener in `main.jsx` auto-reloads page on SW update (`skipWaiting: true`)
+
+## ESLint
+
+- Flat config (`eslint.config.js`), `--max-warnings 0`
+- `no-unused-vars`: `varsIgnorePattern: '^[A-Z_]'` — uppercase/underscore-prefixed vars are exempt
+
+## Public Static Assets
+
+- `public/terminology.md` — fetched at runtime by TerminologyPage
+- `public/user-guide.md` — fetched at runtime by UserGuidePage
+- `public/guide/` — user guide screenshot images
+- `public/robots.txt`, `public/sitemap.xml` — SEO
+- `public/og-image.png` — Open Graph image
