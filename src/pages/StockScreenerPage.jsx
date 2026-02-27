@@ -178,6 +178,9 @@ function StockScreenerPage() {
     setScorePreset(preset.key);
     if (preset.key === 'custom') {
       setShowCustomScore(true);
+      setMinScore('0');
+      setMaxScore('100');
+      setPage(0);
     } else {
       setShowCustomScore(false);
       setMinScore(preset.min);
@@ -185,6 +188,24 @@ function StockScreenerPage() {
       setPage(0);
     }
   };
+
+  // 듀얼 슬라이더 핸들러
+  const sliderDebounceRef = useRef(null);
+  const handleSliderChange = (type, value) => {
+    const num = Number(value);
+    if (type === 'min') {
+      const clamped = Math.min(num, Number(maxScore || 100));
+      setMinScore(String(clamped));
+    } else {
+      const clamped = Math.max(num, Number(minScore || 0));
+      setMaxScore(String(clamped));
+    }
+    if (sliderDebounceRef.current) clearTimeout(sliderDebounceRef.current);
+    sliderDebounceRef.current = setTimeout(() => setPage(0), 200);
+  };
+
+  const sliderMinPct = ((Number(minScore) || 0) / 100) * 100;
+  const sliderMaxPct = ((Number(maxScore) || 100) / 100) * 100;
 
   const handleWatchlistToggle = async (ticker, e) => {
     e.stopPropagation();
@@ -268,21 +289,37 @@ function StockScreenerPage() {
           <span className="filter-count">{totalCount}건</span>
         </div>
         {showCustomScore && (
-          <div className="filter-row filter-row-secondary">
-            <label className="filter-label">
-              범위:
-              <input
-                type="number" min="0" max="100" placeholder="최소"
-                value={minScore} onChange={handleFilterChange(setMinScore)}
-                className="filter-number"
-              />
-              ~
-              <input
-                type="number" min="0" max="100" placeholder="최대"
-                value={maxScore} onChange={handleFilterChange(setMaxScore)}
-                className="filter-number"
-              />
-            </label>
+          <div className="screener-slider-row">
+            <div className="screener-dual-slider">
+              <div className="slider-labels">
+                <span>0</span>
+                <span>100</span>
+              </div>
+              <div className="slider-track-container">
+                <div
+                  className="slider-track-fill"
+                  style={{ left: `${sliderMinPct}%`, width: `${sliderMaxPct - sliderMinPct}%` }}
+                />
+                <input
+                  type="range" min="0" max="100" step="1"
+                  value={minScore || 0}
+                  onChange={(e) => handleSliderChange('min', e.target.value)}
+                  className="slider-thumb slider-thumb-min"
+                />
+                <input
+                  type="range" min="0" max="100" step="1"
+                  value={maxScore || 100}
+                  onChange={(e) => handleSliderChange('max', e.target.value)}
+                  className="slider-thumb slider-thumb-max"
+                />
+                <div className="slider-bubble slider-bubble-min" style={{ left: `${sliderMinPct}%` }}>
+                  {minScore || 0}
+                </div>
+                <div className="slider-bubble slider-bubble-max" style={{ left: `${sliderMaxPct}%` }}>
+                  {maxScore || 100}
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
