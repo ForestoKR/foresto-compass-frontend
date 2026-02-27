@@ -24,14 +24,6 @@ const SECTOR_LABELS = {
   'Energy': '에너지',
 };
 
-const SCORE_PRESETS = [
-  { key: 'all', label: '전체', min: '', max: '', color: null },
-  { key: 's90', label: 'S 90+', min: '90', max: '', color: '#16a34a' },
-  { key: 'a70', label: 'A등급 70+', min: '70', max: '', color: '#16a34a' },
-  { key: 'b50', label: 'B등급 50+', min: '50', max: '', color: '#2563eb' },
-  { key: 'c30', label: 'C등급 30+', min: '30', max: '', color: '#ea580c' },
-  { key: 'custom', label: '직접 입력', min: null, max: null, color: null },
-];
 
 function gradeColor(grade) {
   if (!grade) return '#6b7280';
@@ -57,10 +49,8 @@ function StockScreenerPage() {
   const [market, setMarket] = useState('');
   const [sector, setSector] = useState('');
   const [grade, setGrade] = useState('');
-  const [minScore, setMinScore] = useState('');
-  const [maxScore, setMaxScore] = useState('');
-  const [scorePreset, setScorePreset] = useState('all');
-  const [showCustomScore, setShowCustomScore] = useState(false);
+  const [minScore, setMinScore] = useState('0');
+  const [maxScore, setMaxScore] = useState('100');
 
   // 정렬
   const [sortBy, setSortBy] = useState('compass_score');
@@ -121,8 +111,8 @@ function StockScreenerPage() {
       if (market) params.market = market;
       if (sector) params.sector = sector;
       if (grade) params.grade = grade;
-      if (minScore !== '') params.minScore = minScore;
-      if (maxScore !== '') params.maxScore = maxScore;
+      if (minScore !== '' && minScore !== '0') params.minScore = minScore;
+      if (maxScore !== '' && maxScore !== '100') params.maxScore = maxScore;
 
       const res = await screenerStocks(params);
       setStocks(res.data.stocks || []);
@@ -171,22 +161,6 @@ function StockScreenerPage() {
   const handleFilterChange = (setter) => (e) => {
     setter(e.target.value);
     setPage(0);
-  };
-
-  // 점수 프리셋 핸들러
-  const handleScorePreset = (preset) => {
-    setScorePreset(preset.key);
-    if (preset.key === 'custom') {
-      setShowCustomScore(true);
-      setMinScore('0');
-      setMaxScore('100');
-      setPage(0);
-    } else {
-      setShowCustomScore(false);
-      setMinScore(preset.min);
-      setMaxScore(preset.max);
-      setPage(0);
-    }
   };
 
   // 듀얼 슬라이더 핸들러
@@ -272,56 +246,39 @@ function StockScreenerPage() {
           </select>
         </div>
         <div className="filter-row filter-row-secondary">
-          <div className="score-preset-group">
-            <span className="filter-label">점수:</span>
-            {SCORE_PRESETS.map(preset => (
-              <button
-                key={preset.key}
-                className={`score-preset-btn ${scorePreset === preset.key ? 'active' : ''}`}
-                style={preset.color && scorePreset === preset.key ? { borderColor: preset.color, color: preset.color } : undefined}
-                onClick={() => handleScorePreset(preset)}
-                type="button"
-              >
-                {preset.label}
-              </button>
-            ))}
+          <span className="filter-label">점수:</span>
+          <div className="screener-dual-slider">
+            <div className="slider-track-container">
+              <div
+                className="slider-track-fill"
+                style={{ left: `${sliderMinPct}%`, width: `${sliderMaxPct - sliderMinPct}%` }}
+              />
+              <input
+                type="range" min="0" max="100" step="1"
+                value={minScore || 0}
+                onChange={(e) => handleSliderChange('min', e.target.value)}
+                className="slider-thumb slider-thumb-min"
+              />
+              <input
+                type="range" min="0" max="100" step="1"
+                value={maxScore || 100}
+                onChange={(e) => handleSliderChange('max', e.target.value)}
+                className="slider-thumb slider-thumb-max"
+              />
+              <div className="slider-bubble slider-bubble-min" style={{ left: `${sliderMinPct}%` }}>
+                {minScore || 0}
+              </div>
+              <div className="slider-bubble slider-bubble-max" style={{ left: `${sliderMaxPct}%` }}>
+                {maxScore || 100}
+              </div>
+            </div>
+            <div className="slider-labels">
+              <span>0</span>
+              <span>100</span>
+            </div>
           </div>
           <span className="filter-count">{totalCount}건</span>
         </div>
-        {showCustomScore && (
-          <div className="screener-slider-row">
-            <div className="screener-dual-slider">
-              <div className="slider-labels">
-                <span>0</span>
-                <span>100</span>
-              </div>
-              <div className="slider-track-container">
-                <div
-                  className="slider-track-fill"
-                  style={{ left: `${sliderMinPct}%`, width: `${sliderMaxPct - sliderMinPct}%` }}
-                />
-                <input
-                  type="range" min="0" max="100" step="1"
-                  value={minScore || 0}
-                  onChange={(e) => handleSliderChange('min', e.target.value)}
-                  className="slider-thumb slider-thumb-min"
-                />
-                <input
-                  type="range" min="0" max="100" step="1"
-                  value={maxScore || 100}
-                  onChange={(e) => handleSliderChange('max', e.target.value)}
-                  className="slider-thumb slider-thumb-max"
-                />
-                <div className="slider-bubble slider-bubble-min" style={{ left: `${sliderMinPct}%` }}>
-                  {minScore || 0}
-                </div>
-                <div className="slider-bubble slider-bubble-max" style={{ left: `${sliderMaxPct}%` }}>
-                  {maxScore || 100}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* 에러 */}
