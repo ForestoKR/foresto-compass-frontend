@@ -8,22 +8,14 @@ import '../styles/StockScreener.css';
 
 const PAGE_SIZE = 20;
 
-// 등급 세그먼트: index 순서대로 (F=0 ~ S=8), 각 세그먼트 동일 폭
-const GRADE_SEGMENTS = [
-  { grade: 'F',  score: 0,   color: '#dc2626' },
-  { grade: 'D',  score: 20,  color: '#ef4444' },
-  { grade: 'C',  score: 30,  color: '#f97316' },
-  { grade: 'C+', score: 40,  color: '#ea580c' },
-  { grade: 'B',  score: 50,  color: '#3b82f6' },
-  { grade: 'B+', score: 60,  color: '#2563eb' },
-  { grade: 'A',  score: 70,  color: '#22c55e' },
-  { grade: 'A+', score: 80,  color: '#16a34a' },
-  { grade: 'S',  score: 90,  color: '#15803d' },
+// 5그룹 등급 (S → D, 높은 순)
+const GRADE_GROUPS = [
+  { key: 'S', label: 'S',  desc: '90~100', min: 90, max: 100, color: '#15803d' },
+  { key: 'A', label: 'A',  desc: '70~89',  min: 70, max: 89,  color: '#16a34a' },
+  { key: 'B', label: 'B',  desc: '50~69',  min: 50, max: 69,  color: '#2563eb' },
+  { key: 'C', label: 'C',  desc: '30~49',  min: 30, max: 49,  color: '#ea580c' },
+  { key: 'D', label: 'D',  desc: '0~29',   min: 0,  max: 29,  color: '#dc2626' },
 ];
-const BOUNDARY_SCORES = [...GRADE_SEGMENTS.map(s => s.score), 100]; // [0,20,30,...,90,100]
-const SEG_COUNT = GRADE_SEGMENTS.length; // 9
-
-function idxToPct(idx) { return (idx / SEG_COUNT) * 100; }
 const MARKET_LABELS = { KOSPI: '코스피', KOSDAQ: '코스닥', KONEX: '코넥스' };
 const SECTOR_LABELS = {
   'Unknown': '미분류',
@@ -64,8 +56,8 @@ function StockScreenerPage() {
   const [search, setSearch] = useState('');
   const [market, setMarket] = useState('');
   const [sector, setSector] = useState('');
-  const [minIdx, setMinIdx] = useState(8);  // S등급 시작
-  const [maxIdx, setMaxIdx] = useState(9);  // S등급 끝
+  const [gradeFrom, setGradeFrom] = useState(0);  // S (index in GRADE_GROUPS)
+  const [gradeTo, setGradeTo] = useState(0);      // S (inclusive)
 
   // 정렬
   const [sortBy, setSortBy] = useState('compass_score');
@@ -125,15 +117,15 @@ function StockScreenerPage() {
       if (search) params.search = search;
       if (market) params.market = market;
       if (sector) params.sector = sector;
-      const scoreMin = BOUNDARY_SCORES[minIdx];
-      const scoreMax = BOUNDARY_SCORES[maxIdx];
+      const scoreMin = GRADE_GROUPS[gradeTo].min;
+      const scoreMax = GRADE_GROUPS[gradeFrom].max + 1; // max is exclusive in API (100 for S)
       if (scoreMin > 0) params.minScore = scoreMin;
-      if (scoreMax < 100) params.maxScore = scoreMax;
+      if (scoreMax <= 100) params.maxScore = scoreMax;
 
       const res = await screenerStocks(params);
       setStocks(res.data.stocks || []);
       setTotalCount(res.data.total_count || 0);
-      if (search || market || sector || minIdx !== 8 || maxIdx !== 9) {
+      if (search || market || sector || gradeFrom !== 0 || gradeTo !== 0) {
         trackEvent('screener_searched', { search, market, sector, minScore: scoreMin, maxScore: scoreMax, results: res.data.total_count || 0 });
       }
     } catch (err) {
@@ -141,7 +133,7 @@ function StockScreenerPage() {
     } finally {
       setLoading(false);
     }
-  }, [search, market, sector, minIdx, maxIdx, sortBy, sortOrder, page]);
+  }, [search, market, sector, gradeFrom, gradeTo, sortBy, sortOrder, page]);
 
   useEffect(() => {
     fetchData();
@@ -179,19 +171,20 @@ function StockScreenerPage() {
     setPage(0);
   };
 
-  // 등급 슬라이더 핸들러 (인덱스 기반)
-  const handleSliderChange = (type, value) => {
-    const idx = Number(value);
-    if (type === 'min') {
-      setMinIdx(Math.min(idx, maxIdx));
+  // 등급 토글 핸들러: 연속 범위 양방향 확장/축소
+  const handleGradeToggle = (idx) => {
+    const isActive = idx >= gradeFrom && idx <= gradeTo;
+    if (isActive) {
+      // 끝 버튼이면 축소, 중간이면 무시
+      if (idx === gradeFrom && idx === gradeTo) return; // 마지막 1개 유지
+      if (idx === gradeFrom) { setGradeFrom(idx + 1); setPage(0); }
+      else if (idx === gradeTo) { setGradeTo(idx - 1); setPage(0); }
     } else {
-      setMaxIdx(Math.max(idx, minIdx));
+      // 비활성: 범위 확장
+      if (idx < gradeFrom) { setGradeFrom(idx); setPage(0); }
+      else if (idx > gradeTo) { setGradeTo(idx); setPage(0); }
     }
-    setPage(0);
   };
-
-  const minGrade = GRADE_SEGMENTS[minIdx]?.grade || 'F';
-  const maxGrade = GRADE_SEGMENTS[Math.min(maxIdx, SEG_COUNT) - 1]?.grade || 'S';
 
   const handleWatchlistToggle = async (ticker, e) => {
     e.stopPropagation();
@@ -255,57 +248,23 @@ function StockScreenerPage() {
         </div>
         <div className="filter-row filter-row-secondary">
           <span className="filter-label">등급:</span>
-          <div className="screener-grade-slider">
-            <div className="grade-slider-range-label">
-              {minGrade === maxGrade ? minGrade : `${minGrade} ~ ${maxGrade}`}
-              <span className="grade-slider-score-hint">
-                ({BOUNDARY_SCORES[minIdx]}~{BOUNDARY_SCORES[maxIdx]}점)
-              </span>
-            </div>
-            <div className="grade-slider-track-container">
-              {/* 등급 경계 틱 */}
-              {BOUNDARY_SCORES.map((_, i) => (
-                <div key={i} className="grade-tick" style={{ left: `${idxToPct(i)}%` }} />
-              ))}
-              {/* 등급별 컬러 세그먼트 (선택 범위만) */}
-              {GRADE_SEGMENTS.map((seg, i) => {
-                if (i < minIdx || i >= maxIdx) return null;
-                return (
-                  <div
-                    key={seg.grade}
-                    className="grade-slider-fill-seg"
-                    style={{
-                      left: `${idxToPct(i)}%`,
-                      width: `${idxToPct(1)}%`,
-                      background: seg.color,
-                    }}
-                  />
-                );
-              })}
-              {/* 등급 라벨 */}
-              {GRADE_SEGMENTS.map((seg, i) => (
-                <span
-                  key={seg.grade}
-                  className={`grade-tick-label ${i >= minIdx && i < maxIdx ? 'grade-tick-label-active' : ''}`}
-                  style={{ left: `${idxToPct(i) + idxToPct(1) / 2}%` }}
+          <div className="screener-grade-btns">
+            {GRADE_GROUPS.map((g, i) => {
+              const isActive = i >= gradeFrom && i <= gradeTo;
+              return (
+                <button
+                  key={g.key}
+                  type="button"
+                  className={`grade-toggle-btn ${isActive ? 'active' : ''}`}
+                  style={isActive ? { background: g.color, borderColor: g.color } : undefined}
+                  onClick={() => handleGradeToggle(i)}
+                  title={g.desc + '점'}
                 >
-                  {seg.grade}
-                </span>
-              ))}
-              {/* 듀얼 썸 */}
-              <input
-                type="range" min="0" max={SEG_COUNT} step="1"
-                value={minIdx}
-                onChange={(e) => handleSliderChange('min', e.target.value)}
-                className="slider-thumb slider-thumb-min"
-              />
-              <input
-                type="range" min="0" max={SEG_COUNT} step="1"
-                value={maxIdx}
-                onChange={(e) => handleSliderChange('max', e.target.value)}
-                className="slider-thumb slider-thumb-max"
-              />
-            </div>
+                  <span className="grade-toggle-label">{g.label}</span>
+                  <span className="grade-toggle-desc">{g.desc}</span>
+                </button>
+              );
+            })}
           </div>
           <span className="filter-count">{totalCount}건</span>
         </div>
