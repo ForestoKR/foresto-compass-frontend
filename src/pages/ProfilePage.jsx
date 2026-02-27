@@ -4,6 +4,8 @@ import api, { changePassword, listConsents, getMarketSubscriptionStatus, subscri
 import { trackEvent } from '../utils/analytics';
 import '../styles/ProfilePage.css';
 
+const REQUIRED_FIELDS = new Set(['name', 'age_group', 'investment_experience', 'risk_tolerance']);
+
 function ProfilePage() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
@@ -33,6 +35,27 @@ function ProfilePage() {
   });
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
+
+  const isFieldEmpty = (field) => {
+    const val = formData[field];
+    return val === null || val === undefined || val === '';
+  };
+
+  const fieldLabel = (label, field) => (
+    <>
+      {label}
+      {REQUIRED_FIELDS.has(field)
+        ? <span className="pp-required-badge">필수</span>
+        : <span className="pp-optional-badge">선택</span>}
+    </>
+  );
+
+  const fieldClass = (field) => {
+    if (REQUIRED_FIELDS.has(field) && isEditing && isFieldEmpty(field)) {
+      return 'profile-field pp-field-incomplete';
+    }
+    return 'profile-field';
+  };
 
   // 프로필 조회
   const fetchProfile = async () => {
@@ -278,6 +301,10 @@ function ProfilePage() {
       {error && <div className="alert alert-error" role="alert">{error}</div>}
       {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
+      <div className="pp-guidance-text">
+        필수 항목을 입력하면 맞춤 서비스를 이용할 수 있습니다
+      </div>
+
       <form onSubmit={handleUpdate}>
         {/* 기본 정보 */}
         <div className="profile-section">
@@ -369,8 +396,8 @@ function ProfilePage() {
               </button>
             </div>
 
-            <div className="profile-field">
-              <label>이름</label>
+            <div className={fieldClass('name')}>
+              <label>{fieldLabel('이름', 'name')}</label>
               <input
                 type="text"
                 value={formData.name || ''}
@@ -380,8 +407,8 @@ function ProfilePage() {
               />
             </div>
 
-            <div className="profile-field">
-              <label>전화번호</label>
+            <div className={fieldClass('phone')}>
+              <label>{fieldLabel('전화번호', 'phone')}</label>
               <input
                 type="tel"
                 value={formData.phone || ''}
@@ -391,8 +418,8 @@ function ProfilePage() {
               />
             </div>
 
-            <div className="profile-field">
-              <label>연령대</label>
+            <div className={fieldClass('age_group')}>
+              <label>{fieldLabel('연령대', 'age_group')}</label>
               <select
                 value={formData.age_group || ''}
                 onChange={(e) => handleChange('age_group', e.target.value)}
@@ -417,8 +444,8 @@ function ProfilePage() {
             ⚠️ 입력하신 정보는 학습용 시뮬레이션 생성에만 참고되며, 투자 권유·추천 목적으로 사용되지 않습니다.
           </p>
           <div className="profile-grid">
-            <div className="profile-field">
-              <label>직업</label>
+            <div className={fieldClass('occupation')}>
+              <label>{fieldLabel('직업', 'occupation')}</label>
               <input
                 type="text"
                 value={formData.occupation || ''}
@@ -428,8 +455,8 @@ function ProfilePage() {
               />
             </div>
 
-            <div className="profile-field">
-              <label>회사명</label>
+            <div className={fieldClass('company')}>
+              <label>{fieldLabel('회사명', 'company')}</label>
               <input
                 type="text"
                 value={formData.company || ''}
@@ -439,8 +466,8 @@ function ProfilePage() {
               />
             </div>
 
-            <div className="profile-field">
-              <label>연봉 (만원)</label>
+            <div className={fieldClass('annual_income')}>
+              <label>{fieldLabel('연봉 (만원)', 'annual_income')}</label>
               <input
                 type="number"
                 value={formData.annual_income || ''}
@@ -451,8 +478,8 @@ function ProfilePage() {
               />
             </div>
 
-            <div className="profile-field">
-              <label>총 자산 (만원)</label>
+            <div className={fieldClass('total_assets')}>
+              <label>{fieldLabel('총 자산 (만원)', 'total_assets')}</label>
               <input
                 type="number"
                 value={formData.total_assets || ''}
@@ -469,8 +496,8 @@ function ProfilePage() {
         <div className="profile-section">
           <h2>주소 정보</h2>
           <div className="profile-grid">
-            <div className="profile-field">
-              <label>거주 도시</label>
+            <div className={fieldClass('city')}>
+              <label>{fieldLabel('거주 도시', 'city')}</label>
               <input
                 type="text"
                 value={formData.city || ''}
@@ -480,8 +507,8 @@ function ProfilePage() {
               />
             </div>
 
-            <div className="profile-field">
-              <label>구/군</label>
+            <div className={fieldClass('district')}>
+              <label>{fieldLabel('구/군', 'district')}</label>
               <input
                 type="text"
                 value={formData.district || ''}
@@ -500,8 +527,8 @@ function ProfilePage() {
             ⚠️ 학습 성향 정보는 교육 목적의 시뮬레이션 예시 생성에 활용되며, 실제 투자 권유가 아닙니다.
           </p>
           <div className="profile-grid">
-            <div className="profile-field">
-              <label>자산 운용 학습 수준</label>
+            <div className={fieldClass('investment_experience')}>
+              <label>{fieldLabel('자산 운용 학습 수준', 'investment_experience')}</label>
               <select
                 value={formData.investment_experience || '초보'}
                 onChange={(e) => handleChange('investment_experience', e.target.value)}
@@ -514,8 +541,8 @@ function ProfilePage() {
               </select>
             </div>
 
-            <div className="profile-field">
-              <label>리스크 학습 선호도</label>
+            <div className={fieldClass('risk_tolerance')}>
+              <label>{fieldLabel('리스크 학습 선호도', 'risk_tolerance')}</label>
               <select
                 value={formData.risk_tolerance || '중립적'}
                 onChange={(e) => handleChange('risk_tolerance', e.target.value)}
@@ -527,8 +554,8 @@ function ProfilePage() {
               </select>
             </div>
 
-            <div className="profile-field full-width">
-              <label>학습 목표</label>
+            <div className={`${fieldClass('investment_goal')} full-width`}>
+              <label>{fieldLabel('학습 목표', 'investment_goal')}</label>
               <input
                 type="text"
                 value={formData.investment_goal || ''}

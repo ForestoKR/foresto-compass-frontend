@@ -461,6 +461,79 @@
   color: var(--primary, #667eea);
 }
 
+/* ── Required / Optional Badges ── */
+.pp-required-badge,
+.pp-optional-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.pp-required-badge {
+  background: rgba(220, 38, 38, 0.1);
+  color: var(--stock-down, #dc2626);
+}
+
+[data-theme="dark"] .pp-required-badge {
+  background: rgba(220, 38, 38, 0.2);
+  color: #fca5a5;
+}
+
+.pp-optional-badge {
+  background: var(--card-inner, #fafbfc);
+  color: var(--text-muted, #9ca3af);
+}
+
+[data-theme="dark"] .pp-optional-badge {
+  background: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+}
+
+/* ── Incomplete Required Field Highlight ── */
+.pp-field-incomplete input,
+.pp-field-incomplete select {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.04);
+}
+
+[data-theme="dark"] .pp-field-incomplete input,
+[data-theme="dark"] .pp-field-incomplete select {
+  border-color: #d97706;
+  background: rgba(217, 119, 6, 0.08);
+}
+
+.pp-field-incomplete input:not(:disabled):focus,
+.pp-field-incomplete select:not(:disabled):focus {
+  border-color: var(--primary, #667eea);
+  background: var(--card, #ffffff);
+}
+
+[data-theme="dark"] .pp-field-incomplete input:not(:disabled):focus,
+[data-theme="dark"] .pp-field-incomplete select:not(:disabled):focus {
+  background: var(--card, #1e293b);
+}
+
+/* ── Guidance Text ── */
+.pp-guidance-text {
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6b7280);
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-left: 4px solid var(--primary, #667eea);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+[data-theme="dark"] .pp-guidance-text {
+  background: rgba(102, 126, 234, 0.06);
+}
+
 /* ── Profile Completion Banner ── */
 .profile-completion-banner {
   background: var(--card, #ffffff);

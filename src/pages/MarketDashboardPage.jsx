@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
 import { trackPageView } from '../utils/analytics';
 import OnboardingTour from '../components/OnboardingTour';
+import ProfileCompletionModal from '../components/ProfileCompletionModal';
 import '../styles/MarketDashboard.css';
 
 /* ── helpers ── */
@@ -118,6 +119,7 @@ function MarketDashboardPage() {
   const [watchlistItems, setWatchlistItems] = useState([]);
   const [profileIncomplete, setProfileIncomplete] = useState(false);
   const [profilePercent, setProfilePercent] = useState(0);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   useEffect(() => {
     trackPageView('dashboard');
@@ -134,6 +136,12 @@ function MarketDashboardPage() {
       setProfilePercent(completion_percent);
       if (!is_complete) {
         setProfileIncomplete(true);
+        // Show modal once per session, only after onboarding tour is done
+        const tourDone = localStorage.getItem('onboarding_tour_completed');
+        const modalDismissed = sessionStorage.getItem('dashboard_profile_modal_dismissed');
+        if (tourDone && !modalDismissed) {
+          setShowProfileModal(true);
+        }
       }
     } catch { /* ignore */ }
   };
@@ -503,6 +511,19 @@ function MarketDashboardPage() {
         </footer>
 
       </div>
+
+      {showProfileModal && (
+        <ProfileCompletionModal
+          onClose={() => {
+            setShowProfileModal(false);
+            sessionStorage.setItem('dashboard_profile_modal_dismissed', 'true');
+          }}
+          onComplete={() => {
+            setProfileIncomplete(false);
+            checkProfileStatus();
+          }}
+        />
+      )}
 
       <OnboardingTour />
     </div>
