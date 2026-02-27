@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
 import { trackPageView } from '../utils/analytics';
-import OnboardingTour from '../components/OnboardingTour';
 import ProfileCompletionModal from '../components/ProfileCompletionModal';
 import '../styles/MarketDashboard.css';
 
@@ -559,7 +558,6 @@ function MarketDashboardPage() {
         />
       )}
 
-      <OnboardingTour />
     </div>
   );
 }

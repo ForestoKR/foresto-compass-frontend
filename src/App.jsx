@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
+import OnboardingTour from './components/OnboardingTour';
 import './styles/App.css';
 
 // Public — 정적 import (첫 화면/인증)
@@ -96,6 +97,7 @@ function AppContent() {
     </Helmet>
     <div className="app">
       {isAuthenticated && <Header />}
+      {isAuthenticated && <OnboardingTour />}
       <main className="main-content">
         <ErrorBoundary>
         <Suspense fallback={<div className="loading-container"><div className="spinner"></div><p>로딩 중...</p></div>}>
