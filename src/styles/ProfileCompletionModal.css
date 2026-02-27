@@ -34,23 +34,6 @@
   }
 }
 
-.pcm-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: var(--text-muted, #9ca3af);
-  cursor: pointer;
-  line-height: 1;
-  padding: 0.25rem;
-}
-
-.pcm-close:hover {
-  color: var(--text, #1f2937);
-}
-
 .pcm-header {
   text-align: center;
   margin-bottom: 1.5rem;

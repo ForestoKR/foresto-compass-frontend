@@ -144,10 +144,6 @@ function ProfileCompletionModal({ onClose, onComplete }) {
   return (
     <div className="pcm-overlay" onClick={onClose}>
       <div className="pcm-modal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="pcm-title" onClick={(e) => e.stopPropagation()}>
-        <button className="pcm-close" onClick={onClose} aria-label="닫기">
-          &times;
-        </button>
-
         <div className="pcm-header">
           <h2 id="pcm-title">30초면 나만의 투자 학습이 시작됩니다</h2>
           <p className="pcm-subtitle">
