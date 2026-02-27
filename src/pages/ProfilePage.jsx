@@ -164,9 +164,8 @@ function ProfilePage() {
       setFormData(response.data);
       setIsEditing(false);
       fetchCompletionStatus();
-      setSuccessMessage('프로필이 성공적으로 업데이트되었습니다.');
+      setSuccessMessage('saved');
       trackEvent('profile_completed');
-      setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       console.error('Failed to update profile:', err);
       setError(err.response?.data?.detail || '프로필 업데이트에 실패했습니다.');
@@ -299,11 +298,37 @@ function ProfilePage() {
       )}
 
       {error && <div className="alert alert-error" role="alert">{error}</div>}
-      {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
-      <div className="pp-guidance-text">
-        필수 항목을 입력하면 맞춤 서비스를 이용할 수 있습니다
-      </div>
+      {successMessage === 'saved' && (
+        <div className="pp-next-actions">
+          <div className="pp-next-header">
+            프로필이 저장되었습니다. 다음 단계를 시작해보세요!
+          </div>
+          <div className="pp-next-grid">
+            <button className="pp-next-card" onClick={() => navigate('/survey')}>
+              <span className="pp-next-icon">&#127919;</span>
+              <span className="pp-next-label">학습 성향 진단</span>
+              <span className="pp-next-desc">나에게 맞는 전략 찾기</span>
+            </button>
+            <button className="pp-next-card" onClick={() => navigate('/screener')}>
+              <span className="pp-next-icon">&#128202;</span>
+              <span className="pp-next-label">종목 스크리너</span>
+              <span className="pp-next-desc">Compass Score로 탐색</span>
+            </button>
+            <button className="pp-next-card" onClick={() => navigate('/dashboard')}>
+              <span className="pp-next-icon">&#128200;</span>
+              <span className="pp-next-label">대시보드</span>
+              <span className="pp-next-desc">시장 현황 확인</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {successMessage !== 'saved' && (
+        <div className="pp-guidance-text">
+          필수 항목을 입력하면 맞춤 서비스를 이용할 수 있습니다
+        </div>
+      )}
 
       <form onSubmit={handleUpdate}>
         {/* 기본 정보 */}
