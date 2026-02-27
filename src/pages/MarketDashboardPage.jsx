@@ -120,6 +120,9 @@ function MarketDashboardPage() {
   const [profileIncomplete, setProfileIncomplete] = useState(false);
   const [profilePercent, setProfilePercent] = useState(0);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [subBannerDismissed, setSubBannerDismissed] = useState(
+    () => sessionStorage.getItem('dash_sub_banner_dismissed') === 'true'
+  );
 
   useEffect(() => {
     trackPageView('dashboard');
@@ -242,6 +245,37 @@ function MarketDashboardPage() {
             </span>
             <button className="refresh-btn" onClick={() => navigate('/profile')}>
               프로필 완성하기
+            </button>
+          </div>
+        )}
+
+        {/* Subscription banner */}
+        {emailSub && !emailSub.subscribed && emailSub.is_email_verified !== false && !subBannerDismissed && (
+          <div className="compare-banner dash-sub-banner">
+            <span className="compare-label dash-sub-label">이메일</span>
+            <span className="compare-text">
+              매일 아침 시장 현황과 관심 종목 변동을 이메일로 받아보세요.
+            </span>
+            <button
+              className="refresh-btn"
+              onClick={async () => {
+                await handleSubscribe();
+                setSubBannerDismissed(true);
+                sessionStorage.setItem('dash_sub_banner_dismissed', 'true');
+              }}
+              disabled={subLoading}
+            >
+              {subLoading ? '처리 중...' : '구독하기'}
+            </button>
+            <button
+              className="dash-sub-close"
+              onClick={() => {
+                setSubBannerDismissed(true);
+                sessionStorage.setItem('dash_sub_banner_dismissed', 'true');
+              }}
+              aria-label="닫기"
+            >
+              &#10005;
             </button>
           </div>
         )}

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import api from '../services/api';
+import api, { subscribeMarketEmail } from '../services/api';
 import '../styles/SignupPage.css';
 
 function EmailVerificationPage() {
@@ -11,6 +11,8 @@ function EmailVerificationPage() {
   const [status, setStatus] = useState('verifying'); // 'verifying', 'success', 'error'
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [emailSubDone, setEmailSubDone] = useState(false);
+  const [emailSubLoading, setEmailSubLoading] = useState(false);
   const hasVerifiedRef = useRef(false);
 
   useEffect(() => {
@@ -44,6 +46,18 @@ function EmailVerificationPage() {
       }
 
       console.error('Email verification error:', err);
+    }
+  };
+
+  const handleSubscribeEmail = async () => {
+    setEmailSubLoading(true);
+    try {
+      await subscribeMarketEmail();
+      setEmailSubDone(true);
+    } catch {
+      /* ignore */
+    } finally {
+      setEmailSubLoading(false);
     }
   };
 
@@ -89,6 +103,30 @@ function EmailVerificationPage() {
             <p className="subtitle">
               이제 Foresto Compass의 모든 기능을 사용하실 수 있습니다.
             </p>
+
+            {/* 시장 이메일 구독 카드 */}
+            <div className="verify-sub-card">
+              {emailSubDone ? (
+                <p className="verify-sub-done">&#10003; 구독 완료!</p>
+              ) : (
+                <>
+                  <div className="verify-sub-icon">&#128202;</div>
+                  <div className="verify-sub-title">시장 요약 이메일</div>
+                  <p className="verify-sub-desc">
+                    매일 아침 시장 현황과 관심 종목 변동을 이메일로 받아보세요.
+                  </p>
+                  <button
+                    className="verify-sub-btn"
+                    onClick={handleSubscribeEmail}
+                    disabled={emailSubLoading}
+                  >
+                    {emailSubLoading ? '처리 중...' : '구독하기'}
+                  </button>
+                </>
+              )}
+              <p className="verify-sub-note">교육 목적 참고 정보이며 투자 권유가 아닙니다</p>
+            </div>
+
             <button
               className="btn btn-primary"
               onClick={() => navigate('/survey')}

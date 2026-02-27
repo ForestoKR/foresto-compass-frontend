@@ -569,6 +569,35 @@
   flex: 1;
 }
 
+/* ── Subscription Banner ── */
+.dash-sub-banner {
+  position: relative;
+  padding-right: 40px;
+}
+
+.dash-sub-label {
+  background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+  color: #ffffff !important;
+}
+
+.dash-sub-close {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.dash-sub-close:hover {
+  color: var(--text);
+}
+
 /* ── Footer ── */
 .dash-footer {
   margin-top: 16px;
