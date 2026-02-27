@@ -268,54 +268,86 @@
   cursor: not-allowed;
 }
 
-/* ── Dual Range Slider ── */
-.screener-dual-slider {
+/* ── Grade Range Slider ── */
+.screener-grade-slider {
   flex: 1;
-  min-width: 200px;
-  max-width: 400px;
-  padding-top: 28px;
+  min-width: 240px;
+  max-width: 480px;
 }
 
-.slider-labels {
-  display: flex;
-  justify-content: space-between;
+.grade-slider-range-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text, #111827);
+  margin-bottom: 0.375rem;
+}
+
+.grade-slider-score-hint {
+  font-weight: 400;
   font-size: 0.75rem;
   color: var(--text-muted, #9ca3af);
-  margin-bottom: 0.125rem;
+  margin-left: 0.375rem;
 }
 
-.slider-track-container {
+.grade-slider-track-container {
   position: relative;
-  height: 36px;
+  height: 32px;
+  margin-bottom: 18px;
 }
 
 /* Track background */
-.slider-track-container::before {
+.grade-slider-track-container::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 0;
   right: 0;
-  height: 6px;
+  height: 8px;
   transform: translateY(-50%);
   background: var(--border, #e5e7eb);
-  border-radius: 3px;
+  border-radius: 4px;
   pointer-events: none;
 }
 
-/* Active fill between thumbs */
-.slider-track-fill {
+/* Active fill */
+.grade-slider-fill {
   position: absolute;
   top: 50%;
-  height: 6px;
+  height: 8px;
   transform: translateY(-50%);
   background: var(--primary, #667eea);
-  border-radius: 3px;
+  border-radius: 4px;
   pointer-events: none;
   z-index: 1;
 }
 
-/* Shared range input reset */
+/* Grade boundary ticks */
+.grade-tick {
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  background: var(--text-muted, #9ca3af);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Grade labels below track */
+.grade-tick-label {
+  position: absolute;
+  top: 100%;
+  margin-top: 4px;
+  transform: translateX(-50%);
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--text-muted, #9ca3af);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Range input reset */
 .slider-thumb {
   position: absolute;
   top: 0;
@@ -332,19 +364,19 @@
 }
 
 .slider-thumb::-webkit-slider-runnable-track {
-  height: 6px;
+  height: 8px;
   background: transparent;
 }
 
 .slider-thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--primary, #667eea);
   border: 3px solid var(--card, #ffffff);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   pointer-events: auto;
   margin-top: -7px;
@@ -356,18 +388,18 @@
 }
 
 .slider-thumb::-moz-range-track {
-  height: 6px;
+  height: 8px;
   background: transparent;
   border: none;
 }
 
 .slider-thumb::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--primary, #667eea);
   border: 3px solid var(--card, #ffffff);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   pointer-events: auto;
   transition: transform 0.1s;
@@ -377,34 +409,8 @@
   transform: scale(1.15);
 }
 
-/* Value bubbles */
-.slider-bubble {
-  position: absolute;
-  top: -28px;
-  transform: translateX(-50%);
-  background: var(--text, #1f2937);
-  color: var(--card, #ffffff);
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 3;
-}
-
-.slider-bubble::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid var(--text, #1f2937);
-}
-
-[data-theme="dark"] .slider-track-container::before {
+/* Dark mode */
+[data-theme="dark"] .grade-slider-track-container::before {
   background: var(--border, #334155);
 }
 
@@ -414,15 +420,6 @@
 
 [data-theme="dark"] .slider-thumb::-moz-range-thumb {
   border-color: var(--card, #1e293b);
-}
-
-[data-theme="dark"] .slider-bubble {
-  background: var(--card-inner, #334155);
-  color: var(--text, #f1f5f9);
-}
-
-[data-theme="dark"] .slider-bubble::after {
-  border-top-color: var(--card-inner, #334155);
 }
 
 /* ── Disclaimer ── */
