@@ -130,8 +130,8 @@ const { theme, toggleTheme } = useThemeInit();
 - `/portfolio` — PortfolioRecommendationPage
 - `/portfolio-builder` — PortfolioBuilderPage (직접 포트폴리오 구성)
 - `/portfolio-evaluation`, `/phase7-evaluation` — Phase7PortfolioEvaluationPage (성과 평가/비교)
-- `/backtest` — BacktestPage
-- `/scenarios` — ScenarioSimulationPage
+- `/backtest` — BacktestPage (단일 백테스트 + 포트폴리오 비교, risk_metrics 카드 최상위 + historical_observation 하위)
+- `/scenarios` — ScenarioSimulationPage (MIN_VOL/DEFENSIVE/GROWTH 시나리오 카드, 자산 배분 바, 리스크 지표)
 - `/analysis` — PortfolioExplanationPage (성과 해석 & 리포트)
 - `/screener` — StockScreenerPage
 - `/watchlist` — WatchlistPage
