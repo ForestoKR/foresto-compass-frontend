@@ -14,6 +14,7 @@ import { Line } from 'react-chartjs-2';
 import { runBacktest as runBacktestAPI, comparePortfolios as comparePortfoliosAPI } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
 import { trackEvent, trackPageView } from '../utils/analytics';
+import { formatCurrency, formatPercent } from '../utils/formatting';
 import '../styles/Backtest.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
@@ -23,13 +24,15 @@ function BacktestPage() {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [result, setResult] = useState(null);
+  const [singleResult, setSingleResult] = useState(null);
+  const [compareResult, setCompareResult] = useState(null);
   const [compareMode, setCompareMode] = useState(false);
 
   // 단일 백테스트 설정
   const [investmentType, setInvestmentType] = useState('moderate');
   const [investmentAmount, setInvestmentAmount] = useState(10000000);
   const [periodYears, setPeriodYears] = useState(1);
+  const [rebalanceFrequency, setRebalanceFrequency] = useState('quarterly');
 
   // 비교 모드 설정
   const [selectedTypes, setSelectedTypes] = useState(['moderate']);
@@ -37,7 +40,7 @@ function BacktestPage() {
   // 포트폴리오 페이지에서 넘어온 백테스트 결과 처리
   useEffect(() => {
     if (location.state?.backtestResult) {
-      setResult(location.state.backtestResult);
+      setSingleResult(location.state.backtestResult);
     }
   }, [location.state]);
 
@@ -55,10 +58,10 @@ function BacktestPage() {
         investment_type: investmentType,
         investment_amount: investmentAmount,
         period_years: periodYears,
-        rebalance_frequency: 'quarterly'
+        rebalance_frequency: rebalanceFrequency
       });
 
-      setResult(response.data.data);
+      setSingleResult(response.data.data);
       trackEvent('backtest_executed', { investment_type: investmentType, period_years: periodYears });
     } catch (err) {
       console.error('Backtest error:', err);
@@ -84,7 +87,7 @@ function BacktestPage() {
         period_years: periodYears
       });
 
-      setResult(response.data.data);
+      setCompareResult(response.data.data);
       trackEvent('portfolio_comparison_executed', { types_count: selectedTypes.length, period_years: periodYears });
     } catch (err) {
       console.error('Comparison error:', err);
@@ -98,15 +101,7 @@ function BacktestPage() {
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('ko-KR').format(amount);
-  };
-
-  const formatPercent = (value) => {
-    if (value === undefined || value === null) return '0.0%';
-    const sign = value >= 0 ? '+' : '';
-    return `${sign}${Number(value).toFixed(2)}%`;
-  };
+  const formatPercentSigned = (value) => formatPercent(value, 2, true);
 
   const toggleTypeSelection = (type) => {
     if (selectedTypes.includes(type)) {
@@ -147,8 +142,8 @@ function BacktestPage() {
 
   // 자산 성장 차트 데이터
   const growthChartData = useMemo(() => {
-    if (!result?.daily_values) return null;
-    const data = downsampleData(result.daily_values);
+    if (!singleResult?.daily_values) return null;
+    const data = downsampleData(singleResult.daily_values);
     const style = getComputedStyle(document.documentElement);
     const primaryColor = style.getPropertyValue('--primary').trim() || '#667eea';
     return {
@@ -164,12 +159,12 @@ function BacktestPage() {
         borderWidth: 2,
       }],
     };
-  }, [result]);
+  }, [singleResult]);
 
   // Drawdown 차트 데이터
   const drawdownChartData = useMemo(() => {
-    if (!result?.daily_values) return null;
-    const data = downsampleData(result.daily_values);
+    if (!singleResult?.daily_values) return null;
+    const data = downsampleData(singleResult.daily_values);
     // 고점 대비 낙폭 산출
     let peak = data[0]?.value ?? 0;
     const drawdowns = data.map(d => {
@@ -189,13 +184,13 @@ function BacktestPage() {
         borderWidth: 2,
       }],
     };
-  }, [result]);
+  }, [singleResult]);
 
   // 비교 모드 성장 곡선 차트 데이터
   const comparisonChartData = useMemo(() => {
-    if (!result?.comparison) return null;
+    if (!compareResult?.comparison) return null;
     const colors = ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
-    const datasets = result.comparison.map((item, idx) => {
+    const datasets = compareResult.comparison.map((item, idx) => {
       const data = downsampleData(item.daily_values);
       return {
         label: item.portfolio_name,
@@ -207,12 +202,12 @@ function BacktestPage() {
         borderWidth: 2,
       };
     });
-    const firstData = downsampleData(result.comparison[0]?.daily_values);
+    const firstData = downsampleData(compareResult.comparison[0]?.daily_values);
     return {
       labels: firstData?.map(d => d.date.slice(0, 10)) ?? [],
       datasets,
     };
-  }, [result]);
+  }, [compareResult]);
 
   const chartOptions = (titleText, yFormat) => {
     const style = getComputedStyle(document.documentElement);
@@ -319,6 +314,16 @@ function BacktestPage() {
               </select>
             </div>
 
+            <div className="config-group">
+              <label>리밸런싱 주기</label>
+              <select value={rebalanceFrequency} onChange={(e) => setRebalanceFrequency(e.target.value)}>
+                <option value="none">없음</option>
+                <option value="monthly">월간</option>
+                <option value="quarterly">분기별</option>
+                <option value="yearly">연간</option>
+              </select>
+            </div>
+
             <button className="btn-run" onClick={runBacktest}>
               백테스트 실행
             </button>
@@ -394,18 +399,18 @@ function BacktestPage() {
       )}
 
       {/* 결과 표시 */}
-      {result && !compareMode && (
+      {singleResult && !compareMode && (
         <div className="results-container">
           <h2>백테스트 결과</h2>
 
           {/* 손실/회복 지표 (핵심 KPI) - 상단 배치 */}
           <div className="risk-metrics-section">
-            <h3 className="section-title">📉 손실/회복 지표 (핵심)</h3>
+            <h3 className="section-title">손실/회복 지표 (핵심)</h3>
             <div className="metrics-grid primary">
               <div className="metric-card highlight-risk">
                 <div className="metric-label">최대 낙폭 (MDD)</div>
                 <div className="metric-value negative">
-                  -{(result.risk_metrics?.max_drawdown ?? result.max_drawdown).toFixed(2)}%
+                  -{(singleResult.risk_metrics?.max_drawdown ?? singleResult.max_drawdown).toFixed(2)}%
                 </div>
                 <div className="metric-hint">고점 대비 최대 하락폭</div>
               </div>
@@ -413,8 +418,8 @@ function BacktestPage() {
               <div className="metric-card highlight-risk">
                 <div className="metric-label">최대 회복 기간</div>
                 <div className="metric-value">
-                  {result.risk_metrics?.max_recovery_days
-                    ? `${result.risk_metrics.max_recovery_days}일`
+                  {singleResult.risk_metrics?.max_recovery_days
+                    ? `${singleResult.risk_metrics.max_recovery_days}일`
                     : '데이터 없음'}
                 </div>
                 <div className="metric-hint">낙폭 후 원금 회복까지 소요 기간</div>
@@ -423,8 +428,8 @@ function BacktestPage() {
               <div className="metric-card highlight-risk">
                 <div className="metric-label">최악의 1개월 수익률</div>
                 <div className="metric-value negative">
-                  {result.risk_metrics?.worst_1m_return
-                    ? `${result.risk_metrics.worst_1m_return.toFixed(2)}%`
+                  {singleResult.risk_metrics?.worst_1m_return
+                    ? `${singleResult.risk_metrics.worst_1m_return.toFixed(2)}%`
                     : '데이터 없음'}
                 </div>
                 <div className="metric-hint">단기 최대 손실 가능성</div>
@@ -433,7 +438,7 @@ function BacktestPage() {
               <div className="metric-card highlight-risk">
                 <div className="metric-label">변동성 (위험도)</div>
                 <div className="metric-value">
-                  {formatPercent(result.risk_metrics?.volatility ?? result.volatility)}
+                  {formatPercent(singleResult.risk_metrics?.volatility ?? singleResult.volatility)}
                 </div>
                 <div className="metric-hint">수익률의 변동 폭</div>
               </div>
@@ -441,7 +446,7 @@ function BacktestPage() {
 
             {/* 해석 도움 문구 */}
             <div className="interpretation-help">
-              <p>💡 <strong>해석 도움:</strong> 낙폭이 크면 회복에 시간이 걸릴 수 있습니다.
+              <p>낙폭이 크면 회복에 시간이 걸릴 수 있습니다.
               MDD가 높을수록 심리적 압박이 커지며, 회복 기간 동안 인내심이 필요합니다.</p>
             </div>
           </div>
@@ -468,43 +473,53 @@ function BacktestPage() {
 
           {/* 수익률 지표 (보조) - 하단 배치 */}
           <div className="return-metrics-section">
-            <h3 className="section-title">📈 과거 수익률 (참고용)</h3>
+            <h3 className="section-title">과거 수익률 (참고용)</h3>
             <p className="section-disclaimer">* 과거 수익률은 미래 성과를 보장하지 않습니다</p>
             <div className="metrics-grid secondary">
               <div className="metric-card">
                 <div className="metric-label">총 수익률</div>
-                <div className={`metric-value ${result.total_return >= 0 ? 'positive' : 'negative'}`}>
-                  {formatPercent(result.historical_observation?.total_return ?? result.total_return)}
+                <div className={`metric-value ${(singleResult.historical_observation?.total_return ?? singleResult.total_return) >= 0 ? 'positive' : 'negative'}`}>
+                  {formatPercentSigned(singleResult.historical_observation?.total_return ?? singleResult.total_return)}
                 </div>
               </div>
 
               <div className="metric-card">
                 <div className="metric-label">연평균 수익률 (CAGR)</div>
-                <div className={`metric-value ${result.annualized_return >= 0 ? 'positive' : 'negative'}`}>
-                  {formatPercent(result.historical_observation?.cagr ?? result.annualized_return)}
+                <div className={`metric-value ${(singleResult.historical_observation?.cagr ?? singleResult.annualized_return) >= 0 ? 'positive' : 'negative'}`}>
+                  {formatPercentSigned(singleResult.historical_observation?.cagr ?? singleResult.annualized_return)}
                 </div>
               </div>
 
               <div className="metric-card">
                 <div className="metric-label">샤프 비율</div>
                 <div className="metric-value">
-                  {(result.historical_observation?.sharpe_ratio ?? result.sharpe_ratio).toFixed(2)}
+                  {(singleResult.historical_observation?.sharpe_ratio ?? singleResult.sharpe_ratio)?.toFixed(2) ?? '-'}
                 </div>
                 <div className="metric-hint">위험 대비 초과 수익</div>
               </div>
 
               <div className="metric-card">
+                <div className="metric-label">소르티노 비율</div>
+                <div className="metric-value">
+                  {(singleResult.historical_observation?.sortino_ratio ?? singleResult.sortino_ratio)?.toFixed(2) ?? '-'}
+                </div>
+                <div className="metric-hint">하방 위험 대비 초과 수익</div>
+              </div>
+
+              <div className="metric-card">
                 <div className="metric-label">최종 자산</div>
-                <div className="metric-value">{formatCurrency(result.final_value)}원</div>
+                <div className="metric-value">{formatCurrency(singleResult.final_value)}원</div>
               </div>
             </div>
           </div>
 
           {/* 기간 정보 */}
           <div className="period-info">
-            <p>백테스트 기간: {new Date(result.start_date).toLocaleDateString()} ~ {new Date(result.end_date).toLocaleDateString()}</p>
-            <p>초기 투자: {formatCurrency(result.initial_investment)}원</p>
-            <p>리밸런싱 주기: 분기별 (3개월)</p>
+            <p>백테스트 기간: {new Date(singleResult.start_date).toLocaleDateString()} ~ {new Date(singleResult.end_date).toLocaleDateString()}</p>
+            <p>초기 투자: {formatCurrency(singleResult.initial_investment)}원</p>
+            <p>리밸런싱: {
+              { none: '없음', monthly: '월간', quarterly: '분기별', yearly: '연간' }[singleResult.rebalance_frequency] ?? singleResult.rebalance_frequency
+            } ({singleResult.number_of_rebalances ?? 0}회)</p>
           </div>
 
           {/* 성과 해석 이동 */}
@@ -514,23 +529,23 @@ function BacktestPage() {
               onClick={() => navigate('/analysis', {
                 state: {
                   metrics: {
-                    total_return: result.historical_observation?.total_return ?? result.total_return,
-                    cagr: result.historical_observation?.cagr ?? result.annualized_return,
-                    volatility: result.risk_metrics?.volatility ?? result.volatility,
-                    sharpe_ratio: result.historical_observation?.sharpe_ratio ?? result.sharpe_ratio,
-                    max_drawdown: result.risk_metrics?.max_drawdown ?? result.max_drawdown,
+                    total_return: singleResult.historical_observation?.total_return ?? singleResult.total_return,
+                    cagr: singleResult.historical_observation?.cagr ?? singleResult.annualized_return,
+                    volatility: singleResult.risk_metrics?.volatility ?? singleResult.volatility,
+                    sharpe_ratio: singleResult.historical_observation?.sharpe_ratio ?? singleResult.sharpe_ratio,
+                    max_drawdown: singleResult.risk_metrics?.max_drawdown ?? singleResult.max_drawdown,
                   }
                 }
               })}
             >
-              성과 해석하기 →
+              성과 해석하기
             </button>
           </div>
         </div>
       )}
 
       {/* 비교 결과 */}
-      {result && compareMode && result.comparison && (
+      {compareResult && compareMode && compareResult.comparison && (
         <div className="comparison-container">
           <h2>포트폴리오 비교 결과</h2>
 
@@ -538,21 +553,21 @@ function BacktestPage() {
           <div className="best-performers">
             <div className="best-item highlight">
               <span className="label">최저 위험도:</span>
-              <span className="value">{result.lowest_risk}</span>
+              <span className="value">{compareResult.lowest_risk}</span>
             </div>
             <div className="best-item">
               <span className="label">최고 위험 조정 수익:</span>
-              <span className="value">{result.best_risk_adjusted}</span>
+              <span className="value">{compareResult.best_risk_adjusted}</span>
             </div>
             <div className="best-item secondary">
               <span className="label">최고 수익률:</span>
-              <span className="value">{result.best_return}</span>
+              <span className="value">{compareResult.best_return}</span>
             </div>
           </div>
 
           {/* 해석 도움 문구 */}
           <div className="interpretation-help">
-            <p>💡 <strong>해석 도움:</strong> 최저 위험도 포트폴리오는 변동성이 낮습니다.
+            <p>최저 위험도 포트폴리오는 변동성이 낮습니다.
             낙폭이 클수록 회복에 오래 걸릴 수 있습니다.</p>
           </div>
 
@@ -582,17 +597,17 @@ function BacktestPage() {
                 </tr>
               </thead>
               <tbody>
-                {result.comparison.map((item, idx) => (
+                {compareResult.comparison.map((item, idx) => (
                   <tr key={idx}>
                     <td><strong>{item.portfolio_name}</strong></td>
                     <td className="negative risk-col">-{item.max_drawdown.toFixed(2)}%</td>
                     <td className="risk-col">{formatPercent(item.volatility)}</td>
                     <td>{item.sharpe_ratio.toFixed(2)}</td>
                     <td className={`return-col ${item.total_return >= 0 ? 'positive' : 'negative'}`}>
-                      {formatPercent(item.total_return)}
+                      {formatPercentSigned(item.total_return)}
                     </td>
                     <td className={`return-col ${item.annualized_return >= 0 ? 'positive' : 'negative'}`}>
-                      {formatPercent(item.annualized_return)}
+                      {formatPercentSigned(item.annualized_return)}
                     </td>
                   </tr>
                 ))}
@@ -605,7 +620,7 @@ function BacktestPage() {
       )}
 
       {/* 안내 사항 */}
-      {!result && (
+      {!singleResult && !compareResult && (
         <div className="info-section">
           <h3>백테스팅이란?</h3>
           <p>

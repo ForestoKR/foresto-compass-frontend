@@ -1,12 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import { getScenarios, getScenarioDetail, runBacktest } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
 import { trackEvent, trackPageView } from '../utils/analytics';
+import { formatCurrency, formatPercent } from '../utils/formatting';
 import '../styles/ScenarioSimulation.css';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
 
 function ScenarioSimulationPage() {
   const navigate = useNavigate();
+  const resultRef = useRef(null);
   const [scenarios, setScenarios] = useState([]);
   const [selectedScenario, setSelectedScenario] = useState(null);
   const [scenarioDetail, setScenarioDetail] = useState(null);
@@ -17,15 +32,17 @@ function ScenarioSimulationPage() {
   // 시뮬레이션 설정
   const [periodYears, setPeriodYears] = useState(3);
   const [investmentAmount, setInvestmentAmount] = useState(10000000);
-  const [maxLossLimit, setMaxLossLimit] = useState(20); // 최대 허용 손실 %
+  const [maxLossLimit, setMaxLossLimit] = useState(20);
 
-  // 시나리오 목록 로드
+  // 인페이지 결과
+  const [simulationResult, setSimulationResult] = useState(null);
+  const [resultScenarioName, setResultScenarioName] = useState('');
+
   useEffect(() => {
     loadScenarios();
     trackPageView('scenario_simulation');
   }, []);
 
-  // 선택된 시나리오 상세 로드
   useEffect(() => {
     if (selectedScenario) {
       loadScenarioDetail(selectedScenario);
@@ -81,29 +98,25 @@ function ScenarioSimulationPage() {
       setSimulating(true);
       setError(null);
 
-      // 시나리오의 자산 배분을 기반으로 백테스트 실행
       const response = await runBacktest({
         portfolio: {
           allocation: scenarioDetail.allocation,
-          securities: [] // 시나리오 기반 시뮬레이션
+          securities: []
         },
         investment_amount: investmentAmount,
         period_years: periodYears,
         rebalance_frequency: 'quarterly'
       });
 
+      const data = response.data.data;
+      setSimulationResult(data);
+      setResultScenarioName(scenarioDetail.name_ko);
       trackEvent('scenario_simulation_run', { scenario_id: selectedScenario, period_years: periodYears });
-      // 결과 페이지로 이동
-      navigate('/backtest', {
-        state: {
-          backtestResult: response.data.data,
-          scenarioInfo: {
-            name: scenarioDetail.name_ko,
-            maxLossLimit: maxLossLimit,
-            disclaimer: scenarioDetail.disclaimer
-          }
-        }
-      });
+
+      // 결과 섹션으로 스크롤
+      setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     } catch (err) {
       console.error('Simulation error:', err);
       if (err.response?.status === 429) {
@@ -116,9 +129,7 @@ function ScenarioSimulationPage() {
     }
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('ko-KR').format(amount);
-  };
+  const formatPercentSigned = (value) => formatPercent(value, 2, true);
 
   // 시나리오 카드 색상
   const getScenarioColor = (scenarioId) => {
@@ -128,6 +139,96 @@ function ScenarioSimulationPage() {
       'GROWTH': '#FF9800'
     };
     return colors[scenarioId] || '#667eea';
+  };
+
+  // 다운샘플링 (365일 초과 시 주간 평균)
+  const downsampleData = (dailyValues) => {
+    if (!dailyValues || dailyValues.length <= 365) return dailyValues;
+    const sampled = [];
+    for (let i = 0; i < dailyValues.length; i += 7) {
+      const chunk = dailyValues.slice(i, i + 7);
+      const avgValue = chunk.reduce((sum, d) => sum + d.value, 0) / chunk.length;
+      sampled.push({ date: chunk[Math.floor(chunk.length / 2)].date, value: avgValue });
+    }
+    return sampled;
+  };
+
+  // 결과 차트 데이터
+  const growthChartData = useMemo(() => {
+    if (!simulationResult?.daily_values) return null;
+    const data = downsampleData(simulationResult.daily_values);
+    const style = getComputedStyle(document.documentElement);
+    const primaryColor = style.getPropertyValue('--primary').trim() || '#667eea';
+    return {
+      labels: data.map(d => d.date.slice(0, 10)),
+      datasets: [{
+        label: '자산 가치 (원)',
+        data: data.map(d => d.value),
+        borderColor: primaryColor,
+        backgroundColor: primaryColor + '20',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+      }],
+    };
+  }, [simulationResult]);
+
+  const drawdownChartData = useMemo(() => {
+    if (!simulationResult?.daily_values) return null;
+    const data = downsampleData(simulationResult.daily_values);
+    let peak = data[0]?.value ?? 0;
+    const drawdowns = data.map(d => {
+      if (d.value > peak) peak = d.value;
+      return peak > 0 ? ((d.value - peak) / peak) * 100 : 0;
+    });
+    return {
+      labels: data.map(d => d.date.slice(0, 10)),
+      datasets: [{
+        label: 'Drawdown (%)',
+        data: drawdowns,
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.15)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+      }],
+    };
+  }, [simulationResult]);
+
+  const chartOptions = (titleText, yFormat) => {
+    const style = getComputedStyle(document.documentElement);
+    const textColor = style.getPropertyValue('--text-secondary').trim() || '#6b7280';
+    const gridColor = style.getPropertyValue('--border').trim() || '#e5e7eb';
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => yFormat === 'currency'
+              ? `${ctx.dataset.label}: ${formatCurrency(Math.round(ctx.parsed.y))}원`
+              : `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: { color: textColor, maxTicksLimit: 8, maxRotation: 0, font: { size: 11 } },
+          grid: { color: gridColor + '40' },
+        },
+        y: {
+          ticks: {
+            color: textColor,
+            font: { size: 11 },
+            callback: (v) => yFormat === 'currency' ? formatCurrency(v) : `${v.toFixed(1)}%`,
+          },
+          grid: { color: gridColor + '40' },
+        },
+      },
+    };
   };
 
   if (loading) {
@@ -151,7 +252,6 @@ function ScenarioSimulationPage() {
         </p>
       </div>
 
-      {/* 면책 문구 */}
       <Disclaimer type="simulation" />
 
       {/* 시나리오 선택 */}
@@ -192,54 +292,40 @@ function ScenarioSimulationPage() {
           <p className="detail-description">{scenarioDetail.description}</p>
 
           <div className="detail-grid">
-            {/* 자산 배분 */}
             <div className="detail-card">
               <h4>자산 배분 비율</h4>
               <div className="allocation-bars">
                 <div className="allocation-item">
                   <span>주식</span>
                   <div className="bar-container">
-                    <div
-                      className="bar bar-stocks"
-                      style={{ width: `${scenarioDetail.allocation.stocks}%` }}
-                    />
+                    <div className="bar bar-stocks" style={{ width: `${scenarioDetail.allocation.stocks}%` }} />
                   </div>
                   <span>{scenarioDetail.allocation.stocks}%</span>
                 </div>
                 <div className="allocation-item">
                   <span>채권</span>
                   <div className="bar-container">
-                    <div
-                      className="bar bar-bonds"
-                      style={{ width: `${scenarioDetail.allocation.bonds}%` }}
-                    />
+                    <div className="bar bar-bonds" style={{ width: `${scenarioDetail.allocation.bonds}%` }} />
                   </div>
                   <span>{scenarioDetail.allocation.bonds}%</span>
                 </div>
                 <div className="allocation-item">
                   <span>단기금융</span>
                   <div className="bar-container">
-                    <div
-                      className="bar bar-money-market"
-                      style={{ width: `${scenarioDetail.allocation.money_market}%` }}
-                    />
+                    <div className="bar bar-money-market" style={{ width: `${scenarioDetail.allocation.money_market}%` }} />
                   </div>
                   <span>{scenarioDetail.allocation.money_market}%</span>
                 </div>
                 <div className="allocation-item">
                   <span>금</span>
                   <div className="bar-container">
-                    <div
-                      className="bar bar-gold"
-                      style={{ width: `${scenarioDetail.allocation.gold}%` }}
-                    />
+                    <div className="bar bar-gold" style={{ width: `${scenarioDetail.allocation.gold}%` }} />
                   </div>
                   <span>{scenarioDetail.allocation.gold}%</span>
                 </div>
               </div>
             </div>
 
-            {/* 위험 지표 */}
             <div className="detail-card risk-card">
               <h4>예상 위험 지표 (참고용)</h4>
               <div className="risk-items">
@@ -260,7 +346,6 @@ function ScenarioSimulationPage() {
             </div>
           </div>
 
-          {/* 학습 포인트 */}
           <div className="learning-points">
             <h4>이 시나리오에서 학습할 수 있는 내용</h4>
             <ul>
@@ -280,10 +365,7 @@ function ScenarioSimulationPage() {
           <div className="config-grid">
             <div className="config-item">
               <label>모의실험 기간</label>
-              <select
-                value={periodYears}
-                onChange={(e) => setPeriodYears(parseInt(e.target.value))}
-              >
+              <select value={periodYears} onChange={(e) => setPeriodYears(parseInt(e.target.value))}>
                 <option value="1">1년</option>
                 <option value="3">3년</option>
                 <option value="5">5년</option>
@@ -319,14 +401,12 @@ function ScenarioSimulationPage() {
             </div>
           </div>
 
-          {/* 에러 메시지 */}
           {error && (
             <div className="scenario-error">
               <p>{error}</p>
             </div>
           )}
 
-          {/* 실행 버튼 */}
           <button
             className="btn-simulate"
             onClick={runSimulation}
@@ -348,7 +428,124 @@ function ScenarioSimulationPage() {
         </div>
       )}
 
-      {/* 안내 섹션 (시나리오 미선택 시) */}
+      {/* 인페이지 결과 */}
+      {simulationResult && (
+        <div className="scenario-result" ref={resultRef}>
+          <h2>3. 모의실험 결과 — {resultScenarioName}</h2>
+
+          {/* 손실/회복 지표 */}
+          <div className="scenario-risk-section">
+            <h3 className="section-title">손실/회복 지표 (핵심)</h3>
+            <div className="scenario-metrics-grid">
+              <div className="scenario-metric-card scenario-metric-risk">
+                <div className="scenario-metric-label">최대 낙폭 (MDD)</div>
+                <div className="scenario-metric-value negative">
+                  -{(simulationResult.risk_metrics?.max_drawdown ?? simulationResult.max_drawdown).toFixed(2)}%
+                </div>
+              </div>
+              <div className="scenario-metric-card scenario-metric-risk">
+                <div className="scenario-metric-label">최대 회복 기간</div>
+                <div className="scenario-metric-value">
+                  {simulationResult.risk_metrics?.max_recovery_days
+                    ? `${simulationResult.risk_metrics.max_recovery_days}일`
+                    : '데이터 없음'}
+                </div>
+              </div>
+              <div className="scenario-metric-card scenario-metric-risk">
+                <div className="scenario-metric-label">최악의 1개월 수익률</div>
+                <div className="scenario-metric-value negative">
+                  {simulationResult.risk_metrics?.worst_1m_return
+                    ? `${simulationResult.risk_metrics.worst_1m_return.toFixed(2)}%`
+                    : '데이터 없음'}
+                </div>
+              </div>
+              <div className="scenario-metric-card scenario-metric-risk">
+                <div className="scenario-metric-label">변동성</div>
+                <div className="scenario-metric-value">
+                  {formatPercent(simulationResult.risk_metrics?.volatility ?? simulationResult.volatility)}
+                </div>
+              </div>
+            </div>
+
+            {/* MDD가 허용 손실 초과 시 경고 */}
+            {(simulationResult.risk_metrics?.max_drawdown ?? simulationResult.max_drawdown) > maxLossLimit && (
+              <div className="scenario-loss-warning">
+                <p>최대 낙폭({(simulationResult.risk_metrics?.max_drawdown ?? simulationResult.max_drawdown).toFixed(1)}%)이 설정한 허용 손실(-{maxLossLimit}%)을 초과합니다.</p>
+              </div>
+            )}
+          </div>
+
+          {/* 차트 */}
+          {growthChartData && (
+            <div className="scenario-charts-section">
+              <div className="scenario-chart-wrapper">
+                <h3 className="section-title">자산 성장 곡선</h3>
+                <div className="scenario-chart-container">
+                  <Line data={growthChartData} options={chartOptions('자산 성장', 'currency')} />
+                </div>
+              </div>
+              {drawdownChartData && (
+                <div className="scenario-chart-wrapper">
+                  <h3 className="section-title">Drawdown (고점 대비 낙폭)</h3>
+                  <div className="scenario-chart-container">
+                    <Line data={drawdownChartData} options={chartOptions('Drawdown', 'percent')} />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 수익률 지표 */}
+          <div className="scenario-return-section">
+            <h3 className="section-title">과거 수익률 (참고용)</h3>
+            <p className="section-disclaimer">* 과거 수익률은 미래 성과를 보장하지 않습니다</p>
+            <div className="scenario-metrics-grid">
+              <div className="scenario-metric-card">
+                <div className="scenario-metric-label">총 수익률</div>
+                <div className={`scenario-metric-value ${(simulationResult.historical_observation?.total_return ?? simulationResult.total_return) >= 0 ? 'positive' : 'negative'}`}>
+                  {formatPercentSigned(simulationResult.historical_observation?.total_return ?? simulationResult.total_return)}
+                </div>
+              </div>
+              <div className="scenario-metric-card">
+                <div className="scenario-metric-label">연평균 수익률 (CAGR)</div>
+                <div className={`scenario-metric-value ${(simulationResult.historical_observation?.cagr ?? simulationResult.annualized_return) >= 0 ? 'positive' : 'negative'}`}>
+                  {formatPercentSigned(simulationResult.historical_observation?.cagr ?? simulationResult.annualized_return)}
+                </div>
+              </div>
+              <div className="scenario-metric-card">
+                <div className="scenario-metric-label">샤프 비율</div>
+                <div className="scenario-metric-value">
+                  {(simulationResult.historical_observation?.sharpe_ratio ?? simulationResult.sharpe_ratio)?.toFixed(2) ?? '-'}
+                </div>
+              </div>
+              <div className="scenario-metric-card">
+                <div className="scenario-metric-label">최종 자산</div>
+                <div className="scenario-metric-value">{formatCurrency(simulationResult.final_value)}원</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 기간 정보 */}
+          <div className="scenario-period-info">
+            <p>기간: {new Date(simulationResult.start_date).toLocaleDateString()} ~ {new Date(simulationResult.end_date).toLocaleDateString()}</p>
+            <p>초기 투자: {formatCurrency(simulationResult.initial_investment)}원</p>
+          </div>
+
+          {/* 상세 분석 이동 */}
+          <div className="scenario-nav-section">
+            <button
+              className="btn-simulate"
+              onClick={() => navigate('/backtest', {
+                state: { backtestResult: simulationResult }
+              })}
+            >
+              상세 분석 보기
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 안내 섹션 */}
       {!selectedScenario && (
         <div className="info-section">
           <h3>시나리오 기반 학습이란?</h3>

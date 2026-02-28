@@ -522,6 +522,138 @@
   color: var(--text, #1f2937);
 }
 
+/* ── Scenario Result (in-page) ── */
+.scenario-result {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 12px);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+}
+
+.scenario-result h2 {
+  color: var(--text, #1f2937);
+  margin-bottom: 1.25rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.scenario-result .section-title {
+  color: var(--text, #1f2937);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.scenario-result .section-disclaimer {
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+}
+
+.scenario-risk-section,
+.scenario-return-section {
+  margin-bottom: 1.5rem;
+}
+
+.scenario-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.scenario-metric-card {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.scenario-metric-card.scenario-metric-risk {
+  border-left: 3px solid #ef4444;
+}
+
+.scenario-metric-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.scenario-metric-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text, #1f2937);
+}
+
+.scenario-metric-value.positive { color: #22c55e; }
+.scenario-metric-value.negative { color: #ef4444; }
+
+.scenario-loss-warning {
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-top: 0.75rem;
+}
+
+[data-theme="dark"] .scenario-loss-warning {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.scenario-loss-warning p {
+  margin: 0;
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.scenario-charts-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.scenario-chart-wrapper {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.scenario-chart-container {
+  height: 260px;
+  position: relative;
+}
+
+.scenario-period-info {
+  padding: 0.75rem 1rem;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.scenario-period-info p {
+  margin: 0.25rem 0;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.85rem;
+}
+
+.scenario-nav-section {
+  text-align: center;
+}
+
+.scenario-nav-section .btn-simulate {
+  display: inline-flex;
+  width: auto;
+  padding: 0.75rem 2rem;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .scenario-page {
@@ -546,5 +678,13 @@
 
   .allocation-item {
     grid-template-columns: 60px 1fr 36px;
+  }
+
+  .scenario-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .scenario-charts-section {
+    grid-template-columns: 1fr;
   }
 }
