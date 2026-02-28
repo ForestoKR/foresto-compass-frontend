@@ -544,6 +544,26 @@
   line-height: 1.6;
 }
 
+/* ── Charts Section ── */
+.backtest-charts-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.backtest-chart-wrapper {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.backtest-chart-container {
+  position: relative;
+  height: 300px;
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .backtest-page {

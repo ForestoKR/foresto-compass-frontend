@@ -1,9 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 import { runBacktest as runBacktestAPI, comparePortfolios as comparePortfoliosAPI } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
 import { trackEvent, trackPageView } from '../utils/analytics';
 import '../styles/Backtest.css';
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
 
 function BacktestPage() {
   const navigate = useNavigate();
@@ -33,6 +46,7 @@ function BacktestPage() {
   }, []);
 
   const runBacktest = async () => {
+    if (!validateAmount()) return;
     try {
       setLoading(true);
       setError(null);
@@ -59,6 +73,7 @@ function BacktestPage() {
   };
 
   const comparePortfolios = async () => {
+    if (!validateAmount()) return;
     try {
       setLoading(true);
       setError(null);
@@ -99,6 +114,138 @@ function BacktestPage() {
     } else {
       setSelectedTypes([...selectedTypes, type]);
     }
+  };
+
+  // 투자금액 검증
+  const validateAmount = () => {
+    if (!investmentAmount || investmentAmount <= 0) {
+      setError('투자 금액을 입력해주세요.');
+      return false;
+    }
+    if (investmentAmount < 10000) {
+      setError('투자 금액은 최소 10,000원 이상이어야 합니다.');
+      return false;
+    }
+    if (investmentAmount > 1000000000) {
+      setError('투자 금액은 최대 10억원까지 가능합니다.');
+      return false;
+    }
+    return true;
+  };
+
+  // 다운샘플링 (365일 초과 시 주간 평균)
+  const downsampleData = (dailyValues) => {
+    if (!dailyValues || dailyValues.length <= 365) return dailyValues;
+    const sampled = [];
+    for (let i = 0; i < dailyValues.length; i += 7) {
+      const chunk = dailyValues.slice(i, i + 7);
+      const avgValue = chunk.reduce((sum, d) => sum + d.value, 0) / chunk.length;
+      sampled.push({ date: chunk[Math.floor(chunk.length / 2)].date, value: avgValue });
+    }
+    return sampled;
+  };
+
+  // 자산 성장 차트 데이터
+  const growthChartData = useMemo(() => {
+    if (!result?.daily_values) return null;
+    const data = downsampleData(result.daily_values);
+    const style = getComputedStyle(document.documentElement);
+    const primaryColor = style.getPropertyValue('--primary').trim() || '#667eea';
+    return {
+      labels: data.map(d => d.date.slice(0, 10)),
+      datasets: [{
+        label: '자산 가치 (원)',
+        data: data.map(d => d.value),
+        borderColor: primaryColor,
+        backgroundColor: primaryColor + '20',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+      }],
+    };
+  }, [result]);
+
+  // Drawdown 차트 데이터
+  const drawdownChartData = useMemo(() => {
+    if (!result?.daily_values) return null;
+    const data = downsampleData(result.daily_values);
+    // 고점 대비 낙폭 산출
+    let peak = data[0]?.value ?? 0;
+    const drawdowns = data.map(d => {
+      if (d.value > peak) peak = d.value;
+      return peak > 0 ? ((d.value - peak) / peak) * 100 : 0;
+    });
+    return {
+      labels: data.map(d => d.date.slice(0, 10)),
+      datasets: [{
+        label: 'Drawdown (%)',
+        data: drawdowns,
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239, 68, 68, 0.15)',
+        fill: true,
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+      }],
+    };
+  }, [result]);
+
+  // 비교 모드 성장 곡선 차트 데이터
+  const comparisonChartData = useMemo(() => {
+    if (!result?.comparison) return null;
+    const colors = ['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+    const datasets = result.comparison.map((item, idx) => {
+      const data = downsampleData(item.daily_values);
+      return {
+        label: item.portfolio_name,
+        data: data?.map(d => d.value) ?? [],
+        borderColor: colors[idx % colors.length],
+        backgroundColor: 'transparent',
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+      };
+    });
+    const firstData = downsampleData(result.comparison[0]?.daily_values);
+    return {
+      labels: firstData?.map(d => d.date.slice(0, 10)) ?? [],
+      datasets,
+    };
+  }, [result]);
+
+  const chartOptions = (titleText, yFormat) => {
+    const style = getComputedStyle(document.documentElement);
+    const textColor = style.getPropertyValue('--text-secondary').trim() || '#6b7280';
+    const gridColor = style.getPropertyValue('--border').trim() || '#e5e7eb';
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: titleText === '포트폴리오 비교', labels: { color: textColor, font: { size: 12 } } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => yFormat === 'currency'
+              ? `${ctx.dataset.label}: ${formatCurrency(Math.round(ctx.parsed.y))}원`
+              : `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          ticks: { color: textColor, maxTicksLimit: 8, maxRotation: 0, font: { size: 11 } },
+          grid: { color: gridColor + '40' },
+        },
+        y: {
+          ticks: {
+            color: textColor,
+            font: { size: 11 },
+            callback: (v) => yFormat === 'currency' ? formatCurrency(v) : `${v.toFixed(1)}%`,
+          },
+          grid: { color: gridColor + '40' },
+        },
+      },
+    };
   };
 
   if (loading) {
@@ -299,6 +446,26 @@ function BacktestPage() {
             </div>
           </div>
 
+          {/* 차트 섹션 */}
+          {growthChartData && (
+            <div className="backtest-charts-section">
+              <div className="backtest-chart-wrapper">
+                <h3 className="section-title">자산 성장 곡선</h3>
+                <div className="backtest-chart-container">
+                  <Line data={growthChartData} options={chartOptions('자산 성장', 'currency')} />
+                </div>
+              </div>
+              {drawdownChartData && (
+                <div className="backtest-chart-wrapper">
+                  <h3 className="section-title">Drawdown (고점 대비 낙폭)</h3>
+                  <div className="backtest-chart-container">
+                    <Line data={drawdownChartData} options={chartOptions('Drawdown', 'percent')} />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* 수익률 지표 (보조) - 하단 배치 */}
           <div className="return-metrics-section">
             <h3 className="section-title">📈 과거 수익률 (참고용)</h3>
@@ -388,6 +555,18 @@ function BacktestPage() {
             <p>💡 <strong>해석 도움:</strong> 최저 위험도 포트폴리오는 변동성이 낮습니다.
             낙폭이 클수록 회복에 오래 걸릴 수 있습니다.</p>
           </div>
+
+          {/* 비교 성장 곡선 차트 */}
+          {comparisonChartData && (
+            <div className="backtest-charts-section">
+              <div className="backtest-chart-wrapper">
+                <h3 className="section-title">포트폴리오 비교 성장 곡선</h3>
+                <div className="backtest-chart-container">
+                  <Line data={comparisonChartData} options={chartOptions('포트폴리오 비교', 'currency')} />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* 비교 테이블 - 손실/회복 지표 먼저 */}
           <div className="comparison-table">

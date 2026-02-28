@@ -54,11 +54,28 @@ function ScenarioSimulationPage() {
     }
   };
 
+  const validateAmount = () => {
+    if (!investmentAmount || investmentAmount <= 0) {
+      setError('투자 금액을 입력해주세요.');
+      return false;
+    }
+    if (investmentAmount < 10000) {
+      setError('투자 금액은 최소 10,000원 이상이어야 합니다.');
+      return false;
+    }
+    if (investmentAmount > 1000000000) {
+      setError('투자 금액은 최대 10억원까지 가능합니다.');
+      return false;
+    }
+    return true;
+  };
+
   const runSimulation = async () => {
     if (!selectedScenario || !scenarioDetail) {
       setError('시나리오를 선택해주세요.');
       return;
     }
+    if (!validateAmount()) return;
 
     try {
       setSimulating(true);
