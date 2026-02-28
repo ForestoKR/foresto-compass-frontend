@@ -88,6 +88,15 @@ function formatNextRun(isoString) {
   return `${month}월 ${day}일 (${dow}) ${hours}:${minutes}`;
 }
 
+function formatDateOnly(isoString) {
+  if (!isoString) return '-';
+  const d = new Date(isoString + 'T00:00:00');
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  const dow = DAY_NAMES[d.getDay()];
+  return `${month}/${day} (${dow})`;
+}
+
 export default function SchedulerPage() {
   const navigate = useNavigate();
   const [schedulerData, setSchedulerData] = useState(null);
@@ -275,7 +284,24 @@ function JobCard({ job, triggering, onTrigger }) {
         {job.next_run_time && (
           <div className="sc-job-info-row">
             <span className="sc-job-info-label">다음</span>
-            <span className="sc-job-info-value">{formatNextRun(job.next_run_time)}</span>
+            <span className="sc-job-info-value">
+              {job.holiday_info ? (
+                <>
+                  <span className="sc-next-run-strike">{formatNextRun(job.next_run_time)}</span>
+                  <span className="sc-holiday-badge">{job.holiday_info.holiday_name} · 스킵</span>
+                </>
+              ) : (
+                formatNextRun(job.next_run_time)
+              )}
+            </span>
+          </div>
+        )}
+        {job.holiday_info?.actual_next_trading_day && (
+          <div className="sc-job-info-row">
+            <span className="sc-job-info-label">실행</span>
+            <span className="sc-job-info-value sc-actual-next">
+              {formatDateOnly(job.holiday_info.actual_next_trading_day)}
+            </span>
           </div>
         )}
       </div>

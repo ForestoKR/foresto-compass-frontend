@@ -206,6 +206,33 @@
   color: var(--text, #1f2937);
 }
 
+/* ── Holiday skip indicator ── */
+.sc-next-run-strike {
+  text-decoration: line-through;
+  color: var(--text-muted, #9ca3af);
+}
+
+.sc-holiday-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+}
+
+[data-theme="dark"] .sc-holiday-badge {
+  background: rgba(217, 119, 6, 0.2);
+  color: #f59e0b;
+}
+
+.sc-actual-next {
+  color: var(--primary, #667eea);
+  font-weight: 600;
+}
+
 /* ── Last run summary ── */
 .sc-last-run {
   padding: 10px;
