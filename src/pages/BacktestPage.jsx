@@ -1,23 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import { runBacktest as runBacktestAPI, comparePortfolios as comparePortfoliosAPI } from '../services/api';
 import Disclaimer from '../components/Disclaimer';
 import { trackEvent, trackPageView } from '../utils/analytics';
 import { formatCurrency, formatPercent } from '../utils/formatting';
+import { downsampleData, buildChartOptions, buildDrawdownChartData, Line } from '../utils/chartUtils';
 import '../styles/Backtest.css';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler);
 
 function BacktestPage() {
   const navigate = useNavigate();
@@ -135,18 +123,6 @@ function BacktestPage() {
     return true;
   };
 
-  // 다운샘플링 (365일 초과 시 주간 평균)
-  const downsampleData = (dailyValues) => {
-    if (!dailyValues || dailyValues.length <= 365) return dailyValues;
-    const sampled = [];
-    for (let i = 0; i < dailyValues.length; i += 7) {
-      const chunk = dailyValues.slice(i, i + 7);
-      const avgValue = chunk.reduce((sum, d) => sum + d.value, 0) / chunk.length;
-      sampled.push({ date: chunk[Math.floor(chunk.length / 2)].date, value: avgValue });
-    }
-    return sampled;
-  };
-
   // 자산 성장 차트 데이터
   const growthChartData = useMemo(() => {
     if (!singleResult?.daily_values) return null;
@@ -189,25 +165,7 @@ function BacktestPage() {
   const drawdownChartData = useMemo(() => {
     if (!singleResult?.daily_values) return null;
     const data = downsampleData(singleResult.daily_values);
-    // 고점 대비 낙폭 산출
-    let peak = data[0]?.value ?? 0;
-    const drawdowns = data.map(d => {
-      if (d.value > peak) peak = d.value;
-      return peak > 0 ? ((d.value - peak) / peak) * 100 : 0;
-    });
-    return {
-      labels: data.map(d => d.date.slice(0, 10)),
-      datasets: [{
-        label: 'Drawdown (%)',
-        data: drawdowns,
-        borderColor: '#ef4444',
-        backgroundColor: 'rgba(239, 68, 68, 0.15)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 0,
-        borderWidth: 2,
-      }],
-    };
+    return buildDrawdownChartData(data);
   }, [singleResult]);
 
   // 비교 모드 성장 곡선 차트 데이터
@@ -249,40 +207,6 @@ function BacktestPage() {
       datasets,
     };
   }, [compareResult]);
-
-  const chartOptions = (titleText, yFormat) => {
-    const style = getComputedStyle(document.documentElement);
-    const textColor = style.getPropertyValue('--text-secondary').trim() || '#6b7280';
-    const gridColor = style.getPropertyValue('--border').trim() || '#e5e7eb';
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: titleText === '포트폴리오 비교' || titleText === '자산 성장', labels: { color: textColor, font: { size: 12 } } },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => yFormat === 'currency'
-              ? `${ctx.dataset.label}: ${formatCurrency(Math.round(ctx.parsed.y))}원`
-              : `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}%`,
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: { color: textColor, maxTicksLimit: 8, maxRotation: 0, font: { size: 11 } },
-          grid: { color: gridColor + '40' },
-        },
-        y: {
-          ticks: {
-            color: textColor,
-            font: { size: 11 },
-            callback: (v) => yFormat === 'currency' ? formatCurrency(v) : `${v.toFixed(1)}%`,
-          },
-          grid: { color: gridColor + '40' },
-        },
-      },
-    };
-  };
 
   if (loading) {
     return (
@@ -522,14 +446,14 @@ function BacktestPage() {
               <div className="backtest-chart-wrapper">
                 <h3 className="section-title">자산 성장 곡선</h3>
                 <div className="backtest-chart-container" aria-label="백테스트 자산 성장 곡선 차트">
-                  <Line data={growthChartData} options={chartOptions('자산 성장', 'currency')} />
+                  <Line data={growthChartData} options={buildChartOptions('자산 성장', 'currency', { showLegend: true })} />
                 </div>
               </div>
               {drawdownChartData && (
                 <div className="backtest-chart-wrapper">
                   <h3 className="section-title">Drawdown (고점 대비 낙폭)</h3>
                   <div className="backtest-chart-container" aria-label="백테스트 Drawdown 차트">
-                    <Line data={drawdownChartData} options={chartOptions('Drawdown', 'percent')} />
+                    <Line data={drawdownChartData} options={buildChartOptions('Drawdown', 'percent')} />
                   </div>
                 </div>
               )}
@@ -679,7 +603,7 @@ function BacktestPage() {
               <div className="backtest-chart-wrapper">
                 <h3 className="section-title">포트폴리오 비교 성장 곡선</h3>
                 <div className="backtest-chart-container">
-                  <Line data={comparisonChartData} options={chartOptions('포트폴리오 비교', 'currency')} />
+                  <Line data={comparisonChartData} options={buildChartOptions('포트폴리오 비교', 'currency', { showLegend: true })} />
                 </div>
               </div>
             </div>
