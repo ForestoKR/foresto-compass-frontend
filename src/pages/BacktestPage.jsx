@@ -33,6 +33,7 @@ function BacktestPage() {
   const [investmentAmount, setInvestmentAmount] = useState(10000000);
   const [periodYears, setPeriodYears] = useState(1);
   const [rebalanceFrequency, setRebalanceFrequency] = useState('quarterly');
+  const [benchmark, setBenchmark] = useState('');
 
   // 비교 모드 설정
   const [selectedTypes, setSelectedTypes] = useState(['moderate']);
@@ -54,12 +55,15 @@ function BacktestPage() {
       setLoading(true);
       setError(null);
 
-      const response = await runBacktestAPI({
+      const request = {
         investment_type: investmentType,
         investment_amount: investmentAmount,
         period_years: periodYears,
-        rebalance_frequency: rebalanceFrequency
-      });
+        rebalance_frequency: rebalanceFrequency,
+      };
+      if (benchmark) request.benchmark = benchmark;
+
+      const response = await runBacktestAPI(request);
 
       setSingleResult(response.data.data);
       trackEvent('backtest_executed', { investment_type: investmentType, period_years: periodYears });
@@ -81,11 +85,14 @@ function BacktestPage() {
       setLoading(true);
       setError(null);
 
-      const response = await comparePortfoliosAPI({
+      const compareRequest = {
         investment_types: selectedTypes,
         investment_amount: investmentAmount,
-        period_years: periodYears
-      });
+        period_years: periodYears,
+      };
+      if (benchmark) compareRequest.benchmark = benchmark;
+
+      const response = await comparePortfoliosAPI(compareRequest);
 
       setCompareResult(response.data.data);
       trackEvent('portfolio_comparison_executed', { types_count: selectedTypes.length, period_years: periodYears });
@@ -146,18 +153,35 @@ function BacktestPage() {
     const data = downsampleData(singleResult.daily_values);
     const style = getComputedStyle(document.documentElement);
     const primaryColor = style.getPropertyValue('--primary').trim() || '#667eea';
-    return {
-      labels: data.map(d => d.date.slice(0, 10)),
-      datasets: [{
-        label: '자산 가치 (원)',
-        data: data.map(d => d.value),
-        borderColor: primaryColor,
-        backgroundColor: primaryColor + '20',
-        fill: true,
+    const datasets = [{
+      label: '포트폴리오',
+      data: data.map(d => d.value),
+      borderColor: primaryColor,
+      backgroundColor: primaryColor + '20',
+      fill: true,
+      tension: 0.3,
+      pointRadius: 0,
+      borderWidth: 2,
+    }];
+
+    if (singleResult.benchmark?.benchmark_daily_values) {
+      const bmData = downsampleData(singleResult.benchmark.benchmark_daily_values);
+      datasets.push({
+        label: singleResult.benchmark.benchmark_name,
+        data: bmData.map(d => d.value),
+        borderColor: '#f59e0b',
+        backgroundColor: 'transparent',
+        fill: false,
         tension: 0.3,
         pointRadius: 0,
         borderWidth: 2,
-      }],
+        borderDash: [6, 3],
+      });
+    }
+
+    return {
+      labels: data.map(d => d.date.slice(0, 10)),
+      datasets,
     };
   }, [singleResult]);
 
@@ -202,6 +226,23 @@ function BacktestPage() {
         borderWidth: 2,
       };
     });
+
+    // 벤치마크 오버레이 (첫 항목의 벤치마크 사용 — 전 포트폴리오 공통)
+    const bm = compareResult.comparison[0]?.benchmark;
+    if (bm?.benchmark_daily_values) {
+      const bmData = downsampleData(bm.benchmark_daily_values);
+      datasets.push({
+        label: bm.benchmark_name,
+        data: bmData.map(d => d.value),
+        borderColor: '#a855f7',
+        backgroundColor: 'transparent',
+        tension: 0.3,
+        pointRadius: 0,
+        borderWidth: 2,
+        borderDash: [6, 3],
+      });
+    }
+
     const firstData = downsampleData(compareResult.comparison[0]?.daily_values);
     return {
       labels: firstData?.map(d => d.date.slice(0, 10)) ?? [],
@@ -217,7 +258,7 @@ function BacktestPage() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: titleText === '포트폴리오 비교', labels: { color: textColor, font: { size: 12 } } },
+        legend: { display: titleText === '포트폴리오 비교' || titleText === '자산 성장', labels: { color: textColor, font: { size: 12 } } },
         tooltip: {
           callbacks: {
             label: (ctx) => yFormat === 'currency'
@@ -324,6 +365,15 @@ function BacktestPage() {
               </select>
             </div>
 
+            <div className="config-group">
+              <label>벤치마크 비교</label>
+              <select value={benchmark} onChange={(e) => setBenchmark(e.target.value)}>
+                <option value="">없음</option>
+                <option value="KOSPI">KOSPI</option>
+                <option value="KOSDAQ">KOSDAQ</option>
+              </select>
+            </div>
+
             <button className="btn-run" onClick={runBacktest}>
               백테스트 실행
             </button>
@@ -377,6 +427,15 @@ function BacktestPage() {
                 <option value="3">3년</option>
                 <option value="5">5년</option>
                 <option value="10">10년</option>
+              </select>
+            </div>
+
+            <div className="config-group">
+              <label>벤치마크 비교</label>
+              <select value={benchmark} onChange={(e) => setBenchmark(e.target.value)}>
+                <option value="">없음</option>
+                <option value="KOSPI">KOSPI</option>
+                <option value="KOSDAQ">KOSDAQ</option>
               </select>
             </div>
 
@@ -519,6 +578,43 @@ function BacktestPage() {
             </div>
           </div>
 
+          {/* 벤치마크 비교 지표 */}
+          {singleResult.benchmark && (
+            <div className="backtest-benchmark-section">
+              <h3 className="section-title">벤치마크 비교 ({singleResult.benchmark.benchmark_name})</h3>
+              <div className="metrics-grid">
+                <div className="metric-card">
+                  <div className="metric-label">초과수익률</div>
+                  <div className={`metric-value ${singleResult.benchmark.excess_return >= 0 ? 'positive' : 'negative'}`}>
+                    {formatPercentSigned(singleResult.benchmark.excess_return)}
+                  </div>
+                  <div className="metric-hint">포트폴리오 - 벤치마크</div>
+                </div>
+                <div className="metric-card">
+                  <div className="metric-label">베타</div>
+                  <div className="metric-value">{singleResult.benchmark.beta?.toFixed(2) ?? '-'}</div>
+                  <div className="metric-hint">시장 민감도 (1.0 = 시장과 동일)</div>
+                </div>
+                <div className="metric-card">
+                  <div className="metric-label">트래킹 에러</div>
+                  <div className="metric-value">{formatPercent(singleResult.benchmark.tracking_error)}</div>
+                  <div className="metric-hint">벤치마크 대비 추적 오차</div>
+                </div>
+                <div className="metric-card">
+                  <div className="metric-label">정보비율</div>
+                  <div className="metric-value">{singleResult.benchmark.information_ratio?.toFixed(2) ?? '-'}</div>
+                  <div className="metric-hint">추적 오차 대비 초과 수익</div>
+                </div>
+              </div>
+
+              <div className="backtest-benchmark-ref">
+                <span>{singleResult.benchmark.benchmark_name} 수익률: {formatPercentSigned(singleResult.benchmark.benchmark_total_return)}</span>
+                <span>MDD: -{singleResult.benchmark.benchmark_mdd?.toFixed(2)}%</span>
+                <span>샤프: {singleResult.benchmark.benchmark_sharpe?.toFixed(2)}</span>
+              </div>
+            </div>
+          )}
+
           {/* 기간 정보 */}
           <div className="period-info">
             <p>백테스트 기간: {new Date(singleResult.start_date).toLocaleDateString()} ~ {new Date(singleResult.end_date).toLocaleDateString()}</p>
@@ -646,6 +742,14 @@ function BacktestPage() {
           <ul>
             <li><strong>총 수익률</strong>: 전체 기간 동안의 누적 수익률</li>
             <li><strong>연평균 수익률 (CAGR)</strong>: 연간 기준으로 환산한 복리 수익률</li>
+          </ul>
+
+          <h4>📊 벤치마크 비교 지표</h4>
+          <ul>
+            <li><strong>초과수익률</strong>: 포트폴리오 수익률 - 벤치마크 수익률</li>
+            <li><strong>베타</strong>: 시장 대비 민감도 (1.0 = 시장과 동일 움직임)</li>
+            <li><strong>트래킹 에러</strong>: 벤치마크 대비 수익률 차이의 변동성</li>
+            <li><strong>정보비율</strong>: 트래킹 에러 대비 초과 수익 (높을수록 효율적)</li>
           </ul>
 
           <h3>주의사항</h3>
