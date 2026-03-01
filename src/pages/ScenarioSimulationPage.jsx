@@ -234,7 +234,7 @@ function ScenarioSimulationPage() {
   if (loading) {
     return (
       <div className="scenario-page">
-        <div className="scenario-loading">
+        <div className="scenario-loading" aria-busy="true" aria-live="polite">
           <div className="scenario-spinner"></div>
           <p>시나리오를 불러오는 중...</p>
         </div>
@@ -263,6 +263,10 @@ function ScenarioSimulationPage() {
               key={scenario.id}
               className={`scenario-card ${selectedScenario === scenario.id ? 'selected' : ''}`}
               onClick={() => setSelectedScenario(scenario.id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedScenario(scenario.id); } }}
+              role="button"
+              tabIndex={0}
+              aria-pressed={selectedScenario === scenario.id}
               style={{
                 borderColor: selectedScenario === scenario.id ? getScenarioColor(scenario.id) : undefined
               }}
@@ -392,6 +396,7 @@ function ScenarioSimulationPage() {
                   max="50"
                   value={maxLossLimit}
                   onChange={(e) => setMaxLossLimit(parseInt(e.target.value))}
+                  aria-label="최대 허용 손실"
                 />
                 <span className="loss-value">-{maxLossLimit}%</span>
               </div>
@@ -402,8 +407,11 @@ function ScenarioSimulationPage() {
           </div>
 
           {error && (
-            <div className="scenario-error">
+            <div className="scenario-error" role="alert">
               <p>{error}</p>
+              <button onClick={runSimulation} className="scenario-retry-btn">
+                다시 시도
+              </button>
             </div>
           )}
 
@@ -411,6 +419,7 @@ function ScenarioSimulationPage() {
             className="btn-simulate"
             onClick={runSimulation}
             disabled={simulating || !selectedScenario}
+            aria-busy={simulating}
           >
             {simulating ? (
               <>
@@ -469,7 +478,7 @@ function ScenarioSimulationPage() {
 
             {/* MDD가 허용 손실 초과 시 경고 */}
             {(simulationResult.risk_metrics?.max_drawdown ?? simulationResult.max_drawdown) > maxLossLimit && (
-              <div className="scenario-loss-warning">
+              <div className="scenario-loss-warning" role="alert">
                 <p>최대 낙폭({(simulationResult.risk_metrics?.max_drawdown ?? simulationResult.max_drawdown).toFixed(1)}%)이 설정한 허용 손실(-{maxLossLimit}%)을 초과합니다.</p>
               </div>
             )}
@@ -480,14 +489,14 @@ function ScenarioSimulationPage() {
             <div className="scenario-charts-section">
               <div className="scenario-chart-wrapper">
                 <h3 className="section-title">자산 성장 곡선</h3>
-                <div className="scenario-chart-container">
+                <div className="scenario-chart-container" aria-label="자산 성장 곡선 차트">
                   <Line data={growthChartData} options={chartOptions('자산 성장', 'currency')} />
                 </div>
               </div>
               {drawdownChartData && (
                 <div className="scenario-chart-wrapper">
                   <h3 className="section-title">Drawdown (고점 대비 낙폭)</h3>
-                  <div className="scenario-chart-container">
+                  <div className="scenario-chart-container" aria-label="Drawdown 차트">
                     <Line data={drawdownChartData} options={chartOptions('Drawdown', 'percent')} />
                   </div>
                 </div>
@@ -528,7 +537,7 @@ function ScenarioSimulationPage() {
           {/* 기간 정보 */}
           <div className="scenario-period-info">
             <p>기간: {new Date(simulationResult.start_date).toLocaleDateString()} ~ {new Date(simulationResult.end_date).toLocaleDateString()}</p>
-            <p>초기 투자: {formatCurrency(simulationResult.initial_investment)}원</p>
+            <p>초기 투자: {formatCurrency(simulationResult.initial_amount ?? simulationResult.initial_investment)}원</p>
           </div>
 
           {/* 상세 분석 이동 */}

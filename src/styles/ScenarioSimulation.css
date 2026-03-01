@@ -436,6 +436,21 @@
   font-size: 0.875rem;
 }
 
+.scenario-retry-btn {
+  margin-top: 12px;
+  padding: 8px 20px;
+  background: var(--primary, #667eea);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.scenario-retry-btn:hover {
+  background: var(--primary-dark, #5568d3);
+}
+
 /* Simulate button */
 .btn-simulate {
   width: 100%;

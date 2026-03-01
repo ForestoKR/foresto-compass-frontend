@@ -246,7 +246,7 @@ function BacktestPage() {
   if (loading) {
     return (
       <div className="backtest-page">
-        <div className="backtest-loading">
+        <div className="backtest-loading" aria-busy="true" aria-live="polite">
           <div className="backtest-spinner"></div>
           <p>백테스트를 실행하고 있습니다...</p>
         </div>
@@ -395,6 +395,12 @@ function BacktestPage() {
       {error && (
         <div className="backtest-error" role="alert">
           <p>{error}</p>
+          <button
+            onClick={compareMode ? comparePortfolios : runBacktest}
+            className="backtest-retry-btn"
+          >
+            다시 시도
+          </button>
         </div>
       )}
 
@@ -456,14 +462,14 @@ function BacktestPage() {
             <div className="backtest-charts-section">
               <div className="backtest-chart-wrapper">
                 <h3 className="section-title">자산 성장 곡선</h3>
-                <div className="backtest-chart-container">
+                <div className="backtest-chart-container" aria-label="백테스트 자산 성장 곡선 차트">
                   <Line data={growthChartData} options={chartOptions('자산 성장', 'currency')} />
                 </div>
               </div>
               {drawdownChartData && (
                 <div className="backtest-chart-wrapper">
                   <h3 className="section-title">Drawdown (고점 대비 낙폭)</h3>
-                  <div className="backtest-chart-container">
+                  <div className="backtest-chart-container" aria-label="백테스트 Drawdown 차트">
                     <Line data={drawdownChartData} options={chartOptions('Drawdown', 'percent')} />
                   </div>
                 </div>
@@ -516,7 +522,7 @@ function BacktestPage() {
           {/* 기간 정보 */}
           <div className="period-info">
             <p>백테스트 기간: {new Date(singleResult.start_date).toLocaleDateString()} ~ {new Date(singleResult.end_date).toLocaleDateString()}</p>
-            <p>초기 투자: {formatCurrency(singleResult.initial_investment)}원</p>
+            <p>초기 투자: {formatCurrency(singleResult.initial_amount ?? singleResult.initial_investment)}원</p>
             <p>리밸런싱: {
               { none: '없음', monthly: '월간', quarterly: '분기별', yearly: '연간' }[singleResult.rebalance_frequency] ?? singleResult.rebalance_frequency
             } ({singleResult.number_of_rebalances ?? 0}회)</p>
