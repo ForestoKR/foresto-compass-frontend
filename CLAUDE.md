@@ -41,6 +41,8 @@ src/
 ├── services/api.js      # Axios client with JWT injection + idempotency keys
 ├── utils/
 │   ├── analytics.js     # Mixpanel (VITE_MIXPANEL_TOKEN)
+│   ├── chartUtils.js    # Chart.js shared: downsampleData, buildChartOptions, buildDrawdownChartData
+│   ├── formatting.js    # formatCurrency, formatPercent
 │   └── sentry.js        # Sentry error tracking (VITE_SENTRY_DSN)
 └── styles/
     ├── theme.css        # CSS design tokens (:root light + [data-theme="dark"])
