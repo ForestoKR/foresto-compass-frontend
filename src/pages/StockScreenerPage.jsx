@@ -138,9 +138,9 @@ function StockScreenerPage() {
       if (market) params.market = market;
       if (sector) params.sector = sector;
       const scoreMin = GRADE_GROUPS[gradeTo].min;
-      const scoreMax = GRADE_GROUPS[gradeFrom].max + 1; // max is exclusive in API (100 for S)
+      const scoreMax = GRADE_GROUPS[gradeFrom].max;
       if (scoreMin > 0) params.minScore = scoreMin;
-      if (scoreMax <= 100) params.maxScore = scoreMax;
+      if (scoreMax < 100) params.maxScore = scoreMax;
 
       const res = await screenerStocks(params);
       setStocks(res.data.stocks || []);
