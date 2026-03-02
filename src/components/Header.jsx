@@ -37,15 +37,12 @@ function Header() {
   const navGroups = useMemo(() => {
     const groups = [
       {
-        label: '학습',
+        label: '탐색',
         items: [
           { label: '시장현황', path: '/dashboard' },
           { label: '종목 스크리너', path: '/screener' },
-          { label: '관심 종목', path: '/watchlist' },
           { label: '종목 비교', path: '/stock-comparison' },
-          { label: '시나리오', path: '/scenarios' },
-          { label: '용어학습', path: '/terminology' },
-          { label: '시작 가이드', action: 'startTour' },
+          { label: '관심 종목', path: '/watchlist' },
         ],
       },
       {
@@ -66,12 +63,21 @@ function Header() {
             path: '/portfolio-evaluation',
             activePaths: ['/portfolio-evaluation', '/phase7-evaluation'],
           },
-          { label: 'AI 추천', separator: true },
+          { label: '시뮬레이션', separator: true },
           { label: 'AI 시뮬레이션', path: '/portfolio' },
+          { label: '시나리오', path: '/scenarios' },
           { label: '백테스팅', path: '/backtest' },
           { label: '분석·리포트', separator: true },
           { label: '성과해석', path: '/analysis' },
           { label: '리포트', path: '/report-history' },
+        ],
+      },
+      {
+        label: '학습',
+        items: [
+          { label: '용어학습', path: '/terminology' },
+          { label: '사용 설명서', path: '/guide' },
+          { label: '시작 가이드', action: 'startTour' },
         ],
       },
       {
@@ -91,10 +97,12 @@ function Header() {
           { label: '관리자 홈', path: '/admin' },
           { label: '사용자 관리', path: '/admin/users' },
           { label: '동의 이력', path: '/admin/consents' },
+          { label: '시스템 상태', path: '/admin/system' },
           { label: '데이터', separator: true },
           { label: '데이터 관리', path: '/admin/data' },
           { label: '휴장일 관리', path: '/admin/market-calendar' },
           { label: '배치 작업', path: '/admin/batch' },
+          { label: '스케줄러', path: '/admin/scheduler' },
           { label: '포트폴리오', separator: true },
           { label: '포트폴리오 관리', path: '/admin/portfolio' },
           { label: '포트폴리오 비교', path: '/admin/portfolio-comparison' },
