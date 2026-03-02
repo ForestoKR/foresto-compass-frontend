@@ -122,7 +122,7 @@ const { theme, toggleTheme } = useThemeInit();
 - `/login` — LoginPage
 - `/signup` — SignupPage
 - `/verify-email` — EmailVerificationPage
-- `/explore` — GuestScreenerPage (public stock screener, no auth required)
+- `/explore` — GuestScreenerPage (public stock screener, no auth required, 52주 범위 바 포함)
 - `/guide` — UserGuidePage (사용 설명서, react-markdown + remark-gfm, fetches `/user-guide.md`)
 
 ### Protected (React.lazy — code split)
@@ -135,7 +135,7 @@ const { theme, toggleTheme } = useThemeInit();
 - `/backtest` — BacktestPage (단일 백테스트 + 포트폴리오 비교, risk_metrics 카드 최상위 + historical_observation 하위, 벤치마크 비교: KOSPI/KOSDAQ 드롭다운→차트 점선 오버레이+상대 지표 카드(초과수익률·베타·트래킹에러·정보비율))
 - `/scenarios` — ScenarioSimulationPage (MIN_VOL/DEFENSIVE/GROWTH 시나리오 카드, 자산 배분 바, 리스크 지표)
 - `/analysis` — PortfolioExplanationPage (성과 해석 & 리포트)
-- `/screener` — StockScreenerPage
+- `/screener` — StockScreenerPage (52주 범위 바: 그라데이션 트랙 + 마커 + 퍼센트)
 - `/watchlist` — WatchlistPage
 - `/stock-comparison` — StockComparisonPage
 - `/report-history` — ReportHistoryPage
