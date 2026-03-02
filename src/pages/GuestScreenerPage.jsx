@@ -52,6 +52,26 @@ function GuestScreenerPage() {
     return price.toLocaleString('ko-KR') + '원';
   };
 
+  const render52wBar = (stock) => {
+    const { price_52w_high: hi, price_52w_low: lo, current_price: cur } = stock;
+    if (hi == null || lo == null || cur == null) return '-';
+    const pct = hi === lo ? 50 : ((cur - lo) / (hi - lo)) * 100;
+    const clamped = Math.max(0, Math.min(100, pct));
+    return (
+      <div className="guest-52w-cell">
+        <div className="guest-52w-labels">
+          <span>{lo.toLocaleString()}</span>
+          <span>{hi.toLocaleString()}</span>
+        </div>
+        <div className="guest-52w-track">
+          <div className="guest-52w-fill" style={{ width: `${clamped}%` }} />
+          <div className="guest-52w-marker" style={{ left: `${clamped}%` }} />
+        </div>
+        <div className="guest-52w-pct">{clamped.toFixed(1)}%</div>
+      </div>
+    );
+  };
+
   return (
     <div className="guest-screener-page">
       <Helmet>
@@ -113,6 +133,7 @@ function GuestScreenerPage() {
                   <th>섹터</th>
                   <th>시장</th>
                   <th>현재가</th>
+                  <th>52주 범위</th>
                   <th>Compass Score</th>
                   <th>등급</th>
                 </tr>
@@ -126,6 +147,7 @@ function GuestScreenerPage() {
                       <td>{stock.sector || '-'}</td>
                       <td>{MARKET_LABELS[stock.market] || stock.market || '-'}</td>
                       <td className="guest-screener-price">{formatPrice(stock.current_price)}</td>
+                      <td>{render52wBar(stock)}</td>
                       <td className="guest-screener-score">
                         {stock.compass_score != null ? stock.compass_score.toFixed(1) : '-'}
                       </td>
@@ -138,7 +160,7 @@ function GuestScreenerPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={7} className="guest-screener-empty">
+                    <td colSpan={8} className="guest-screener-empty">
                       조건에 맞는 종목이 없습니다.
                     </td>
                   </tr>

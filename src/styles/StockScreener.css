@@ -178,6 +178,52 @@
   color: var(--text-secondary, #6b7280);
 }
 
+/* 52주 범위 바 */
+.screener-52w-cell {
+  min-width: 120px;
+  max-width: 160px;
+  padding: 2px 0;
+}
+.screener-52w-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.625rem;
+  color: var(--text-muted, #9ca3af);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.screener-52w-track {
+  position: relative;
+  height: 6px;
+  background: var(--border-light, #f3f4f6);
+  border-radius: 3px;
+  overflow: visible;
+}
+.screener-52w-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--grade-a, #16a34a), var(--primary, #667eea), var(--stock-up, #e53935));
+}
+.screener-52w-marker {
+  position: absolute;
+  top: -2px;
+  width: 10px;
+  height: 10px;
+  background: var(--text, #1f2937);
+  border: 2px solid var(--card, #ffffff);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+.screener-52w-pct {
+  font-size: 0.625rem;
+  color: var(--text-secondary, #6b7280);
+  text-align: center;
+  margin-top: 1px;
+  line-height: 1;
+}
+
 /* ── States ── */
 .screener-loading {
   text-align: center;

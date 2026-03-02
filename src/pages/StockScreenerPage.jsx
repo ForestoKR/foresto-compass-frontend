@@ -49,6 +49,26 @@ function formatNumber(n) {
   return n.toLocaleString();
 }
 
+function render52wBar(stock) {
+  const { price_52w_high: hi, price_52w_low: lo, current_price: cur } = stock;
+  if (hi == null || lo == null || cur == null) return '-';
+  const pct = hi === lo ? 50 : ((cur - lo) / (hi - lo)) * 100;
+  const clamped = Math.max(0, Math.min(100, pct));
+  return (
+    <div className="screener-52w-cell">
+      <div className="screener-52w-labels">
+        <span>{lo.toLocaleString()}</span>
+        <span>{hi.toLocaleString()}</span>
+      </div>
+      <div className="screener-52w-track">
+        <div className="screener-52w-fill" style={{ width: `${clamped}%` }} />
+        <div className="screener-52w-marker" style={{ left: `${clamped}%` }} />
+      </div>
+      <div className="screener-52w-pct">{clamped.toFixed(1)}%</div>
+    </div>
+  );
+}
+
 function StockScreenerPage() {
   const navigate = useNavigate();
 
@@ -300,6 +320,7 @@ function StockScreenerPage() {
                 <th onClick={() => handleSort('current_price')} className="sortable">
                   현재가{sortArrow('current_price')}
                 </th>
+                <th>52주 범위</th>
                 <th onClick={() => handleSort('market_cap')} className="sortable">
                   시가총액{sortArrow('market_cap')}
                 </th>
@@ -352,6 +373,7 @@ function StockScreenerPage() {
                     </span>
                   </td>
                   <td className="num">{stock.current_price != null ? stock.current_price.toLocaleString() : '-'}</td>
+                  <td>{render52wBar(stock)}</td>
                   <td className="num">{formatNumber(stock.market_cap)}</td>
                   <td className="num">{stock.pe_ratio != null ? stock.pe_ratio.toFixed(1) : '-'}</td>
                   <td className="num">{stock.pb_ratio != null ? stock.pb_ratio.toFixed(2) : '-'}</td>
