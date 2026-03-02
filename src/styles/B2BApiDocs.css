@@ -1,0 +1,676 @@
+/* B2BApiDocs.css — API Documentation page styles (theme-aware) */
+
+/* ── Layout ── */
+.b2b-docs-layout {
+  display: flex;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  gap: 2rem;
+}
+
+/* ── Sidebar ── */
+.b2b-docs-sidebar {
+  position: sticky;
+  top: 5rem;
+  width: 220px;
+  min-width: 220px;
+  height: fit-content;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  padding: 1rem 0;
+}
+
+.b2b-docs-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.b2b-docs-sidebar-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #6b7280);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  border-radius: 0 4px 4px 0;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  cursor: pointer;
+  background: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+}
+
+.b2b-docs-sidebar-link:hover {
+  color: var(--primary, #667eea);
+  background: var(--card-hover, #f8f9ff);
+}
+
+.b2b-docs-sidebar-link.active {
+  color: var(--primary, #667eea);
+  border-left-color: var(--primary, #667eea);
+  font-weight: 600;
+  background: var(--card-hover, #f8f9ff);
+}
+
+/* ── Main Content ── */
+.b2b-docs-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Hero ── */
+.b2b-docs-hero {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 12px);
+  padding: 2.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.b2b-docs-hero h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text, #1f2937);
+  margin: 0 0 0.5rem;
+}
+
+.b2b-docs-hero-subtitle {
+  color: var(--text-secondary, #6b7280);
+  font-size: 1.0625rem;
+  margin: 0 0 1.25rem;
+  line-height: 1.6;
+}
+
+.b2b-docs-base-url {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 0.625rem 1rem;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.875rem;
+  color: var(--primary, #667eea);
+  font-weight: 600;
+}
+
+.b2b-docs-base-url-label {
+  color: var(--text-muted, #9ca3af);
+  font-weight: 400;
+  font-family: inherit;
+}
+
+/* ── Section ── */
+.b2b-docs-section {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 12px);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.b2b-docs-section h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--text, #1f2937);
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+}
+
+.b2b-docs-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  margin: 1.5rem 0 0.75rem;
+}
+
+.b2b-docs-section h3:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.b2b-docs-section p {
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.7;
+  margin: 0 0 1rem;
+  font-size: 0.9375rem;
+}
+
+/* ── Quick Start Steps ── */
+.b2b-docs-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1rem 0;
+}
+
+.b2b-docs-step {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.b2b-docs-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.b2b-docs-step-body h4 {
+  margin: 0 0 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.b2b-docs-step-body p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* ── Code Block ── */
+.b2b-docs-code-wrap {
+  position: relative;
+  margin: 0.75rem 0 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border, #e5e7eb);
+}
+
+.b2b-docs-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: var(--card-inner, #fafbfc);
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.b2b-docs-code-lang {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.b2b-docs-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 0.75rem;
+  background: transparent;
+  color: var(--text-secondary, #6b7280);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+
+.b2b-docs-copy-btn:hover {
+  color: var(--primary, #667eea);
+  border-color: var(--primary, #667eea);
+}
+
+.b2b-docs-copy-btn.copied {
+  color: var(--grade-a, #16a34a);
+  border-color: var(--grade-a, #16a34a);
+}
+
+.b2b-docs-code-block {
+  margin: 0;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text, #1f2937);
+  background: var(--bg, #f0f2f7);
+  white-space: pre;
+  tab-size: 2;
+}
+
+[data-theme="dark"] .b2b-docs-code-block {
+  background: #0c1222;
+}
+
+/* ── Inline Code ── */
+.b2b-docs-section code:not(.b2b-docs-code-block code) {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border-light, #f3f4f6);
+  border-radius: 4px;
+  padding: 0.125rem 0.375rem;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.8125rem;
+  color: var(--primary, #667eea);
+}
+
+/* ── Endpoint Card ── */
+.b2b-docs-endpoint {
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  margin: 1.25rem 0;
+  overflow: hidden;
+}
+
+.b2b-docs-endpoint-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: var(--card-inner, #fafbfc);
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  cursor: pointer;
+  user-select: none;
+}
+
+.b2b-docs-endpoint-header:hover {
+  background: var(--card-hover, #f8f9ff);
+}
+
+.b2b-docs-method {
+  display: inline-block;
+  padding: 0.1875rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  min-width: 3.25rem;
+  text-align: center;
+}
+
+.b2b-docs-method-get {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.b2b-docs-method-post {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+[data-theme="dark"] .b2b-docs-method-get {
+  background: #1e3a5f;
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .b2b-docs-method-post {
+  background: #14532d;
+  color: #86efac;
+}
+
+.b2b-docs-endpoint-path {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.b2b-docs-endpoint-desc {
+  margin-left: auto;
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.b2b-docs-endpoint-toggle {
+  font-size: 0.75rem;
+  color: var(--text-muted, #9ca3af);
+  transition: transform 0.2s;
+}
+
+.b2b-docs-endpoint-toggle.open {
+  transform: rotate(180deg);
+}
+
+.b2b-docs-endpoint-body {
+  padding: 1.25rem 1rem;
+}
+
+.b2b-docs-endpoint-body h4 {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  margin: 1rem 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.b2b-docs-endpoint-body h4:first-child {
+  margin-top: 0;
+}
+
+/* ── Scope Badge ── */
+.b2b-docs-scope {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  color: var(--accent, #764ba2);
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+/* ── Parameter Table ── */
+.b2b-docs-param-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.b2b-docs-param-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  background: var(--card-inner, #fafbfc);
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  color: var(--text-muted, #9ca3af);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.b2b-docs-param-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  color: var(--text, #1f2937);
+  vertical-align: top;
+}
+
+.b2b-docs-param-table td:first-child {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-weight: 600;
+  color: var(--primary, #667eea);
+  white-space: nowrap;
+}
+
+.b2b-docs-required {
+  color: var(--stock-up, #e53935);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
+.b2b-docs-optional {
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
+/* ── Pricing Table ── */
+.b2b-docs-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin: 1.25rem 0;
+}
+
+.b2b-docs-pricing-card {
+  background: var(--card, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius, 12px);
+  padding: 1.5rem;
+  text-align: center;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.b2b-docs-pricing-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.b2b-docs-pricing-card.featured {
+  border-color: var(--primary, #667eea);
+  box-shadow: 0 0 0 1px var(--primary, #667eea);
+}
+
+.b2b-docs-pricing-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text, #1f2937);
+  margin: 0 0 0.25rem;
+}
+
+.b2b-docs-pricing-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary, #667eea);
+  margin: 0.75rem 0 0.5rem;
+}
+
+.b2b-docs-pricing-price span {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: var(--text-muted, #9ca3af);
+}
+
+.b2b-docs-pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  text-align: left;
+}
+
+.b2b-docs-pricing-features li {
+  padding: 0.375rem 0;
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #6b7280);
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+}
+
+.b2b-docs-pricing-features li:last-child {
+  border-bottom: none;
+}
+
+/* ── Error Table ── */
+.b2b-docs-error-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+  margin: 0.75rem 0;
+}
+
+.b2b-docs-error-table th {
+  text-align: left;
+  padding: 0.625rem 0.75rem;
+  background: var(--card-inner, #fafbfc);
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  color: var(--text-muted, #9ca3af);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.b2b-docs-error-table td {
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  color: var(--text, #1f2937);
+  vertical-align: top;
+}
+
+.b2b-docs-status-code {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-weight: 700;
+  font-size: 0.8125rem;
+}
+
+.b2b-docs-status-4xx {
+  color: var(--stock-up, #e53935);
+}
+
+.b2b-docs-status-5xx {
+  color: var(--grade-d, #dc2626);
+}
+
+/* ── Tab Switcher (code examples) ── */
+.b2b-docs-tab-group {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  margin-bottom: -1px;
+}
+
+.b2b-docs-tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted, #9ca3af);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+
+.b2b-docs-tab:hover {
+  color: var(--text-secondary, #6b7280);
+}
+
+.b2b-docs-tab.active {
+  color: var(--primary, #667eea);
+  border-bottom-color: var(--primary, #667eea);
+}
+
+/* ── Rate Limit Tiers ── */
+.b2b-docs-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.b2b-docs-tier-card {
+  background: var(--card-inner, #fafbfc);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.b2b-docs-tier-card h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+}
+
+.b2b-docs-tier-card p {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--text-secondary, #6b7280);
+  line-height: 1.5;
+}
+
+/* ── Alert / Note Box ── */
+.b2b-docs-note {
+  background: var(--banner-bg, #fffbeb);
+  border: 1px solid var(--banner-border, #fde68a);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.8125rem;
+  color: var(--banner-text, #78350f);
+  line-height: 1.5;
+}
+
+[data-theme="dark"] .b2b-docs-note {
+  background: rgba(251, 191, 36, 0.08);
+  border-color: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+/* ── Back to Top ── */
+.b2b-docs-back-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted, #9ca3af);
+  background: transparent;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  margin-top: 2rem;
+  font-family: inherit;
+}
+
+.b2b-docs-back-top:hover {
+  color: var(--primary, #667eea);
+  border-color: var(--primary, #667eea);
+}
+
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .b2b-docs-tier-grid,
+  .b2b-docs-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .b2b-docs-sidebar {
+    display: none;
+  }
+
+  .b2b-docs-layout {
+    padding: 1rem 0.75rem;
+  }
+
+  .b2b-docs-hero {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .b2b-docs-hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .b2b-docs-section {
+    padding: 1.25rem 1rem;
+  }
+
+  .b2b-docs-endpoint-header {
+    flex-wrap: wrap;
+  }
+
+  .b2b-docs-endpoint-desc {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+
+  .b2b-docs-param-table,
+  .b2b-docs-error-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .b2b-docs-base-url {
+    font-size: 0.75rem;
+    flex-wrap: wrap;
+  }
+}

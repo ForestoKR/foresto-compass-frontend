@@ -320,6 +320,21 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Section 6.5: B2B API Banner */}
+      <section className="lp-api-banner">
+        <div className="lp-section-inner">
+          <div className="lp-api-banner-card">
+            <div className="lp-api-banner-text">
+              <h3>개발자를 위한 API</h3>
+              <p>Compass Score, 재무 분석, 스크리너 등을 API로 활용하세요</p>
+            </div>
+            <button className="lp-btn-ghost" onClick={() => navigate('/developers')}>
+              API 문서 보기
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Section 7: CTA */}
       <section className="lp-final-cta">
         <div className="lp-section-inner">

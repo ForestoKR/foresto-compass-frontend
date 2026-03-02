@@ -24,9 +24,10 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* 사용 설명서 링크 */}
+        {/* 사용 설명서 · 개발자 문서 링크 */}
         <div className="footer-guide">
           <Link to="/guide" className="footer-guide-link">사용 설명서</Link>
+          <Link to="/developers" className="footer-guide-link">API 문서</Link>
         </div>
 
         {/* 저작권 */}

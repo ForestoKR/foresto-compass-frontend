@@ -5,4 +5,6 @@
   <url><loc>https://foresto.co.kr/signup</loc><priority>0.5</priority></url>
   <url><loc>https://foresto.co.kr/explore</loc><priority>0.7</priority></url>
   <url><loc>https://foresto.co.kr/terminology</loc><priority>0.6</priority></url>
+  <url><loc>https://foresto.co.kr/guide</loc><priority>0.6</priority></url>
+  <url><loc>https://foresto.co.kr/developers</loc><priority>0.7</priority></url>
 </urlset>

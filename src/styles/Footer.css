@@ -35,7 +35,10 @@
 }
 
 .footer-guide {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 12px;
 }
 
@@ -44,6 +47,11 @@
   font-size: 0.8rem;
   font-weight: 600;
   text-decoration: none;
+}
+
+.footer-guide-link + .footer-guide-link {
+  padding-left: 1rem;
+  border-left: 1px solid var(--border, #e0e0e0);
 }
 
 .footer-guide-link:hover {

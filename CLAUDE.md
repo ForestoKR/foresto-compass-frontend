@@ -32,7 +32,7 @@ npm run generate-icons  # Regenerate PWA icons from public/icon.svg (uses sharp)
 
 ```
 src/
-├── pages/               # Page components (41 pages)
+├── pages/               # Page components (42 pages)
 ├── components/          # Reusable (14): Header, Footer, ErrorBoundary, Disclaimer, OnboardingTour,
 │                        #   ProgressModal, ProfileCompletionModal, DataTable, ProgressBar, SurveyQuestion,
 │                        #   FinancialAnalysis, Valuation, QuantAnalysis, InvestmentReport
@@ -104,7 +104,7 @@ const { theme, toggleTheme } = useThemeInit();
 ## Prerendering & Vercel
 
 - **Build-time prerender**: `@prerenderer/rollup-plugin` with `@prerenderer/renderer-jsdom` in `vite.config.js`
-- **Prerendered routes**: `/`, `/login`, `/signup`, `/explore`, `/terminology`, `/guide`
+- **Prerendered routes**: `/`, `/login`, `/signup`, `/explore`, `/terminology`, `/guide`, `/developers`
 - **`vercel.json`**: SPA fallback rewrite (`/(.*) → /index.html`); Vercel serves prerendered HTML first
 
 ## API Client (`services/api.js`)
@@ -124,6 +124,7 @@ const { theme, toggleTheme } = useThemeInit();
 - `/verify-email` — EmailVerificationPage
 - `/explore` — GuestScreenerPage (public stock screener, no auth required, 52주 범위 바 포함)
 - `/guide` — UserGuidePage (사용 설명서, react-markdown + remark-gfm, fetches `/user-guide.md`)
+- `/developers` — B2BApiDocsPage (B2B API 개발자 문서, 8개 엔드포인트 레퍼런스, 코드 예제, 요금제, JSON-LD)
 
 ### Protected (React.lazy — code split)
 - `/dashboard` — MarketDashboardPage (KPI cards, watchlist, news)

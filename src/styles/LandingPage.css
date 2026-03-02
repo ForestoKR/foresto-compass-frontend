@@ -652,6 +652,36 @@
   margin: 0 auto;
 }
 
+/* ── Section 6.5: B2B API Banner ── */
+.lp-api-banner {
+  background: var(--bg);
+}
+
+.lp-api-banner-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  gap: 2rem;
+}
+
+.lp-api-banner-text h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 0.375rem 0;
+}
+
+.lp-api-banner-text p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* ── Section 7: Final CTA ── */
 .lp-final-cta {
   background: var(--bg);
@@ -764,6 +794,12 @@
 
   .lp-compass-mini-card {
     min-width: unset;
+  }
+
+  .lp-api-banner-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
   }
 
   .lp-final-cta-title {
