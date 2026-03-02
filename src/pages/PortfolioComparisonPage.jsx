@@ -203,9 +203,6 @@ export default function PortfolioComparisonPage() {
             </p>
           </div>
 
-          {/* 면책 문구 */}
-          <Disclaimer type="portfolio" />
-
           {/* 포트폴리오 선택 */}
           <div className="pc-section-panel">
             <h2 className="pc-section-title">
@@ -409,6 +406,8 @@ export default function PortfolioComparisonPage() {
               </div>
             </div>
           )}
+
+          <Disclaimer type="portfolio" />
 
           {/* 버튼 */}
           <div className="pc-footer">

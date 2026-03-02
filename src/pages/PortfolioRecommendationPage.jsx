@@ -182,9 +182,6 @@ function PortfolioRecommendationPage() {
         </div>
       </div>
 
-      {/* 면책 문구 */}
-      <Disclaimer type="portfolio" />
-
       {/* 학습 성향 요약 */}
       <section className="investment-profile">
         <div className="profile-card">
@@ -379,6 +376,8 @@ function PortfolioRecommendationPage() {
           </div>
         </div>
       </section>
+
+      <Disclaimer type="portfolio" />
     </div>
   );
 }

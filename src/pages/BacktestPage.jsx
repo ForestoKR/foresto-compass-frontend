@@ -227,9 +227,6 @@ function BacktestPage() {
         <p className="subtitle">과거 데이터로 포트폴리오 성과를 검증하세요</p>
       </div>
 
-      {/* 면책 문구 */}
-      <Disclaimer type="backtest" />
-
       {/* 모드 전환 */}
       <div className="backtest-mode-selector">
         <button
@@ -644,6 +641,9 @@ function BacktestPage() {
           <p className="table-disclaimer">* 과거 수익률은 미래 성과를 보장하지 않습니다</p>
         </div>
       )}
+
+      {/* 면책 문구 — 결과 하단 */}
+      {(singleResult || compareResult) && <Disclaimer type="backtest" />}
 
       {/* 안내 사항 */}
       {!singleResult && !compareResult && (

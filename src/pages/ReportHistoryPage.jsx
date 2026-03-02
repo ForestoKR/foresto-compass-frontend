@@ -120,8 +120,6 @@ function ReportHistoryPage() {
 
   return (
     <div className="rh-container">
-      <Disclaimer type="portfolio" />
-
       <div className="rh-header">
         <h1 className="rh-title">📊 리포트 히스토리</h1>
         <p className="rh-subtitle">
@@ -292,6 +290,8 @@ function ReportHistoryPage() {
           )}
         </>
       )}
+
+      <Disclaimer type="portfolio" />
     </div>
   );
 }

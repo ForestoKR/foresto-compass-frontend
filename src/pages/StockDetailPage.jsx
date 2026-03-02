@@ -160,9 +160,6 @@ export default function StockDetailPage() {
             </p>
           </div>
 
-          {/* 면책 문구 */}
-          <Disclaimer type="stock" />
-
           {/* 검색 폼 */}
           <div className="sd-search-panel">
             <form onSubmit={handleSearch} className="sd-search-form">
@@ -623,6 +620,8 @@ export default function StockDetailPage() {
               </div>
             </div>
           )}
+
+          <Disclaimer type="stock" />
 
           {/* 워크플로우 내비게이션 */}
           <div className="admin-workflow-nav">

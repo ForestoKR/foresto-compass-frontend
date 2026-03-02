@@ -177,8 +177,6 @@ function ScenarioSimulationPage() {
         </p>
       </div>
 
-      <Disclaimer type="simulation" />
-
       {/* 시나리오 선택 */}
       <div className="scenario-selection">
         <h2>1. 학습 시나리오 선택</h2>
@@ -509,6 +507,8 @@ function ScenarioSimulationPage() {
           </p>
         </div>
       )}
+
+      <Disclaimer type="simulation" />
     </div>
   );
 }
