@@ -720,6 +720,37 @@ export default function DataManagementPage() {
                 </div>
               </div>
 
+              {/* 배당수익률 업데이트 */}
+              <div className="dm-card">
+                <h3>배당수익률 업데이트</h3>
+                <p className="dm-card-sub">dividend_history → stocks.dividend_yield</p>
+                <p className="dm-hint-sm">
+                  최근 12개월 배당금 합산 ÷ 현재가 × 100 으로 배당수익률을 계산하여 종목 테이블에 반영합니다.
+                  배당 이력 적재 후 실행하세요.
+                </p>
+                <div className="dm-card-actions">
+                  <button
+                    onClick={async () => {
+                      setLoading(true);
+                      setError(null);
+                      try {
+                        const response = await api.updateDividendYields();
+                        const r = response.data.result;
+                        alert(`배당수익률 업데이트 완료\n업데이트: ${r.updated}건\n이상값 제외: ${r.skipped_outlier}건\n주가 없음: ${r.skipped_no_price}건`);
+                      } catch (err) {
+                        alert(err.response?.data?.error?.message || err.response?.data?.detail || '배당수익률 업데이트 실패');
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                    disabled={loading}
+                    className="btn btn-primary dm-btn-full"
+                  >
+                    배당수익률 업데이트
+                  </button>
+                </div>
+              </div>
+
               {/* 기업 액션 */}
               <div className="dm-card">
                 <h3>기업 액션</h3>

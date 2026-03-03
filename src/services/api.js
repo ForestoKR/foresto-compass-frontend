@@ -334,6 +334,10 @@ export const loadFscDividends = (payload) => {
   return api.post('/admin/fsc/load-dividends', payload);
 };
 
+export const updateDividendYields = () => {
+  return api.post('/admin/fsc/update-dividend-yields');
+};
+
 export const loadFdrStockListing = (payload) => {
   return api.post('/admin/fdr/load-stock-listing', payload);
 };
