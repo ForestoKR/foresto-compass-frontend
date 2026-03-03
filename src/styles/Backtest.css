@@ -334,6 +334,43 @@
   color: var(--text, #1f2937);
 }
 
+/* ── Chart Guide Box ── */
+.chart-guide-box {
+  background: var(--card-inner);
+  border-left: 4px solid var(--primary);
+  border-radius: 0 6px 6px 0;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.chart-guide-summary {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.5;
+}
+
+.chart-guide-tips {
+  margin: 0;
+  padding-left: 1.2rem;
+  list-style: disc;
+}
+
+.chart-guide-tips li {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 0.2rem;
+}
+
+.chart-guide-tips li:last-child {
+  margin-bottom: 0;
+}
+
+[data-theme="dark"] .chart-guide-box {
+  border-left-color: var(--primary-light);
+}
+
 /* ── Period Info ── */
 .period-info {
   background: var(--card-inner, #fafbfc);

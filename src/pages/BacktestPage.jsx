@@ -442,6 +442,17 @@ function BacktestPage() {
             <div className="backtest-charts-section">
               <div className="backtest-chart-wrapper">
                 <h3 className="section-title">자산 성장 곡선</h3>
+                <div className="chart-guide-box">
+                  <p className="chart-guide-summary">
+                    투자 원금이 백테스트 기간 동안 어떻게 변화했는지 보여줍니다.
+                    Y축은 자산 가치(원), X축은 날짜입니다.
+                  </p>
+                  <ul className="chart-guide-tips">
+                    <li>선이 <strong>올라갈수록 수익</strong>, 내려갈수록 손실입니다.</li>
+                    <li>벤치마크 점선(KOSPI/KOSDAQ)과 비교해 시장 대비 성과를 확인하세요.</li>
+                    <li>급격히 꺾이는 구간은 리스크가 집중된 시기입니다.</li>
+                  </ul>
+                </div>
                 <div className="backtest-chart-container" aria-label="백테스트 자산 성장 곡선 차트">
                   <Line data={growthChartData} options={buildChartOptions('자산 성장', 'currency', { showLegend: true })} />
                 </div>
@@ -449,6 +460,17 @@ function BacktestPage() {
               {drawdownChartData && (
                 <div className="backtest-chart-wrapper">
                   <h3 className="section-title">Drawdown (고점 대비 낙폭)</h3>
+                  <div className="chart-guide-box">
+                    <p className="chart-guide-summary">
+                      과거 최고 자산 대비 현재 얼마나 하락해 있는지를 비율(%)로 나타냅니다.
+                      값은 항상 0 이하이며, 0%는 현재가 역대 최고치임을 의미합니다.
+                    </p>
+                    <ul className="chart-guide-tips">
+                      <li>아래로 <strong>깊이 파일수록 더 큰 손실</strong>이 발생했음을 뜻합니다.</li>
+                      <li>가장 깊은 지점의 수치 = 위 <strong>MDD(최대 낙폭)</strong> 카드의 값입니다.</li>
+                      <li>빨간 영역이 길게 지속될수록 원금 회복에 오랜 시간이 걸렸습니다.</li>
+                    </ul>
+                  </div>
                   <div className="backtest-chart-container" aria-label="백테스트 Drawdown 차트">
                     <Line data={drawdownChartData} options={buildChartOptions('Drawdown', 'percent')} />
                   </div>
@@ -599,6 +621,15 @@ function BacktestPage() {
             <div className="backtest-charts-section">
               <div className="backtest-chart-wrapper">
                 <h3 className="section-title">포트폴리오 비교 성장 곡선</h3>
+                <div className="chart-guide-box">
+                  <p className="chart-guide-summary">
+                    선택한 투자 성향별 포트폴리오의 자산 변화를 한눈에 비교합니다.
+                  </p>
+                  <ul className="chart-guide-tips">
+                    <li>각 선이 어떤 포트폴리오인지는 범례를 확인하세요.</li>
+                    <li>같은 기간 동안 선의 높낮이와 변동 폭을 비교하면 리스크-수익 특성을 파악할 수 있습니다.</li>
+                  </ul>
+                </div>
                 <div className="backtest-chart-container">
                   <Line data={comparisonChartData} options={buildChartOptions('포트폴리오 비교', 'currency', { showLegend: true })} />
                 </div>
