@@ -254,10 +254,17 @@
   font-size: 0.9rem;
 }
 
-/* ── Two-column grid ── */
+/* ── Two/Three-column grid ── */
 .dm-grid-2col {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.dm-grid-3col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 15px;
   margin-top: 20px;
 }
@@ -744,6 +751,10 @@
   }
 
   .dm-grid-2col {
+    grid-template-columns: 1fr;
+  }
+
+  .dm-grid-3col {
     grid-template-columns: 1fr;
   }
 

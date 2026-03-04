@@ -48,7 +48,7 @@ export default function DataManagementPage() {
   };
 
   const handleLoadData = async (type) => {
-    const typeNames = { stocks: '주식', etfs: 'ETF' };
+    const typeNames = { stocks: '주식', etfs: 'ETF', etns: 'ETN', gold: '금시장' };
     if (!window.confirm(`${typeNames[type]} 데이터를 수집하시겠습니까?`)) {
       return;
     }
@@ -64,7 +64,9 @@ export default function DataManagementPage() {
     try {
       let response;
       if (type === 'stocks') response = await api.loadStocks();
-      else response = await api.loadETFs();
+      else if (type === 'etfs') response = await api.loadETFs();
+      else if (type === 'etns') response = await api.loadETNs();
+      else response = await api.loadGold();
 
       setLoadResult(response.data);
 
@@ -389,7 +391,7 @@ export default function DataManagementPage() {
             <p className="dm-section-subtitle">
               FDR 종목 마스터 기반으로 yfinance / KRX Open API에서 시가총액, 섹터, 상장일 등을 수집합니다.
             </p>
-            <div className="dm-grid-2col">
+            <div className="dm-grid-3col">
               <button
                 onClick={() => handleLoadData('stocks')}
                 disabled={loading}
@@ -404,6 +406,13 @@ export default function DataManagementPage() {
               >
                 ETF 데이터 수집
               </button>
+              <button
+                onClick={() => handleLoadData('etns')}
+                disabled={loading}
+                className="btn btn-primary dm-btn-action"
+              >
+                ETN 데이터 수집
+              </button>
             </div>
           </div>
 
@@ -413,6 +422,21 @@ export default function DataManagementPage() {
             <p className="dm-section-subtitle">
               KRX 공식 데이터로 과거 가격(OHLCV)을 수집합니다. 일 9,500건 한도.
             </p>
+
+            {/* 금시장 수집 */}
+            <div className="dm-panel">
+              <h3>금시장 데이터 수집</h3>
+              <p className="dm-hint" style={{ marginBottom: 8 }}>
+                KRX 금시장 현물 종목(금 1kg 등)의 시세를 수집합니다. 가격 단위: 원/g.
+              </p>
+              <button
+                onClick={() => handleLoadData('gold')}
+                disabled={loading}
+                className="btn btn-primary dm-btn-full-bold"
+              >
+                금시장 데이터 수집
+              </button>
+            </div>
 
             {/* 단일 종목 */}
             <div className="dm-panel">

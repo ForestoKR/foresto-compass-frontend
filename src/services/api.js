@@ -326,6 +326,20 @@ export const loadETFs = () => {
   return api.post('/admin/load-etfs');
 };
 
+/**
+ * ETN 데이터 수집
+ */
+export const loadETNs = () => {
+  return api.post('/admin/load-etns');
+};
+
+/**
+ * 금시장 데이터 수집
+ */
+export const loadGold = () => {
+  return api.post('/admin/load-gold');
+};
+
 export const loadDartDividends = (payload) => {
   return api.post('/admin/dart/load-dividends', payload);
 };
