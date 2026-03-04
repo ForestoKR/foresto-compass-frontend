@@ -991,7 +991,7 @@ export default function DataManagementPage() {
                   >
                     <option value="">전체 작업</option>
                     <option value="incremental_prices">일별 시세</option>
-                    <option value="compass_batch">Compass Score</option>
+                    <option value="compass_batch">Foresto IQ</option>
                     <option value="weekly_stock_refresh">주간 종목 갱신</option>
                     <option value="dart_financials">DART 재무제표</option>
                     <option value="monthly_products">월간 금융상품</option>

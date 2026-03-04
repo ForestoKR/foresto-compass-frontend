@@ -232,13 +232,13 @@ function StockScreenerPage() {
     <div className="screener-page">
       <Helmet>
         <title>종목 스크리너 | Foresto Compass</title>
-        <meta name="description" content="Compass Score 기반 종목 필터링 및 비교 분석 도구." />
+        <meta name="description" content="Foresto IQ 기반 종목 필터링 및 비교 분석 도구." />
         <meta property="og:title" content="종목 스크리너 | Foresto Compass" />
-        <meta property="og:description" content="Compass Score 기반 종목 필터링 및 비교 분석 도구." />
+        <meta property="og:description" content="Foresto IQ 기반 종목 필터링 및 비교 분석 도구." />
       </Helmet>
       <div className="screener-header">
         <h1>종목 스크리너</h1>
-        <p className="screener-subtitle">Compass Score 기반 종목 탐색 (교육 목적 참고 정보)</p>
+        <p className="screener-subtitle">Foresto IQ 기반 종목 탐색 (교육 목적 참고 정보)</p>
       </div>
 
       {/* 필터 패널 */}

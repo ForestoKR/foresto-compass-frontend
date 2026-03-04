@@ -274,7 +274,7 @@ export default function StockDetailPage() {
               {/* Compass Score */}
               <div className="sd-section">
                 <h2 className="sd-section-title">
-                  🧭 Compass Score
+                  🧭 Foresto IQ
                 </h2>
                 {stockData.compass?.score != null ? (
                   <>
@@ -347,7 +347,7 @@ export default function StockDetailPage() {
                   </>
                 ) : (
                   <div className="sd-empty">
-                    Compass Score가 아직 산출되지 않았습니다. 관리자 페이지에서 일괄 계산을 실행하세요.
+                    Foresto IQ가 아직 산출되지 않았습니다. 관리자 페이지에서 일괄 계산을 실행하세요.
                   </div>
                 )}
               </div>

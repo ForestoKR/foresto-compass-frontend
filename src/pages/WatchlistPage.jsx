@@ -89,7 +89,7 @@ function WatchlistPage() {
       <div className="watchlist-header">
         <div>
           <h1>관심 종목</h1>
-          <p className="watchlist-subtitle">Compass Score 변동을 추적하세요 (교육 목적 참고 정보)</p>
+          <p className="watchlist-subtitle">Foresto IQ 변동을 추적하세요 (교육 목적 참고 정보)</p>
         </div>
         <div className="watchlist-alert-toggle">
           <label className="alert-switch-label">

@@ -205,13 +205,13 @@ function StockComparisonPage() {
     { label: 'PER', getValue: (s) => formatRatio(s.pe_ratio) },
     { label: 'PBR', getValue: (s) => formatRatio(s.pb_ratio) },
     { label: '배당수익률', getValue: (s) => formatPercent(s.dividend_yield) },
-    { label: 'Compass Score', getValue: (s) => s.compass_score != null ? s.compass_score.toFixed(1) : '-' },
+    { label: 'Foresto IQ', getValue: (s) => s.compass_score != null ? s.compass_score.toFixed(1) : '-' },
   ];
 
   return (
     <div className="sc-container">
       <h1 className="sc-title">종목 비교</h1>
-      <p className="sc-subtitle">최대 3개 종목의 Compass Score와 기본 지표를 비교합니다</p>
+      <p className="sc-subtitle">최대 3개 종목의 Foresto IQ와 기본 지표를 비교합니다</p>
 
       {/* 검색 영역 */}
       <div className="sc-search-section">
@@ -331,7 +331,7 @@ function StockComparisonPage() {
 
           {/* 4축 바 차트 */}
           <div className="sc-chart-box" role="img" aria-label="종목 비교 차트">
-            <h3 className="sc-chart-title">Compass Score 4축 비교</h3>
+            <h3 className="sc-chart-title">Foresto IQ 4축 비교</h3>
             <div className="sc-chart-wrap">
               <Bar data={getChartData()} options={chartOptions} />
             </div>

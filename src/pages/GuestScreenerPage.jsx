@@ -76,12 +76,12 @@ function GuestScreenerPage() {
     <div className="guest-screener-page">
       <Helmet>
         <title>종목 탐색 — Foresto Compass</title>
-        <meta name="description" content="Compass Score 기반 종목 탐색. AI 4축 분석으로 평가된 한국 주식을 검색하세요." />
+        <meta name="description" content="Foresto IQ 기반 종목 탐색. AI 4축 분석으로 평가된 한국 주식을 검색하세요." />
       </Helmet>
 
       <header className="guest-screener-header">
         <h1>종목 탐색</h1>
-        <p>Compass Score 기반으로 한국 주식을 탐색하세요</p>
+        <p>Foresto IQ 기반으로 한국 주식을 탐색하세요</p>
       </header>
 
       <div className="guest-screener-filters">
@@ -134,7 +134,7 @@ function GuestScreenerPage() {
                   <th>시장</th>
                   <th>현재가</th>
                   <th>52주 범위</th>
-                  <th>Compass Score</th>
+                  <th>Foresto IQ</th>
                   <th>등급</th>
                 </tr>
               </thead>

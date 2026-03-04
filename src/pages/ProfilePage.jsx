@@ -313,7 +313,7 @@ function ProfilePage() {
             <button className="pp-next-card" onClick={() => navigate('/screener')}>
               <span className="pp-next-icon">&#128202;</span>
               <span className="pp-next-label">종목 스크리너</span>
-              <span className="pp-next-desc">Compass Score로 탐색</span>
+              <span className="pp-next-desc">Foresto IQ로 탐색</span>
             </button>
             <button className="pp-next-card" onClick={() => navigate('/dashboard')}>
               <span className="pp-next-icon">&#128200;</span>

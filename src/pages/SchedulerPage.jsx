@@ -21,7 +21,7 @@ const JOB_ICONS = {
 
 const JOB_LABELS_KO = {
   daily_incremental_prices: '일별 시세 증분 적재',
-  daily_compass_score: 'Compass Score 일괄 계산',
+  daily_compass_score: 'Foresto IQ 일괄 계산',
   weekly_stock_refresh: '주간 종목 마스터 갱신',
   weekly_dart_financials: 'DART 재무제표 적재',
   monthly_financial_products: '월간 금융상품 적재',

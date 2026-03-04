@@ -89,7 +89,7 @@ function AppContent() {
     <ThemeContext.Provider value={themeValue}>
     <Helmet>
       <title>Foresto Compass — 종합 투자 학습 플랫폼</title>
-      <meta name="description" content="Compass Score 기반 종목 분석, 포트폴리오 시뮬레이션, 투자 성향 진단. 교육 목적 참고 정보이며 투자 권유가 아닙니다." />
+      <meta name="description" content="Foresto IQ 기반 종목 분석, 포트폴리오 시뮬레이션, 투자 성향 진단. 교육 목적 참고 정보이며 투자 권유가 아닙니다." />
       <meta property="og:type" content="website" />
       <meta property="og:site_name" content="Foresto Compass" />
       <meta property="og:image" content="https://foresto.co.kr/og-image.png" />

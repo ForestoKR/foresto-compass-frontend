@@ -92,9 +92,9 @@ function LandingPage() {
     <div className="landing-container">
       <Helmet>
         <title>Foresto Compass — 종합 투자 학습 플랫폼</title>
-        <meta name="description" content="Compass Score 기반 종목 분석과 포트폴리오 시뮬레이션으로 투자를 학습하세요." />
+        <meta name="description" content="Foresto IQ 기반 종목 분석과 포트폴리오 시뮬레이션으로 투자를 학습하세요." />
         <meta property="og:title" content="Foresto Compass — 종합 투자 학습 플랫폼" />
-        <meta property="og:description" content="Compass Score 기반 종목 분석과 포트폴리오 시뮬레이션으로 투자를 학습하세요." />
+        <meta property="og:description" content="Foresto IQ 기반 종목 분석과 포트폴리오 시뮬레이션으로 투자를 학습하세요." />
       </Helmet>
 
       {/* Section 1: Hero */}
@@ -231,7 +231,7 @@ function LandingPage() {
           {/* Compass Score 축소판 */}
           {topStocks.length > 0 && (
             <div className="lp-compass-mini">
-              <h3 className="lp-compass-mini-title">Compass Score 상위 종목</h3>
+              <h3 className="lp-compass-mini-title">Foresto IQ 상위 종목</h3>
               <div className="lp-compass-mini-list">
                 {topStocks.map(stock => (
                   <div key={stock.ticker} className="lp-compass-mini-card">
@@ -326,7 +326,7 @@ function LandingPage() {
           <div className="lp-api-banner-card">
             <div className="lp-api-banner-text">
               <h3>개발자를 위한 API</h3>
-              <p>Compass Score, 재무 분석, 스크리너 등을 API로 활용하세요</p>
+              <p>Foresto IQ, 재무 분석, 스크리너 등을 API로 활용하세요</p>
             </div>
             <button className="lp-btn-ghost" onClick={() => navigate('/developers')}>
               API 문서 보기

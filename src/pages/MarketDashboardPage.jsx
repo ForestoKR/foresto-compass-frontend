@@ -546,7 +546,7 @@ function MarketDashboardPage() {
             <div className="cta-icon">&#128202;</div>
             <div className="cta-body">
               <div className="cta-title">종목 스크리너</div>
-              <div className="cta-desc">Compass Score 기반 종목 탐색 및 비교</div>
+              <div className="cta-desc">Foresto IQ 기반 종목 탐색 및 비교</div>
             </div>
             <button className="cta-btn" onClick={() => navigate('/screener')}>열기</button>
           </div>

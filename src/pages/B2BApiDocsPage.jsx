@@ -24,7 +24,7 @@ const ENDPOINTS = [
   {
     method: 'GET',
     path: '/compass/{ticker}',
-    desc: '단일 Compass Score 조회',
+    desc: '단일 Foresto IQ 조회',
     scope: 'compass:read',
     params: [
       { name: 'ticker', location: 'path', required: true, type: 'string', desc: '종목 티커 (예: 005930)' },
@@ -77,7 +77,7 @@ console.log("Score:", data.compass_score);`,
   {
     method: 'POST',
     path: '/compass/batch',
-    desc: '배치 Compass Score 조회',
+    desc: '배치 Foresto IQ 조회',
     scope: 'compass:read',
     params: [
       { name: 'tickers', location: 'body', required: true, type: 'string[]', desc: '티커 배열 (최대: Basic 10, Pro 50, Enterprise 200)' },
@@ -229,8 +229,8 @@ console.log("RSI:", data.technical_indicators.rsi_14);`,
       { name: 'search', location: 'body', required: false, type: 'string', desc: '종목명 또는 티커 검색' },
       { name: 'sector', location: 'body', required: false, type: 'string', desc: '섹터 필터' },
       { name: 'market', location: 'body', required: false, type: 'string', desc: 'KOSPI / KOSDAQ / KONEX' },
-      { name: 'min_score', location: 'body', required: false, type: 'number', desc: '최소 Compass Score (0-100)' },
-      { name: 'max_score', location: 'body', required: false, type: 'number', desc: '최대 Compass Score (0-100)' },
+      { name: 'min_score', location: 'body', required: false, type: 'number', desc: '최소 Foresto IQ (0-100)' },
+      { name: 'max_score', location: 'body', required: false, type: 'number', desc: '최대 Foresto IQ (0-100)' },
       { name: 'sort_by', location: 'body', required: false, type: 'string', desc: '정렬 기준 (기본: compass_score)' },
       { name: 'limit', location: 'body', required: false, type: 'number', desc: '결과 수 (1-100, 기본 20)' },
       { name: 'offset', location: 'body', required: false, type: 'number', desc: '시작 위치 (기본 0)' },
@@ -500,7 +500,7 @@ function B2BApiDocsPage() {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
     'name': 'Foresto Compass B2B API Documentation',
-    'description': 'Compass Score, 재무/밸류에이션/기술적 분석, 스크리너 등 B2B API 개발자 문서',
+    'description': 'Foresto IQ, 재무/밸류에이션/기술적 분석, 스크리너 등 B2B API 개발자 문서',
     'url': 'https://foresto.co.kr/developers',
     'publisher': {
       '@type': 'Organization',
@@ -513,9 +513,9 @@ function B2BApiDocsPage() {
     <div className="b2b-docs-layout">
       <Helmet>
         <title>API Documentation — Foresto Compass</title>
-        <meta name="description" content="Foresto Compass B2B API 개발자 문서. Compass Score, 재무 분석, 밸류에이션, 기술적 분석, 스크리너 등 8개 엔드포인트 레퍼런스. 교육 목적 참고 정보입니다." />
+        <meta name="description" content="Foresto Compass B2B API 개발자 문서. Foresto IQ, 재무 분석, 밸류에이션, 기술적 분석, 스크리너 등 8개 엔드포인트 레퍼런스. 교육 목적 참고 정보입니다." />
         <meta property="og:title" content="API Documentation — Foresto Compass" />
-        <meta property="og:description" content="Compass Score 기반 B2B API 개발자 문서. 인증, 엔드포인트, 코드 예제, 요금제 정보." />
+        <meta property="og:description" content="Foresto IQ 기반 B2B API 개발자 문서. 인증, 엔드포인트, 코드 예제, 요금제 정보." />
         <meta property="og:url" content="https://foresto.co.kr/developers" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
@@ -543,7 +543,7 @@ function B2BApiDocsPage() {
         <section className="b2b-docs-hero">
           <h1>Foresto Compass API</h1>
           <p className="b2b-docs-hero-subtitle">
-            Compass Score, 재무/밸류에이션/기술적 분석, 종목 스크리너 등
+            Foresto IQ, 재무/밸류에이션/기술적 분석, 종목 스크리너 등
             한국 주식 시장 데이터를 프로그래밍 방식으로 활용할 수 있는 RESTful API입니다.
           </p>
           <div className="b2b-docs-base-url">
@@ -676,7 +676,7 @@ function B2BApiDocsPage() {
                 <li>일 100건 / 월 3,000건</li>
                 <li>초당 5건 burst</li>
                 <li>배치 최대 10건</li>
-                <li>Compass Score + 스크리너</li>
+                <li>Foresto IQ + 스크리너</li>
               </ul>
             </div>
             {/* Pro */}

@@ -367,12 +367,12 @@ const PortfolioBuilderPage = () => {
               <div className="preset-card" onClick={() => loadPreset('balanced')}>
                 <div className="preset-icon">⚖️</div>
                 <div className="preset-name">균형형</div>
-                <div className="preset-desc">Compass Score 상위 종목</div>
+                <div className="preset-desc">Foresto IQ 상위 종목</div>
               </div>
               <div className="preset-card" onClick={() => loadPreset('growth')}>
                 <div className="preset-icon">🚀</div>
                 <div className="preset-name">성장형</div>
-                <div className="preset-desc">수익률 + Compass Score 상위</div>
+                <div className="preset-desc">수익률 + Foresto IQ 상위</div>
               </div>
             </div>
           </div>

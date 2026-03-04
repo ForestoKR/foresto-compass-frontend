@@ -151,7 +151,7 @@ function ProfileCompletionModal({ onClose, onComplete }) {
           </p>
           <ul className="pcm-benefits">
             <li>내 성향에 맞는 포트폴리오 시뮬레이션</li>
-            <li>맞춤 종목 스크리닝 및 Compass Score</li>
+            <li>맞춤 종목 스크리닝 및 Foresto IQ</li>
             <li>투자 학습 진단 리포트 제공</li>
           </ul>
           <div className="pcm-progress-bar">

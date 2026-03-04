@@ -30,7 +30,7 @@ function UserGuidePage() {
         <title>사용 설명서 — Foresto Compass</title>
         <meta
           name="description"
-          content="Foresto Compass 사용 설명서 — 회원가입, 투자 성향 진단, 포트폴리오 시뮬레이션, Compass Score 활용법을 안내합니다. 교육 목적 참고 정보입니다."
+          content="Foresto Compass 사용 설명서 — 회원가입, 투자 성향 진단, 포트폴리오 시뮬레이션, Foresto IQ 활용법을 안내합니다. 교육 목적 참고 정보입니다."
         />
         <meta property="og:title" content="사용 설명서 — Foresto Compass" />
         <meta
