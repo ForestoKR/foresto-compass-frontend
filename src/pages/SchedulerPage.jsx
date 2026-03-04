@@ -72,7 +72,9 @@ function formatDuration(seconds) {
 
 function formatTime(isoString) {
   if (!isoString) return '-';
-  const d = new Date(isoString);
+  // 백엔드 UTC 타임스탬프 → KST 변환
+  const utc = isoString.endsWith('Z') || isoString.includes('+') ? isoString : isoString + 'Z';
+  const d = new Date(utc);
   const month = d.getMonth() + 1;
   const day = d.getDate();
   const hours = String(d.getHours()).padStart(2, '0');
@@ -82,7 +84,8 @@ function formatTime(isoString) {
 
 function formatNextRun(isoString) {
   if (!isoString) return '-';
-  const d = new Date(isoString);
+  const utc = isoString.endsWith('Z') || isoString.includes('+') ? isoString : isoString + 'Z';
+  const d = new Date(utc);
   const month = d.getMonth() + 1;
   const day = d.getDate();
   const dow = DAY_NAMES[d.getDay()];
