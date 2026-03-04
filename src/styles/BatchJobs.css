@@ -55,15 +55,15 @@
 
 /* ── Info box ── */
 .bj-info-box {
-  background: rgba(33, 150, 243, 0.08);
+  background: rgba(102, 126, 234, 0.08);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 20px;
-  border-left: 4px solid #2196F3;
+  border-left: 4px solid var(--primary, #667eea);
 }
 
 [data-theme="dark"] .bj-info-box {
-  background: rgba(33, 150, 243, 0.12);
+  background: rgba(102, 126, 234, 0.12);
 }
 
 .bj-info-box h3 {
@@ -89,8 +89,8 @@
 .bj-start-btn {
   width: 100%;
   padding: 16px;
-  background: #FF9800;
-  color: white;
+  background: var(--accent, #FF9800);
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-size: 18px;
@@ -189,6 +189,42 @@
   font-weight: 600;
 }
 
+.bj-status-pending {
+  background: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+}
+
+.bj-status-running {
+  background: rgba(102, 126, 234, 0.12);
+  color: var(--primary, #667eea);
+}
+
+.bj-status-completed {
+  background: rgba(22, 163, 74, 0.12);
+  color: var(--grade-a, #16a34a);
+}
+
+.bj-status-failed {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+[data-theme="dark"] .bj-status-pending {
+  background: rgba(217, 119, 6, 0.2);
+}
+
+[data-theme="dark"] .bj-status-running {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+[data-theme="dark"] .bj-status-completed {
+  background: rgba(22, 163, 74, 0.2);
+}
+
+[data-theme="dark"] .bj-status-failed {
+  background: rgba(220, 38, 38, 0.2);
+}
+
 /* ── Progress section ── */
 .bj-progress-section {
   background: var(--card-inner, #fafbfc);
@@ -224,7 +260,7 @@
 
 .bj-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2196F3, #4CAF50);
+  background: linear-gradient(90deg, var(--primary, #667eea), var(--grade-a, #16a34a));
   transition: width 0.3s ease;
   display: flex;
   align-items: center;
@@ -411,7 +447,7 @@
 }
 
 .bj-action-btn.detail {
-  background: #2196F3;
+  background: var(--primary, #667eea);
   margin-right: 8px;
 }
 

@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import {
+  getBatchJobs,
+  getBatchJobStatus,
+  startBatchKrxCollection,
+  deleteBatchJob,
+} from '../services/api';
 import '../styles/BatchJobs.css';
 
 export default function BatchJobsPage() {
@@ -24,14 +29,7 @@ export default function BatchJobsPage() {
 
     const interval = setInterval(async () => {
       try {
-        const token = localStorage.getItem('access_token');
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/admin/batch/status/${pollingJobId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        );
-
+        const response = await getBatchJobStatus(pollingJobId);
         setCurrentJob(response.data.data);
 
         // 완료되거나 실패하면 폴링 중지
@@ -49,13 +47,7 @@ export default function BatchJobsPage() {
 
   const loadJobs = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/admin/batch/jobs`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      const response = await getBatchJobs();
       setJobs(response.data.data.jobs);
     } catch (err) {
       console.error('Failed to load jobs:', err);
@@ -76,14 +68,7 @@ export default function BatchJobsPage() {
 
     try {
       setLoading(true);
-      const token = localStorage.getItem('access_token');
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/admin/batch/krx-full-collection?days=${days}&limit=${limit}`,
-        {},
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      const response = await startBatchKrxCollection({ days, limit });
 
       const jobId = response.data.data.job_id;
       setPollingJobId(jobId);
@@ -100,13 +85,7 @@ export default function BatchJobsPage() {
 
   const viewJobDetail = async (jobId) => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/admin/batch/status/${jobId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      const response = await getBatchJobStatus(jobId);
       setCurrentJob(response.data.data);
 
       // 실행 중이면 폴링 시작
@@ -125,13 +104,7 @@ export default function BatchJobsPage() {
     }
 
     try {
-      const token = localStorage.getItem('access_token');
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/admin/batch/jobs/${jobId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      await deleteBatchJob(jobId);
       alert('✅ 작업 기록이 삭제되었습니다.');
       loadJobs();
       if (currentJob?.job_id === jobId) {
@@ -141,16 +114,6 @@ export default function BatchJobsPage() {
       console.error('Failed to delete job:', err);
       alert('❌ 삭제 실패: ' + (err.response?.data?.detail || err.message));
     }
-  };
-
-  const getStatusColor = (status) => {
-    const colors = {
-      pending: '#FFC107',
-      running: '#2196F3',
-      completed: '#4CAF50',
-      failed: '#F44336'
-    };
-    return colors[status] || '#666';
   };
 
   const getStatusText = (status) => {
@@ -269,13 +232,7 @@ export default function BatchJobsPage() {
                   </div>
                   <div>
                     <div className="bj-info-label">상태</div>
-                    <span
-                      className="bj-status-badge"
-                      style={{
-                        background: getStatusColor(currentJob.status) + '20',
-                        color: getStatusColor(currentJob.status)
-                      }}
-                    >
+                    <span className={`bj-status-badge bj-status-${currentJob.status}`}>
                       {getStatusText(currentJob.status)}
                     </span>
                   </div>
@@ -401,13 +358,7 @@ export default function BatchJobsPage() {
                           {job.job_id}
                         </td>
                         <td className="center">
-                          <span
-                            className="bj-status-badge-sm"
-                            style={{
-                              background: getStatusColor(job.status) + '20',
-                              color: getStatusColor(job.status)
-                            }}
-                          >
+                          <span className={`bj-status-badge-sm bj-status-${job.status}`}>
                             {getStatusText(job.status)}
                           </span>
                         </td>

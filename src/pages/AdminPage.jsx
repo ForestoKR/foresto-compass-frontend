@@ -151,7 +151,7 @@ export default function AdminPage() {
             <h3>💡 사용 안내</h3>
             <ul>
               <li>
-                <strong>데이터 관리:</strong> yfinance, Alpha Vantage, pykrx를 통해 주식/ETF 데이터를 수집하고 관리합니다.
+                <strong>데이터 관리:</strong> yfinance, KRX Open API, DART를 통해 주식/ETF 데이터를 수집하고 관리합니다.
               </li>
               <li>
                 <strong>재무 분석:</strong> 재무제표 기반으로 성장률, 수익성, 안정성을 종합 분석합니다.

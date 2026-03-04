@@ -1081,6 +1081,13 @@ export const batchComputeCompassScores = (params = {}) => {
   return api.post(`/admin/scoring/batch-compute?${queryParams.toString()}`);
 };
 
+// ── Batch Jobs API ──
+export const getBatchJobs = () => api.get('/admin/batch/jobs');
+export const getBatchJobStatus = (jobId) => api.get(`/admin/batch/status/${jobId}`);
+export const startBatchKrxCollection = (params) =>
+  api.post('/admin/batch/krx-full-collection', null, { params });
+export const deleteBatchJob = (jobId) => api.delete(`/admin/batch/jobs/${jobId}`);
+
 // ── Phase 3: 수집 이력 모니터링 ──
 export const getCollectionLogs = (params = {}) => {
   return api.get('/admin/collection-logs', { params });

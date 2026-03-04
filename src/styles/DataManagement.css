@@ -1,5 +1,61 @@
 /* DataManagement.css — theme-aware */
 
+/* ── Pipeline overview ── */
+.dm-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 24px 0 8px;
+  flex-wrap: wrap;
+}
+
+.dm-pipeline-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dm-pipeline-node {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dm-pipeline-num {
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.dm-pipeline-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text, #1f2937);
+  white-space: nowrap;
+}
+
+.dm-pipeline-arrow {
+  font-size: 1.1rem;
+  color: var(--text-muted, #9ca3af);
+  margin: 0 6px;
+}
+
+@media (max-width: 600px) {
+  .dm-pipeline {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .dm-pipeline-arrow {
+    transform: rotate(90deg);
+    margin: 0;
+  }
+}
+
 /* ── Section divider ── */
 .dm-section {
   margin-top: 40px;
@@ -105,6 +161,24 @@
   margin-right: 8px;
   vertical-align: middle;
 }
+
+/* ── Step badge colors ── */
+.dm-step-1 { background: #64748b; }
+.dm-step-2 { background: var(--primary, #667eea); }
+.dm-step-3 { background: var(--primary-dark, #5568d3); }
+.dm-step-4 { background: #ea580c; }
+.dm-step-5 { background: #7c3aed; }
+
+/* ── Data status card colors ── */
+.dm-stat-stocks { color: var(--primary, #667eea); }
+.dm-stat-etfs { color: #9c27b0; }
+.dm-stat-bonds { color: var(--grade-a, #16a34a); }
+.dm-stat-deposits { color: var(--accent, #FF9800); }
+.dm-stat-savings { color: #e91e63; }
+.dm-stat-annuity { color: #7c3aed; }
+.dm-stat-mortgage { color: #78716c; }
+.dm-stat-rent { color: #64748b; }
+.dm-stat-credit { color: #e91e63; }
 
 /* ── Section subtitle ── */
 .dm-section-subtitle {

@@ -4,6 +4,7 @@ import {
   getSchedulerStatus,
   getCollectionLogs,
   getCollectionLogDetail,
+  getCollectionSummary,
   triggerSchedulerJob,
 } from '../services/api';
 import '../styles/Scheduler.css';
@@ -17,6 +18,7 @@ const JOB_ICONS = {
   daily_market_email: '📧',
   watchlist_score_alerts: '🔔',
   b2b_usage_log_cleanup: '🧹',
+  daily_index_prices: '📊',
 };
 
 const JOB_LABELS_KO = {
@@ -28,6 +30,7 @@ const JOB_LABELS_KO = {
   daily_market_email: '일간 시장 요약 이메일',
   watchlist_score_alerts: '관심종목 점수 변동 알림',
   b2b_usage_log_cleanup: 'B2B 사용량 로그 정리',
+  daily_index_prices: '일별 지수 시세 적재',
 };
 
 const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
@@ -101,6 +104,7 @@ export default function SchedulerPage() {
   const navigate = useNavigate();
   const [schedulerData, setSchedulerData] = useState(null);
   const [logs, setLogs] = useState([]);
+  const [summary, setSummary] = useState(null);
   const [triggeringJob, setTriggeringJob] = useState(null);
   const [logDetail, setLogDetail] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -109,12 +113,14 @@ export default function SchedulerPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [statusRes, logsRes] = await Promise.all([
+      const [statusRes, logsRes, summaryRes] = await Promise.all([
         getSchedulerStatus(),
         getCollectionLogs({ limit: 20 }),
+        getCollectionSummary(),
       ]);
       setSchedulerData(statusRes.data.data);
       setLogs(logsRes.data.data?.items || []);
+      setSummary(summaryRes.data.data);
       setError(null);
     } catch (err) {
       console.error('Failed to fetch scheduler data:', err);
@@ -216,8 +222,34 @@ export default function SchedulerPage() {
           </p>
 
           {error && (
-            <div style={{ color: '#dc2626', marginBottom: '16px', fontSize: '0.9rem' }}>
+            <div style={{ color: 'var(--stock-down, #dc2626)', marginBottom: '16px', fontSize: '0.9rem' }}>
               {error}
+            </div>
+          )}
+
+          {/* 30-day Summary */}
+          {summary?.overall && (
+            <div className="sc-summary-grid">
+              <div className="sc-summary-card">
+                <span className="sc-summary-label">30일 실행</span>
+                <span className="sc-summary-value sc-summary-info">
+                  {summary.overall.total_runs_30d || 0}회
+                </span>
+              </div>
+              <div className="sc-summary-card">
+                <span className="sc-summary-label">성공률</span>
+                <span className="sc-summary-value sc-summary-success">
+                  {summary.overall.success_rate_30d != null
+                    ? `${summary.overall.success_rate_30d}%`
+                    : '-'}
+                </span>
+              </div>
+              <div className="sc-summary-card">
+                <span className="sc-summary-label">7일 실패</span>
+                <span className={`sc-summary-value ${(summary.overall.recent_failures_7d || 0) > 0 ? 'sc-summary-danger' : 'sc-summary-success'}`}>
+                  {summary.overall.recent_failures_7d || 0}건
+                </span>
+              </div>
             </div>
           )}
 
