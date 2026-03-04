@@ -4,49 +4,50 @@
 .dm-pipeline {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: space-between;
   margin: 24px auto 8px;
-  max-width: 700px;
+  max-width: 640px;
+  position: relative;
+  padding: 0 20px;
+}
+
+/* 연속 가로선 — 첫 노드 중심 ~ 마지막 노드 중심 */
+.dm-pipeline::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: calc(20px + 16px);   /* padding + 노드 반지름 */
+  right: calc(20px + 16px);
+  height: 3px;
+  background: var(--border, #e5e7eb);
+  border-radius: 2px;
 }
 
 .dm-pipeline-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
-  min-width: 0;
-}
-
-.dm-pipeline-row {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  justify-content: center;
+  position: relative;
+  z-index: 1;
 }
 
 .dm-pipeline-node {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   flex-shrink: 0;
-}
-
-.dm-pipeline-line {
-  flex: 1;
-  height: 3px;
-  background: var(--border, #e5e7eb);
-  margin: 0 -1px;
+  box-shadow: 0 0 0 3px var(--card, #ffffff);
 }
 
 .dm-pipeline-label {
-  margin-top: 6px;
-  font-size: 0.78rem;
+  margin-top: 8px;
+  font-size: 0.76rem;
   font-weight: 600;
   color: var(--text-secondary, #6b7280);
   text-align: center;
@@ -54,13 +55,22 @@
 }
 
 @media (max-width: 500px) {
+  .dm-pipeline {
+    padding: 0 10px;
+  }
+  .dm-pipeline::before {
+    left: calc(10px + 13px);
+    right: calc(10px + 13px);
+    top: 13px;
+  }
   .dm-pipeline-label {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
   }
   .dm-pipeline-node {
-    width: 28px;
-    height: 28px;
-    font-size: 0.75rem;
+    width: 26px;
+    height: 26px;
+    font-size: 0.72rem;
+    box-shadow: 0 0 0 2px var(--card, #ffffff);
   }
 }
 
