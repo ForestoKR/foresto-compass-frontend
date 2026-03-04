@@ -353,7 +353,7 @@ function JobCard({ job, triggering, onTrigger }) {
             {formatTime(lastRun.created_at)}
             {lastRun.duration_seconds != null && ` · ${formatDuration(lastRun.duration_seconds)}`}
             {lastRun.success_count != null && ` · 성공 ${lastRun.success_count}`}
-            {lastRun.fail_count > 0 && ` / 실패 ${lastRun.fail_count}`}
+            {lastRun.failed_count > 0 && ` / 실패 ${lastRun.failed_count}`}
             {lastRun.validation_status && (
               <span className={`sc-validation-badge sc-validation-${lastRun.validation_status.toLowerCase()}`}>
                 {lastRun.validation_status}
@@ -425,7 +425,7 @@ function LogTable({ logs, onRowClick }) {
               <td className="sc-log-time">{formatTime(log.created_at)}</td>
               <td>{formatDuration(log.duration_seconds)}</td>
               <td>
-                {log.success_count ?? '-'} / {log.fail_count ?? '-'}
+                {log.success_count ?? '-'} / {log.failed_count ?? '-'}
               </td>
               <td>
                 {log.validation_status ? (
@@ -475,7 +475,7 @@ function LogDetailModal({ detail, onClose }) {
           <div>
             <span className="sc-modal-label">성공 / 실패</span>
             <span className="sc-modal-value">
-              {detail.success_count ?? '-'} / {detail.fail_count ?? '-'}
+              {detail.success_count ?? '-'} / {detail.failed_count ?? '-'}
             </span>
           </div>
           {detail.validation_status && (
