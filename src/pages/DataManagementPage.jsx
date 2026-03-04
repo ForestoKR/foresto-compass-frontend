@@ -271,8 +271,8 @@ export default function DataManagementPage() {
           <div className="dm-pipeline">
             {[
               { num: 1, label: 'FDR 종목' },
-              { num: 2, label: '주식/ETF' },
-              { num: 3, label: '시계열' },
+              { num: 2, label: '주식/ETF/ETN' },
+              { num: 3, label: '시계열/금시장' },
               { num: 4, label: '재무/배당' },
               { num: 5, label: '금융상품' },
             ].map((step) => (
