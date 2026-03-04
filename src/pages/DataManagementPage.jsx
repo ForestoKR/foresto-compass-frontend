@@ -563,12 +563,6 @@ export default function DataManagementPage() {
                     if (res.data.task_id) {
                       setCurrentTaskId(res.data.task_id);
                     }
-                    const stats = res.data.stats || {};
-                    alert(
-                      `증분 적재 시작\n` +
-                      `대상: ${stats.total_stocks || '?'}종목\n` +
-                      `task_id: ${res.data.task_id}`
-                    );
                     await fetchDataStatus();
                   } catch (err) {
                     alert(err.response?.data?.error?.message || err.response?.data?.detail || '증분 적재 시작 실패');

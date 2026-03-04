@@ -27,7 +27,7 @@ function ProgressModal({ taskId, onComplete, onClose }) {
   const getEstimatedTime = (tid) => {
     if (!tid) return '약 2-3분';
     if (tid.startsWith('pipeline_')) return '약 60-90분';
-    if (tid.startsWith('incremental_')) return '약 30-40분';
+    if (tid.startsWith('incremental_')) return '약 1-2분';
     if (tid.startsWith('dart_fin_')) return '약 5-10분';
     if (tid.startsWith('compass_')) return '약 20-30분';
     if (tid.startsWith('stocks_') || tid.startsWith('fdr_')) return '약 3-5분';
@@ -200,11 +200,11 @@ function ProgressModal({ taskId, onComplete, onClose }) {
 
           <div className="modal-body">
             <div className="progress-section" aria-live="polite">
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
-                <span style={{ backgroundColor: '#4CAF50', color: 'white', padding: '5px 15px', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              <div className="pm-phase-badges">
+                <span className="pm-phase-badge pm-phase-active">
                   Phase 1
                 </span>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>데이터 수집</span>
+                <span className="pm-phase-label">데이터 수집</span>
               </div>
               <div className="loading-spinner">
                 <div className="spinner-animation"></div>
@@ -251,25 +251,11 @@ function ProgressModal({ taskId, onComplete, onClose }) {
             </div>
             {/* Phase Badge - 채권은 단일 단계이므로 숨김 */}
             {!isBondTask && (
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '15px', marginBottom: '10px' }}>
-                <span style={{
-                  backgroundColor: currentPhase === 'Phase 1' ? '#4CAF50' : 'var(--border)',
-                  color: currentPhase === 'Phase 1' ? 'white' : 'var(--text-secondary)',
-                  padding: '5px 15px',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold'
-                }}>
+              <div className="pm-phase-badges">
+                <span className={`pm-phase-badge ${currentPhase === 'Phase 1' ? 'pm-phase-active' : 'pm-phase-inactive'}`}>
                   Phase 1: 수집
                 </span>
-                <span style={{
-                  backgroundColor: currentPhase === 'Phase 2' ? '#2196F3' : 'var(--border)',
-                  color: currentPhase === 'Phase 2' ? 'white' : 'var(--text-secondary)',
-                  padding: '5px 15px',
-                  borderRadius: '20px',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold'
-                }}>
+                <span className={`pm-phase-badge ${currentPhase === 'Phase 2' ? 'pm-phase-active pm-phase-2' : 'pm-phase-inactive'}`}>
                   Phase 2: 저장
                 </span>
               </div>
@@ -343,16 +329,27 @@ function ProgressModal({ taskId, onComplete, onClose }) {
           )}
 
           {/* Completion Status */}
-          {isComplete && (
-            <div style={{ marginTop: '20px', padding: '15px', backgroundColor: progress.status === 'completed' ? '#E8F5E9' : '#FFEBEE', borderRadius: '8px', textAlign: 'center' }}>
-              <p style={{ margin: '0 0 10px 0', fontSize: '1.1rem', fontWeight: 'bold', color: progress.status === 'completed' ? '#2E7D32' : '#C62828' }}>
-                {progress.status === 'completed' ? '✅ 데이터 적재 완료!' : '⚠️ 작업이 실패했습니다'}
-              </p>
-              <p style={{ margin: '0', color: progress.status === 'completed' ? '#558B2F' : '#B71C1C', fontSize: '0.9rem' }}>
-                총 {progress.success_count + progress.failed_count}건 중 {progress.success_count}건 성공
-              </p>
-            </div>
-          )}
+          {isComplete && (() => {
+            const isFailed = progress.status === 'failed';
+            const hasPartialFailure = progress.status === 'completed' && progress.failed_count > 0;
+            const statusClass = isFailed ? 'pm-complete-fail' : hasPartialFailure ? 'pm-complete-warn' : 'pm-complete-ok';
+            const title = isFailed
+              ? '⚠️ 작업이 실패했습니다'
+              : hasPartialFailure
+                ? '⚠️ 일부 항목이 실패했습니다'
+                : '✅ 데이터 적재 완료!';
+            return (
+              <div className={`pm-complete-box ${statusClass}`}>
+                <p className="pm-complete-title">{title}</p>
+                <p className="pm-complete-detail">
+                  총 {progress.success_count + progress.failed_count}건 중 {progress.success_count}건 성공
+                </p>
+                {isFailed && progress.error_message && (
+                  <p className="pm-complete-error">{progress.error_message}</p>
+                )}
+              </div>
+            );
+          })()}
 
           {/* Close Button for Completed */}
           {isComplete && (

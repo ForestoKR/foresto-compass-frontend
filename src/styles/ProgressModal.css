@@ -421,6 +421,127 @@
   white-space: nowrap;
 }
 
+/* Phase Badges */
+.pm-phase-badges {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.pm-phase-badge {
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.pm-phase-active {
+  background-color: var(--grade-a, #43a047);
+  color: white;
+}
+
+.pm-phase-active.pm-phase-2 {
+  background-color: var(--primary, #667eea);
+}
+
+.pm-phase-inactive {
+  background-color: var(--border, #e5e7eb);
+  color: var(--text-secondary, #6b7280);
+}
+
+.pm-phase-label {
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.9rem;
+}
+
+/* Completion Box */
+.pm-complete-box {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.pm-complete-ok {
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.pm-complete-warn {
+  background: rgba(255, 193, 7, 0.08);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.pm-complete-fail {
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+[data-theme="dark"] .pm-complete-ok {
+  background: rgba(22, 163, 74, 0.15);
+  border-color: rgba(22, 163, 74, 0.3);
+}
+
+[data-theme="dark"] .pm-complete-warn {
+  background: rgba(255, 193, 7, 0.12);
+  border-color: rgba(255, 193, 7, 0.2);
+}
+
+[data-theme="dark"] .pm-complete-fail {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.pm-complete-title {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.pm-complete-ok .pm-complete-title {
+  color: var(--grade-a, #43a047);
+}
+
+.pm-complete-warn .pm-complete-title {
+  color: #92400e;
+}
+
+.pm-complete-fail .pm-complete-title {
+  color: var(--stock-down, #dc2626);
+}
+
+[data-theme="dark"] .pm-complete-warn .pm-complete-title {
+  color: #fde68a;
+}
+
+[data-theme="dark"] .pm-complete-fail .pm-complete-title {
+  color: #fca5a5;
+}
+
+.pm-complete-detail {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.pm-complete-error {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--stock-down, #dc2626);
+  background: var(--card-inner, #fafbfc);
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-align: left;
+  word-break: break-all;
+}
+
+[data-theme="dark"] .pm-complete-error {
+  color: #fca5a5;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .progress-modal {
