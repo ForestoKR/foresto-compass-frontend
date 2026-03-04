@@ -276,12 +276,14 @@ export default function DataManagementPage() {
               { num: 4, label: '재무/배당' },
               { num: 5, label: '금융상품' },
             ].map((step, i, arr) => (
-              <div key={step.num} className="dm-pipeline-item">
-                <div className={`dm-pipeline-node dm-step-${step.num}`}>
-                  <span className="dm-pipeline-num">{step.num}</span>
+              <div key={step.num} className="dm-pipeline-step">
+                <div className="dm-pipeline-row">
+                  <div className={`dm-pipeline-node dm-step-${step.num}`}>
+                    {step.num}
+                  </div>
+                  {i < arr.length - 1 && <div className="dm-pipeline-line" />}
                 </div>
                 <span className="dm-pipeline-label">{step.label}</span>
-                {i < arr.length - 1 && <div className="dm-pipeline-arrow">→</div>}
               </div>
             ))}
           </div>
