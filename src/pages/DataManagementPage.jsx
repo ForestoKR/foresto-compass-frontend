@@ -385,7 +385,7 @@ export default function DataManagementPage() {
 
           {/* ─── Step 2: 주식/ETF 수집 (yfinance) ─── */}
           <div className="description-section dm-section">
-            <h2>{stepBadge(2)} 주식 / ETF 수집</h2>
+            <h2>{stepBadge(2)} 주식 / ETF / ETN 수집</h2>
             <p className="dm-section-subtitle">
               FDR 종목 마스터 기반으로 yfinance / KRX Open API에서 시가총액, 섹터, 상장일 등을 수집합니다.
             </p>
@@ -409,7 +409,7 @@ export default function DataManagementPage() {
 
           {/* ─── Step 3: pykrx 시계열 ─── */}
           <div className="description-section dm-section">
-            <h2>{stepBadge(3)} KRX Open API 시계열 데이터</h2>
+            <h2>{stepBadge(3)} KRX Open API 시계열 / 금시장 데이터</h2>
             <p className="dm-section-subtitle">
               KRX 공식 데이터로 과거 가격(OHLCV)을 수집합니다. 일 9,500건 한도.
             </p>
