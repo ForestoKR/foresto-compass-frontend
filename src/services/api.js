@@ -11,6 +11,9 @@ const api = axios.create({
   },
 });
 
+// 어드민 데이터 수집용 긴 타임아웃 (Render 응답 지연 대응)
+const ADMIN_TIMEOUT = { timeout: 120000 };
+
 // UUID generator for idempotency keys
 const generateUUID = () => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -312,56 +315,56 @@ export default api;
  * 주식 데이터만 수집
  */
 export const runAllPipeline = () => {
-  return api.post('/admin/run-all');
+  return api.post('/admin/run-all', null, ADMIN_TIMEOUT);
 };
 
 export const loadStocks = () => {
-  return api.post('/admin/load-stocks');
+  return api.post('/admin/load-stocks', null, ADMIN_TIMEOUT);
 };
 
 /**
  * ETF 데이터만 수집
  */
 export const loadETFs = () => {
-  return api.post('/admin/load-etfs');
+  return api.post('/admin/load-etfs', null, ADMIN_TIMEOUT);
 };
 
 /**
  * ETN 데이터 수집
  */
 export const loadETNs = () => {
-  return api.post('/admin/load-etns');
+  return api.post('/admin/load-etns', null, ADMIN_TIMEOUT);
 };
 
 /**
  * 금시장 데이터 수집
  */
 export const loadGold = () => {
-  return api.post('/admin/load-gold');
+  return api.post('/admin/load-gold', null, ADMIN_TIMEOUT);
 };
 
 export const loadDartDividends = (payload) => {
-  return api.post('/admin/dart/load-dividends', payload);
+  return api.post('/admin/dart/load-dividends', payload, ADMIN_TIMEOUT);
 };
 
 export const loadFscDividends = (payload) => {
-  return api.post('/admin/fsc/load-dividends', payload);
+  return api.post('/admin/fsc/load-dividends', payload, ADMIN_TIMEOUT);
 };
 
 export const updateDividendYields = () => {
-  return api.post('/admin/fsc/update-dividend-yields');
+  return api.post('/admin/fsc/update-dividend-yields', null, ADMIN_TIMEOUT);
 };
 
 export const loadFdrStockListing = (payload) => {
-  return api.post('/admin/fdr/load-stock-listing', payload);
+  return api.post('/admin/fdr/load-stock-listing', payload, ADMIN_TIMEOUT);
 };
 
 export const loadDartCorporateActions = (payload) => {
-  return api.post('/admin/dart/load-corporate-actions', payload);
+  return api.post('/admin/dart/load-corporate-actions', payload, ADMIN_TIMEOUT);
 };
 
 export const loadFscBonds = (payload) => {
-  return api.post('/admin/fsc/load-bonds', payload);
+  return api.post('/admin/fsc/load-bonds', payload, ADMIN_TIMEOUT);
 };
 
 /**
@@ -369,53 +372,53 @@ export const loadFscBonds = (payload) => {
  * @param {string} qualityFilter - 'all' | 'investment_grade' | 'high_quality'
  */
 export const loadBonds = (qualityFilter = 'all') => {
-  return api.post('/admin/load-bonds', null, { params: { quality_filter: qualityFilter } });
+  return api.post('/admin/load-bonds', null, { params: { quality_filter: qualityFilter }, ...ADMIN_TIMEOUT });
 };
 
 export const loadDartFinancials = (params = {}) => {
-  return api.post('/admin/dart/load-financials', null, { params });
+  return api.post('/admin/dart/load-financials', null, { params, ...ADMIN_TIMEOUT });
 };
 
 /**
  * FSS 정기예금 상품 조회
  */
 export const loadDeposits = () => {
-  return api.post('/admin/load-deposits');
+  return api.post('/admin/load-deposits', null, ADMIN_TIMEOUT);
 };
 
 /**
  * FSS 적금 상품 조회
  */
 export const loadSavings = () => {
-  return api.post('/admin/load-savings');
+  return api.post('/admin/load-savings', null, ADMIN_TIMEOUT);
 };
 
 /**
  * FSS 연금저축 상품 조회
  */
 export const loadAnnuitySavings = () => {
-  return api.post('/admin/load-annuity-savings');
+  return api.post('/admin/load-annuity-savings', null, ADMIN_TIMEOUT);
 };
 
 /**
  * FSS 주택담보대출 상품 조회
  */
 export const loadMortgageLoans = () => {
-  return api.post('/admin/load-mortgage-loans');
+  return api.post('/admin/load-mortgage-loans', null, ADMIN_TIMEOUT);
 };
 
 /**
  * FSS 전세자금대출 상품 조회
  */
 export const loadRentHouseLoans = () => {
-  return api.post('/admin/load-rent-house-loans');
+  return api.post('/admin/load-rent-house-loans', null, ADMIN_TIMEOUT);
 };
 
 /**
  * FSS 개인신용대출 상품 조회
  */
 export const loadCreditLoans = () => {
-  return api.post('/admin/load-credit-loans');
+  return api.post('/admin/load-credit-loans', null, ADMIN_TIMEOUT);
 };
 
 /**
@@ -475,28 +478,28 @@ export const getDeposits = (skip = 0, limit = 100) => {
  * Alpha Vantage: 인기 미국 주식 전체 적재
  */
 export const loadAllAlphaVantageStocks = () => {
-  return api.post('/admin/alpha-vantage/load-all-stocks');
+  return api.post('/admin/alpha-vantage/load-all-stocks', null, ADMIN_TIMEOUT);
 };
 
 /**
  * Alpha Vantage: 특정 주식 적재
  */
 export const loadAlphaVantageStock = (symbol) => {
-  return api.post(`/admin/alpha-vantage/load-stock/${symbol}`);
+  return api.post(`/admin/alpha-vantage/load-stock/${symbol}`, null, ADMIN_TIMEOUT);
 };
 
 /**
  * Alpha Vantage: 특정 주식의 재무제표 적재
  */
 export const loadAlphaVantageFinancials = (symbol) => {
-  return api.post(`/admin/alpha-vantage/load-financials/${symbol}`);
+  return api.post(`/admin/alpha-vantage/load-financials/${symbol}`, null, ADMIN_TIMEOUT);
 };
 
 /**
  * Alpha Vantage: 인기 미국 ETF 전체 적재
  */
 export const loadAllAlphaVantageETFs = () => {
-  return api.post('/admin/alpha-vantage/load-all-etfs');
+  return api.post('/admin/alpha-vantage/load-all-etfs', null, ADMIN_TIMEOUT);
 };
 
 /**
@@ -525,7 +528,7 @@ export const getAlphaVantageDataStatus = () => {
  * @param {string} outputsize - 'compact' (최근 100일) or 'full' (최대 20년)
  */
 export const loadAllAlphaVantageTimeSeries = (outputsize = 'compact') => {
-  return api.post(`/admin/alpha-vantage/load-all-timeseries?outputsize=${outputsize}`);
+  return api.post(`/admin/alpha-vantage/load-all-timeseries?outputsize=${outputsize}`, null, ADMIN_TIMEOUT);
 };
 
 /**
@@ -534,7 +537,7 @@ export const loadAllAlphaVantageTimeSeries = (outputsize = 'compact') => {
  * @param {string} outputsize - 'compact' (최근 100일) or 'full' (최대 20년)
  */
 export const loadAlphaVantageTimeSeries = (symbol, outputsize = 'compact') => {
-  return api.post(`/admin/alpha-vantage/load-timeseries/${symbol}?outputsize=${outputsize}`);
+  return api.post(`/admin/alpha-vantage/load-timeseries/${symbol}?outputsize=${outputsize}`, null, ADMIN_TIMEOUT);
 };
 
 // ============================================================
@@ -545,21 +548,21 @@ export const loadAlphaVantageTimeSeries = (symbol, outputsize = 'compact') => {
  * pykrx: 인기 한국 주식 전체 재무제표 적재
  */
 export const loadAllPykrxFinancials = () => {
-  return api.post('/admin/pykrx/load-all-financials');
+  return api.post('/admin/pykrx/load-all-financials', null, ADMIN_TIMEOUT);
 };
 
 /**
  * pykrx: 특정 한국 주식 재무제표 적재
  */
 export const loadPykrxFinancials = (ticker) => {
-  return api.post(`/admin/pykrx/load-financials/${ticker}`);
+  return api.post(`/admin/pykrx/load-financials/${ticker}`, null, ADMIN_TIMEOUT);
 };
 
 /**
  * pykrx: stocks 테이블 전체 종목 증분 시계열 적재
  */
 export const loadStocksIncremental = (payload) => {
-  return api.post('/admin/pykrx/load-stocks-incremental', payload);
+  return api.post('/admin/pykrx/load-stocks-incremental', payload, ADMIN_TIMEOUT);
 };
 
 // ============================================================
@@ -1099,7 +1102,7 @@ export const batchComputeCompassScores = (params = {}) => {
 export const getBatchJobs = () => api.get('/admin/batch/jobs');
 export const getBatchJobStatus = (jobId) => api.get(`/admin/batch/status/${jobId}`);
 export const startBatchKrxCollection = (params) =>
-  api.post('/admin/batch/krx-full-collection', null, { params });
+  api.post('/admin/batch/krx-full-collection', null, { params, ...ADMIN_TIMEOUT });
 export const deleteBatchJob = (jobId) => api.delete(`/admin/batch/jobs/${jobId}`);
 
 // ── Phase 3: 수집 이력 모니터링 ──
