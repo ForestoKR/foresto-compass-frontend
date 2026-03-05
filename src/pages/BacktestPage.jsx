@@ -577,9 +577,12 @@ function BacktestPage() {
                     total_return: singleResult.historical_observation?.total_return ?? singleResult.total_return,
                     cagr: singleResult.historical_observation?.cagr ?? singleResult.annualized_return,
                     volatility: singleResult.risk_metrics?.volatility ?? singleResult.volatility,
-                    sharpe_ratio: singleResult.historical_observation?.sharpe_ratio ?? singleResult.sharpe_ratio,
-                    max_drawdown: singleResult.risk_metrics?.max_drawdown ?? singleResult.max_drawdown,
-                  }
+                    sharpe: singleResult.historical_observation?.sharpe_ratio ?? singleResult.sharpe_ratio,
+                    mdd: singleResult.risk_metrics?.max_drawdown ?? singleResult.max_drawdown,
+                    start_date: singleResult.start_date,
+                    end_date: singleResult.end_date,
+                  },
+                  autoSubmit: true,
                 }
               })}
             >

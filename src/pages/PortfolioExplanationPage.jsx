@@ -37,6 +37,7 @@ function PortfolioExplanationPage() {
   });
 
   // location.state에서 데이터 받기 (다른 페이지에서 전달받은 경우)
+  const [autoSubmitDone, setAutoSubmitDone] = useState(false);
   useEffect(() => {
     if (location.state?.metrics) {
       const { metrics } = location.state;
@@ -46,11 +47,39 @@ function PortfolioExplanationPage() {
         volatility: metrics.volatility?.toString() || '',
         mdd: metrics.mdd?.toString() || '',
         sharpe: metrics.sharpe?.toString() || '',
-        start_date: metrics.period_start || '',
-        end_date: metrics.period_end || '',
+        start_date: metrics.start_date || metrics.period_start || '',
+        end_date: metrics.end_date || metrics.period_end || '',
       }));
     }
   }, [location.state]);
+
+  // 백테스트에서 넘어온 경우 자동 해석 요청
+  useEffect(() => {
+    if (!location.state?.autoSubmit || autoSubmitDone || isLoading || explanation) return;
+    const m = location.state.metrics;
+    if (m?.cagr != null && m?.volatility != null && m?.mdd != null && m?.start_date && m?.end_date) {
+      setAutoSubmitDone(true);
+      setIsLoading(true);
+      const requestData = {
+        cagr: parseFloat(m.cagr),
+        volatility: parseFloat(m.volatility),
+        mdd: parseFloat(m.mdd),
+        sharpe: m.sharpe != null ? parseFloat(m.sharpe) : null,
+        start_date: m.start_date,
+        end_date: m.end_date,
+        rf_annual: 0.035,
+        benchmark_name: null,
+        benchmark_return: null,
+      };
+      explainDirect(requestData)
+        .then(response => setExplanation(response.data))
+        .catch(err => {
+          console.error('Auto analysis error:', err);
+          setError(err.response?.data?.detail || '분석 중 오류가 발생했습니다.');
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [location.state, autoSubmitDone, isLoading, explanation]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
