@@ -319,7 +319,10 @@ function MarketDashboardPage() {
               const isUp = item.change >= 0;
               return (
                 <div key={i} className="kpi-card">
-                  <div className="kpi-label">{item.name}</div>
+                  <div className="kpi-label">
+                    {item.name}
+                    {item.note && <span className="kpi-note">{item.note}</span>}
+                  </div>
                   <div className="kpi-value">
                     {formatNumber(item.value)}
                     <span className="kpi-unit">{item.unit}</span>

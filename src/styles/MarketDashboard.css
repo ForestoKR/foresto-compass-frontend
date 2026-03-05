@@ -126,6 +126,13 @@
   margin-left: 4px;
 }
 
+.kpi-note {
+  font-size: 0.65rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 6px;
+}
+
 /* ── AI Summary ── */
 .ai-summary {
   background: var(--ai-bg);
