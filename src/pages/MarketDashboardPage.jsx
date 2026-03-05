@@ -13,7 +13,7 @@ import '../styles/MarketDashboard.css';
 const KPI_ICONS = {
   'KOSPI': '🇰🇷', 'KOSDAQ': '🇰🇷',
   'S&P 500': '🇺🇸', 'NASDAQ': '🇺🇸',
-  '금 1kg': '🪙', 'USD/KRW': '💲',
+  '금 1kg': '🟡', 'USD/KRW': '💲',
 };
 
 const gradeColor = (grade) => {
