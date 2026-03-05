@@ -82,15 +82,7 @@ function DiagnosisResultPage() {
         <meta property="og:description" content="투자 학습 성향 분석 결과 및 맞춤 포트폴리오 전략." />
       </Helmet>
       <div className="result-card">
-        {/* 읽기 가이드 안내 */}
-        <div className="dr-guide-notice">
-          <p>
-            📖 이 결과는 <strong>용어 이해를 돕기 위한 읽기 가이드</strong>입니다.
-            실제 모의실험은 시나리오 페이지에서 직접 선택하여 진행할 수 있습니다.
-          </p>
-        </div>
-
-        {/* 학습 성향 결과 */}
+        {/* 1. 학습 성향 결과 */}
         <div className="result-header">
           <div className="result-icon dr-result-icon">
             {config.icon}
@@ -101,7 +93,7 @@ function DiagnosisResultPage() {
           <p className="result-subtitle">{config.description}</p>
         </div>
 
-        {/* 점수 및 신뢰도 */}
+        {/* 2. 점수 및 신뢰도 */}
         <div className="scores-section">
           <div className="score-card">
             <div className="score-label">진단 점수</div>
@@ -136,13 +128,24 @@ function DiagnosisResultPage() {
           </div>
         </div>
 
-        {/* 설명 */}
+        {/* 3. 학습 성향 설명 + 특징 */}
         <div className="description-section">
           <h2>학습 성향 설명</h2>
           <p>{description}</p>
         </div>
 
-        {/* AI 분석 섹션 */}
+        {characteristics && characteristics.length > 0 && (
+          <div className="characteristics-section">
+            <h2>당신의 특징</h2>
+            <ul className="characteristics-list">
+              {characteristics.map((char, index) => (
+                <li key={index}>{char}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* 4. AI 분석 */}
         {ai_analysis && (
           <div className="ai-analysis-section">
             <h2>
@@ -172,18 +175,7 @@ function DiagnosisResultPage() {
           </div>
         )}
 
-        {/* 특징 */}
-        <div className="characteristics-section">
-          <h2>당신의 특징</h2>
-          <ul className="characteristics-list">
-            {characteristics &&
-              characteristics.map((char, index) => (
-                <li key={index}>{char}</li>
-              ))}
-          </ul>
-        </div>
-
-        {/* 시뮬레이션 예시 */}
+        {/* 5. 시뮬레이션 정보 (자산 배분 + 수익률 + 월 투입) */}
         <div className="portfolio-section">
           <h2>시뮬레이션용 자산 배분 예시</h2>
           <p className="dr-disclaimer-text">
@@ -207,30 +199,26 @@ function DiagnosisResultPage() {
                 </div>
               ))}
           </div>
+
+          {reference_only && (
+            <div className="dr-sim-sub-info">
+              <span className="dr-sim-label">과거 평균 수익률 (참고)</span>
+              <span className="dr-sim-value" style={{ color: config.color }}>
+                {reference_only.historical_avg_return}
+              </span>
+              <p className="dr-reference-disclaimer">* {reference_only.disclaimer}</p>
+            </div>
+          )}
+
+          {monthly_investment && (
+            <div className="dr-sim-sub-info">
+              <span className="dr-sim-label">시뮬레이션 월 투입 금액</span>
+              <span className="dr-sim-value">{monthly_investment}만원</span>
+            </div>
+          )}
         </div>
 
-        {/* 과거 평균 수익률 (참고용) */}
-        {reference_only && (
-          <div className="return-section">
-            <h2>과거 평균 수익률 (참고용)</h2>
-            <div className="return-value" style={{ color: config.color }}>
-              {reference_only.historical_avg_return}
-            </div>
-            <p className="dr-reference-disclaimer">
-              * {reference_only.disclaimer}
-            </p>
-          </div>
-        )}
-
-        {/* 월 시뮬레이션 금액 */}
-        {monthly_investment && (
-          <div className="investment-section">
-            <h2>시뮬레이션 월 투입 금액</h2>
-            <div className="investment-value">{monthly_investment}만원</div>
-          </div>
-        )}
-
-        {/* 버튼 영역 */}
+        {/* 6. CTA 버튼 */}
         <div className="button-section">
           <button
             className="dr-btn dr-btn-primary dr-btn-primary-wide"
@@ -252,10 +240,10 @@ function DiagnosisResultPage() {
           </button>
         </div>
 
-        {/* 안내 메시지 */}
+        {/* 7. 면책 안내 (1회) */}
         <div className="result-info">
           <p>
-            💡 이 결과는 투자 용어를 이해하기 위한 읽기 가이드입니다. 실제 모의실험은 시나리오 페이지에서 직접 선택하세요.
+            📖 이 결과는 투자 용어를 이해하기 위한 읽기 가이드입니다. 실제 모의실험은 시나리오 페이지에서 직접 선택하세요.
           </p>
           <p className="dr-info-sub">
             ⚠️ 본 서비스는 교육 목적의 학습 도구이며, 투자 권유·자문 서비스를 제공하지 않습니다.

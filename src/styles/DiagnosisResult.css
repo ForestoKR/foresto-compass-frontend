@@ -146,17 +146,13 @@
 /* ── Content Sections ── */
 .result-container .description-section,
 .result-container .characteristics-section,
-.result-container .portfolio-section,
-.result-container .return-section,
-.result-container .investment-section {
+.result-container .portfolio-section {
   margin-bottom: 1.5rem;
 }
 
 .result-container .description-section h2,
 .result-container .characteristics-section h2,
-.result-container .portfolio-section h2,
-.result-container .return-section h2,
-.result-container .investment-section h2 {
+.result-container .portfolio-section h2 {
   font-size: 1.15rem;
   font-weight: 700;
   margin-bottom: 0.75rem;
@@ -238,16 +234,31 @@
   border-radius: 3px;
 }
 
-/* ── Return & Investment ── */
-.result-container .return-value {
-  font-size: 1.5rem;
-  font-weight: 700;
+/* ── Return & Investment (시뮬레이션 블록 내 하위 정보) ── */
+.dr-sim-sub-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-light, #f3f4f6);
 }
 
-.result-container .investment-value {
-  font-size: 1.3rem;
+.dr-sim-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary, #6b7280);
+}
+
+.dr-sim-value {
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--primary, #667eea);
+}
+
+.dr-sim-sub-info .dr-reference-disclaimer {
+  width: 100%;
 }
 
 /* ── AI Analysis Section ── */
