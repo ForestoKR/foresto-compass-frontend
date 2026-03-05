@@ -36,6 +36,8 @@ function PortfolioExplanationPage() {
     benchmark_return: '',
   });
 
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   // location.state에서 데이터 받기 (다른 페이지에서 전달받은 경우)
   const [autoSubmitDone, setAutoSubmitDone] = useState(false);
   useEffect(() => {
