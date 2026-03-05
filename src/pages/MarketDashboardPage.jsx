@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 // v2: 금현물 + USD/KRW 환율 KPI 카드 추가
@@ -131,7 +131,10 @@ function MarketDashboardPage() {
     () => sessionStorage.getItem('dash_sub_banner_dismissed') === 'true'
   );
 
+  const didFetch = useRef(false);
   useEffect(() => {
+    if (didFetch.current) return;
+    didFetch.current = true;
     trackPageView('dashboard');
     fetchMarketData();
     fetchEmailSub();
