@@ -37,6 +37,7 @@ function ProgressModal({ taskId, onComplete, onClose }) {
     if (tid.startsWith('bonds_')) return '약 3-5분';
     if (tid.startsWith('deposits_') || tid.startsWith('savings_')) return '약 1-2분';
     if (tid.startsWith('annuity_') || tid.startsWith('mortgage_') || tid.startsWith('rentloan_') || tid.startsWith('creditloan_')) return '약 1-2분';
+    if (tid.startsWith('kis_')) return '약 5-10분';
     return '약 2-3분';
   };
 

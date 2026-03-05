@@ -19,6 +19,8 @@ const JOB_ICONS = {
   watchlist_score_alerts: '🔔',
   b2b_usage_log_cleanup: '🧹',
   daily_index_prices: '📊',
+  daily_kis_prices: '⚡',
+  daily_krx_verification: '✅',
 };
 
 const JOB_LABELS_KO = {
@@ -31,6 +33,8 @@ const JOB_LABELS_KO = {
   watchlist_score_alerts: '관심종목 점수 변동 알림',
   b2b_usage_log_cleanup: 'B2B 사용량 로그 정리',
   daily_index_prices: '일별 지수 시세 적재',
+  daily_kis_prices: 'KIS 당일 시세 적재',
+  daily_krx_verification: 'KRX 시세 검증',
 };
 
 const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
