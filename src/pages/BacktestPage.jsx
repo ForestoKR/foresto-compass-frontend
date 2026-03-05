@@ -571,20 +571,25 @@ function BacktestPage() {
           <div className="nav-link-section">
             <button
               className="backtest-nav-btn"
-              onClick={() => navigate('/analysis', {
-                state: {
-                  metrics: {
-                    total_return: singleResult.historical_observation?.total_return ?? singleResult.total_return,
-                    cagr: singleResult.historical_observation?.cagr ?? singleResult.annualized_return,
-                    volatility: singleResult.risk_metrics?.volatility ?? singleResult.volatility,
-                    sharpe: singleResult.historical_observation?.sharpe_ratio ?? singleResult.sharpe_ratio,
-                    mdd: singleResult.risk_metrics?.max_drawdown ?? singleResult.max_drawdown,
-                    start_date: singleResult.start_date?.slice(0, 10),
-                    end_date: singleResult.end_date?.slice(0, 10),
-                  },
-                  autoSubmit: true,
-                }
-              })}
+              onClick={() => {
+                const cagr = singleResult.historical_observation?.cagr ?? singleResult.annualized_return;
+                const vol = singleResult.risk_metrics?.volatility ?? singleResult.volatility;
+                const mdd = singleResult.risk_metrics?.max_drawdown ?? singleResult.max_drawdown;
+                const sharpe = singleResult.historical_observation?.sharpe_ratio ?? singleResult.sharpe_ratio;
+                navigate('/analysis', {
+                  state: {
+                    metrics: {
+                      cagr: cagr / 100,
+                      volatility: vol / 100,
+                      mdd: -(Math.abs(mdd)) / 100,
+                      sharpe,
+                      start_date: singleResult.start_date?.slice(0, 10),
+                      end_date: singleResult.end_date?.slice(0, 10),
+                    },
+                    autoSubmit: true,
+                  }
+                });
+              }}
             >
               성과 해석하기
             </button>
