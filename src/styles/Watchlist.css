@@ -104,6 +104,10 @@
   font-size: 0.8rem;
 }
 
+.watchlist-table thead th.num {
+  text-align: right;
+}
+
 .watchlist-table tbody td {
   padding: 0.65rem 0.5rem;
   border-bottom: 1px solid var(--border-light, #f3f4f6);

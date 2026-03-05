@@ -131,10 +131,10 @@ function WatchlistPage() {
                 <th>종목명</th>
                 <th>티커</th>
                 <th>시장</th>
-                <th>현재가</th>
+                <th className="num">현재가</th>
                 <th>Score</th>
                 <th>등급</th>
-                <th>변동</th>
+                <th className="num">변동</th>
                 <th>요약</th>
                 <th></th>
               </tr>
