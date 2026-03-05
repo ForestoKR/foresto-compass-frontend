@@ -311,6 +311,27 @@ function MarketDashboardPage() {
           })}
         </div>
 
+        {/* ── Extra Indicators (금현물, 환율) ── */}
+        {marketData?.extras?.length > 0 && (
+          <div className="kpi-grid kpi-grid-extra">
+            {marketData.extras.map((item, i) => {
+              const isUp = item.change >= 0;
+              return (
+                <div key={i} className="kpi-card">
+                  <div className="kpi-label">{item.name}</div>
+                  <div className="kpi-value">
+                    {formatNumber(item.value)}
+                    <span className="kpi-unit">{item.unit}</span>
+                  </div>
+                  <div className={`kpi-change ${isUp ? 'up' : 'down'}`}>
+                    {formatChange(item.change, item.changePercent)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* ── AI Summary ── */}
         {marketData?.summary && (
           <div className="ai-summary">

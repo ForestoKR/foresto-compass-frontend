@@ -114,6 +114,18 @@
   height: 40px;
 }
 
+/* ── Extra KPI Grid (금현물, 환율) ── */
+.kpi-grid-extra {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.kpi-unit {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
 /* ── AI Summary ── */
 .ai-summary {
   background: var(--ai-bg);
@@ -694,6 +706,7 @@
 
 @media (max-width: 480px) {
   .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .kpi-grid-extra { grid-template-columns: repeat(2, 1fr); }
   .kpi-card { padding: 12px; }
   .kpi-label { font-size: 0.7rem; }
   .kpi-value { font-size: 1.1rem; }
