@@ -494,15 +494,31 @@ function ScenarioSimulationPage() {
             </div>
           </div>
 
-          {/* 상세 분석 이동 */}
+          {/* 성과 해석 직행 */}
           <div className="scenario-nav-section">
             <button
               className="btn-simulate"
-              onClick={() => navigate('/backtest', {
-                state: { backtestResult: simulationResult }
-              })}
+              onClick={() => {
+                const cagr = simulationResult.historical_observation?.cagr ?? simulationResult.annualized_return;
+                const vol = simulationResult.risk_metrics?.volatility ?? simulationResult.volatility;
+                const mdd = simulationResult.risk_metrics?.max_drawdown ?? simulationResult.max_drawdown;
+                const sharpe = simulationResult.historical_observation?.sharpe_ratio ?? simulationResult.sharpe_ratio;
+                navigate('/analysis', {
+                  state: {
+                    metrics: {
+                      cagr: cagr / 100,
+                      volatility: vol / 100,
+                      mdd: -(Math.abs(mdd)) / 100,
+                      sharpe,
+                      start_date: simulationResult.start_date?.slice(0, 10),
+                      end_date: simulationResult.end_date?.slice(0, 10),
+                    },
+                    autoSubmit: true,
+                  }
+                });
+              }}
             >
-              상세 분석 보기
+              AI 성과 해석 보기
             </button>
           </div>
         </div>

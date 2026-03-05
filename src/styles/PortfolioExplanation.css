@@ -156,6 +156,106 @@
   opacity: 0.7;
 }
 
+/* ── AI 맞춤 해석 섹션 ── */
+.explanation-ai-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius, 12px);
+  padding: 1.5rem;
+  color: #ffffff;
+}
+
+.explanation-ai-header {
+  margin-bottom: 1.25rem;
+  font-size: 1.15rem;
+}
+
+.explanation-ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.explanation-ai-headline {
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.6;
+  opacity: 0.95;
+}
+
+.explanation-ai-card {
+  background: var(--card, #ffffff);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--text, #1f2937);
+}
+
+.explanation-ai-card:last-child {
+  margin-bottom: 0;
+}
+
+.explanation-ai-card h3 {
+  color: var(--primary, #667eea);
+  font-size: 1rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.explanation-ai-text {
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.explanation-ai-caution {
+  border-left: 4px solid #ef4444;
+}
+
+.explanation-ai-caution h3 {
+  color: #ef4444;
+}
+
+[data-theme="dark"] .explanation-ai-caution h3 {
+  color: #fca5a5;
+}
+
+.explanation-ai-next {
+  border-left: 4px solid #22c55e;
+}
+
+.explanation-ai-next h3 {
+  color: #16a34a;
+}
+
+[data-theme="dark"] .explanation-ai-next h3 {
+  color: #86efac;
+}
+
+@media (max-width: 768px) {
+  .explanation-ai-section {
+    padding: 1rem;
+  }
+
+  .explanation-ai-headline {
+    font-size: 1.05rem;
+  }
+
+  .explanation-ai-card {
+    padding: 1rem;
+  }
+}
+
 /* Result section */
 .explanation-result-section {
   display: flex;

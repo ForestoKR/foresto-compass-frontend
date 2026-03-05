@@ -345,7 +345,8 @@ function ExplanationResult({ data, onReset, formData }) {
     risk_explanation,
     risk_periods,
     comparison,
-    disclaimer
+    disclaimer,
+    ai_commentary
   } = data;
 
   const [isDownloading, setIsDownloading] = useState(false);
@@ -433,6 +434,42 @@ function ExplanationResult({ data, onReset, formData }) {
         <h2 className="explanation-summary-title">요약</h2>
         <p className="explanation-summary-text">{summary}</p>
       </div>
+
+      {/* AI 맞춤 해석 */}
+      {ai_commentary && (
+        <div className="explanation-ai-section">
+          <h2 className="explanation-ai-header">
+            <span className="explanation-ai-badge">AI 맞춤 해석</span>
+          </h2>
+
+          {ai_commentary.headline && (
+            <p className="explanation-ai-headline">
+              &ldquo;{ai_commentary.headline}&rdquo;
+            </p>
+          )}
+
+          {ai_commentary.story && (
+            <div className="explanation-ai-card">
+              <h3>나의 성과 이야기</h3>
+              <p className="explanation-ai-text">{ai_commentary.story}</p>
+            </div>
+          )}
+
+          {ai_commentary.caution && (
+            <div className="explanation-ai-card explanation-ai-caution">
+              <h3>주의할 점</h3>
+              <p className="explanation-ai-text">{ai_commentary.caution}</p>
+            </div>
+          )}
+
+          {ai_commentary.next_steps && (
+            <div className="explanation-ai-card explanation-ai-next">
+              <h3>다음에는 이렇게 해보세요</h3>
+              <p className="explanation-ai-text">{ai_commentary.next_steps}</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* 성과 해석 */}
       <div className="explanation-section">
