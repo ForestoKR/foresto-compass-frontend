@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+// v2: 금현물 + USD/KRW 환율 KPI 카드 추가
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
 import { trackPageView } from '../utils/analytics';
 import ProfileCompletionModal from '../components/ProfileCompletionModal';
