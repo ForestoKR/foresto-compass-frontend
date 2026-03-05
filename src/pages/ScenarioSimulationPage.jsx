@@ -177,6 +177,37 @@ function ScenarioSimulationPage() {
         </p>
       </div>
 
+      {/* 안내 섹션 (시나리오 미선택 시) */}
+      {!selectedScenario && (
+        <div className="info-section">
+          <h3>시나리오 기반 학습이란?</h3>
+          <p>
+            설문 없이도 바로 투자 전략을 학습할 수 있는 방법입니다.
+            미리 정의된 시나리오를 선택하고, 과거 데이터를 기반으로 모의실험을 실행하여
+            각 전략의 특성을 이해할 수 있습니다.
+          </p>
+
+          <h3>어떤 시나리오를 선택해야 할까요?</h3>
+          <ul>
+            <li><strong>변동성 최소화</strong>: 안정성을 최우선으로 하는 전략을 학습하고 싶은 경우</li>
+            <li><strong>방어형</strong>: 시장 하락에 대비하는 방어적 전략을 이해하고 싶은 경우</li>
+            <li><strong>성장형</strong>: 장기적 자산 성장 전략의 특성을 파악하고 싶은 경우</li>
+          </ul>
+
+          <h3>용어가 어렵다면?</h3>
+          <p>
+            투자 용어가 생소하다면{' '}
+            <button
+              className="ss-link-btn"
+              onClick={() => navigate('/terminology')}
+            >
+              용어학습 도구
+            </button>
+            를 이용해 보세요. 설문을 완료하지 않아도 모의실험은 언제든 이용 가능합니다.
+          </p>
+        </div>
+      )}
+
       {/* 시나리오 선택 */}
       <div className="scenario-selection">
         <h2>1. 학습 시나리오 선택</h2>
@@ -365,6 +396,12 @@ function ScenarioSimulationPage() {
         <div className="scenario-result" ref={resultRef}>
           <h2>3. 모의실험 결과 — {resultScenarioName}</h2>
 
+          {/* 기간 정보 */}
+          <div className="scenario-period-info">
+            <p>기간: {new Date(simulationResult.start_date).toLocaleDateString()} ~ {new Date(simulationResult.end_date).toLocaleDateString()}</p>
+            <p>초기 투자: {formatCurrency(simulationResult.initial_amount ?? simulationResult.initial_investment)}원</p>
+          </div>
+
           {/* 손실/회복 지표 */}
           <div className="scenario-risk-section">
             <h3 className="section-title">손실/회복 지표 (핵심)</h3>
@@ -457,12 +494,6 @@ function ScenarioSimulationPage() {
             </div>
           </div>
 
-          {/* 기간 정보 */}
-          <div className="scenario-period-info">
-            <p>기간: {new Date(simulationResult.start_date).toLocaleDateString()} ~ {new Date(simulationResult.end_date).toLocaleDateString()}</p>
-            <p>초기 투자: {formatCurrency(simulationResult.initial_amount ?? simulationResult.initial_investment)}원</p>
-          </div>
-
           {/* 상세 분석 이동 */}
           <div className="scenario-nav-section">
             <button
@@ -474,37 +505,6 @@ function ScenarioSimulationPage() {
               상세 분석 보기
             </button>
           </div>
-        </div>
-      )}
-
-      {/* 안내 섹션 */}
-      {!selectedScenario && (
-        <div className="info-section">
-          <h3>시나리오 기반 학습이란?</h3>
-          <p>
-            설문 없이도 바로 투자 전략을 학습할 수 있는 방법입니다.
-            미리 정의된 시나리오를 선택하고, 과거 데이터를 기반으로 모의실험을 실행하여
-            각 전략의 특성을 이해할 수 있습니다.
-          </p>
-
-          <h3>어떤 시나리오를 선택해야 할까요?</h3>
-          <ul>
-            <li><strong>변동성 최소화</strong>: 안정성을 최우선으로 하는 전략을 학습하고 싶은 경우</li>
-            <li><strong>방어형</strong>: 시장 하락에 대비하는 방어적 전략을 이해하고 싶은 경우</li>
-            <li><strong>성장형</strong>: 장기적 자산 성장 전략의 특성을 파악하고 싶은 경우</li>
-          </ul>
-
-          <h3>용어가 어렵다면?</h3>
-          <p>
-            투자 용어가 생소하다면{' '}
-            <button
-              className="ss-link-btn"
-              onClick={() => navigate('/terminology')}
-            >
-              용어학습 도구
-            </button>
-            를 이용해 보세요. 설문을 완료하지 않아도 모의실험은 언제든 이용 가능합니다.
-          </p>
         </div>
       )}
 
