@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
 import { trackPageView } from '../utils/analytics';
 import ProfileCompletionModal from '../components/ProfileCompletionModal';
+import Disclaimer from '../components/Disclaimer';
 import '../styles/MarketDashboard.css';
 
 /* ── helpers ── */
@@ -567,6 +568,9 @@ function MarketDashboardPage() {
             )}
           </div>
         </div>
+
+        {/* ── Disclaimer ── */}
+        <Disclaimer type="market" />
 
         {/* ── Footer ── */}
         <footer className="dash-footer">
