@@ -579,8 +579,8 @@ function BacktestPage() {
                     volatility: singleResult.risk_metrics?.volatility ?? singleResult.volatility,
                     sharpe: singleResult.historical_observation?.sharpe_ratio ?? singleResult.sharpe_ratio,
                     mdd: singleResult.risk_metrics?.max_drawdown ?? singleResult.max_drawdown,
-                    start_date: singleResult.start_date,
-                    end_date: singleResult.end_date,
+                    start_date: singleResult.start_date?.slice(0, 10),
+                    end_date: singleResult.end_date?.slice(0, 10),
                   },
                   autoSubmit: true,
                 }
