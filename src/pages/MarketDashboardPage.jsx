@@ -10,6 +10,12 @@ import '../styles/MarketDashboard.css';
 
 /* ── helpers ── */
 
+const KPI_ICONS = {
+  'KOSPI': '🇰🇷', 'KOSDAQ': '🇰🇷',
+  'S&P 500': '🇺🇸', 'NASDAQ': '🇺🇸',
+  '금 1kg': '🪙', 'USD/KRW': '💲',
+};
+
 const gradeColor = (grade) => {
   if (!grade) return '#6b7280';
   const g = grade.charAt(0).toUpperCase();
@@ -296,7 +302,7 @@ function MarketDashboardPage() {
             const isUp = idx.change >= 0;
             return (
               <div key={i} className="kpi-card">
-                <div className="kpi-label">{idx.name}</div>
+                <div className="kpi-label">{KPI_ICONS[idx.name] && <span className="kpi-icon">{KPI_ICONS[idx.name]}</span>}{idx.name}</div>
                 <div className="kpi-value">{formatNumber(idx.value)}</div>
                 <div className={`kpi-change ${isUp ? 'up' : 'down'}`}>
                   {formatChange(idx.change, idx.changePercent)}
@@ -320,6 +326,7 @@ function MarketDashboardPage() {
               return (
                 <div key={i} className="kpi-card">
                   <div className="kpi-label">
+                    {KPI_ICONS[item.name] && <span className="kpi-icon">{KPI_ICONS[item.name]}</span>}
                     {item.name}
                     {item.note && <span className="kpi-note">{item.note}</span>}
                   </div>

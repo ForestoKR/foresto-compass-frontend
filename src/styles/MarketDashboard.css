@@ -126,6 +126,11 @@
   margin-left: 4px;
 }
 
+.kpi-icon {
+  margin-right: 4px;
+  font-size: 0.85rem;
+}
+
 .kpi-note {
   font-size: 0.65rem;
   font-weight: 400;
