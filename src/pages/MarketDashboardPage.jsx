@@ -129,6 +129,10 @@ function MarketDashboardPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { steps: journeySteps, loading: journeyLoading } = useStepCompletion();
+  const allStepsDone = Object.values(journeySteps).filter(Boolean).length === 4;
+  const [journeyCollapsed, setJourneyCollapsed] = useState(
+    () => sessionStorage.getItem('dash_journey_collapsed') === 'true' || allStepsDone
+  );
   const [marketData, setMarketData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -307,39 +311,56 @@ function MarketDashboardPage() {
           const allDone = completed === 4;
           const nextStep = JOURNEY_STEPS.find(s => !journeySteps[s.num]);
           return (
-            <div className="journey-tracker">
+            <div className={`journey-tracker ${journeyCollapsed ? 'collapsed' : ''}`}>
               <div className="journey-header">
                 <span className="journey-title">나의 학습 여정</span>
-                <span className="journey-count">{completed}/4 완료</span>
-              </div>
-              <div className="journey-steps">
-                {JOURNEY_STEPS.map((step, idx) => {
-                  const done = journeySteps[step.num];
-                  return (
-                    <div key={step.num} className="journey-step-wrapper">
-                      {idx > 0 && (
-                        <div className={`journey-line ${journeySteps[JOURNEY_STEPS[idx - 1].num] && done ? 'done' : ''}`} />
-                      )}
-                      <div
-                        className={`journey-circle ${done ? 'done' : ''}`}
-                        onClick={() => navigate(step.path)}
-                      >
-                        {done ? '\u2713' : step.num}
-                      </div>
-                      <span className="journey-label">{step.label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="journey-cta">
-                {allDone ? (
-                  <span className="journey-congrats">모든 단계를 완료했습니다!</span>
-                ) : nextStep && (
-                  <button className="journey-next-btn" onClick={() => navigate(nextStep.path)}>
-                    다음 단계: {nextStep.label} &rarr;
+                <div className="journey-header-right">
+                  <span className="journey-count">{completed}/4 완료</span>
+                  <button
+                    className="journey-toggle"
+                    onClick={() => {
+                      const next = !journeyCollapsed;
+                      setJourneyCollapsed(next);
+                      sessionStorage.setItem('dash_journey_collapsed', next ? 'true' : 'false');
+                    }}
+                    aria-label={journeyCollapsed ? '펼치기' : '접기'}
+                  >
+                    {journeyCollapsed ? '\u25BC' : '\u25B2'}
                   </button>
-                )}
+                </div>
               </div>
+              {!journeyCollapsed && (
+                <>
+                  <div className="journey-steps">
+                    {JOURNEY_STEPS.map((step, idx) => {
+                      const done = journeySteps[step.num];
+                      return (
+                        <div key={step.num} className="journey-step-wrapper">
+                          {idx > 0 && (
+                            <div className={`journey-line ${journeySteps[JOURNEY_STEPS[idx - 1].num] && done ? 'done' : ''}`} />
+                          )}
+                          <div
+                            className={`journey-circle ${done ? 'done' : ''}`}
+                            onClick={() => navigate(step.path)}
+                          >
+                            {done ? '\u2713' : step.num}
+                          </div>
+                          <span className="journey-label">{step.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="journey-cta">
+                    {allDone ? (
+                      <span className="journey-congrats">모든 단계를 완료했습니다!</span>
+                    ) : nextStep && (
+                      <button className="journey-next-btn" onClick={() => navigate(nextStep.path)}>
+                        다음 단계: {nextStep.label} &rarr;
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           );
         })()}
