@@ -943,35 +943,6 @@ export const listStocks = (params = {}) => {
 };
 
 /**
- * 주식 종목 상세 조회
- */
-export const getStock = (ticker) => {
-  return api.get(`/api/v1/securities/stocks/${ticker}`);
-};
-
-/**
- * ETF 목록 조회
- */
-export const listETFs = (params = {}) => {
-  const queryParams = new URLSearchParams();
-  if (params.search) queryParams.append('search', params.search);
-  if (params.etfType) queryParams.append('etf_type', params.etfType);
-  if (params.riskLevel) queryParams.append('risk_level', params.riskLevel);
-  if (params.sortBy) queryParams.append('sort_by', params.sortBy);
-  if (params.sortOrder) queryParams.append('sort_order', params.sortOrder);
-  if (params.limit) queryParams.append('limit', params.limit);
-  if (params.offset) queryParams.append('offset', params.offset);
-  return api.get(`/api/v1/securities/etfs?${queryParams.toString()}`);
-};
-
-/**
- * ETF 상세 조회
- */
-export const getETF = (ticker) => {
-  return api.get(`/api/v1/securities/etfs/${ticker}`);
-};
-
-/**
  * 섹터 목록 조회
  */
 export const listSectors = (params = {}) => {
