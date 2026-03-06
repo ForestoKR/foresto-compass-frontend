@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../hooks/useTheme';
+import { useStepCompletion } from '../hooks/useStepCompletion';
 import { getProfileCompletionStatus } from '../services/api';
 import { trackEvent } from '../utils/analytics';
 
@@ -10,6 +11,7 @@ function Header() {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { steps: completedSteps } = useStepCompletion();
   const [openGroup, setOpenGroup] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileIncomplete, setProfileIncomplete] = useState(false);
@@ -34,44 +36,57 @@ function Header() {
     return paths.some((path) => isActive(path));
   };
 
-  const navGroups = useMemo(() => {
+  // --- Journey steps (1-4) ---
+  const journeySteps = useMemo(() => [
+    {
+      step: 1,
+      label: '시장 탐색',
+      items: [
+        { label: '시장현황', path: '/dashboard' },
+        { label: '종목 스크리너', path: '/screener' },
+        { label: '종목 비교', path: '/stock-comparison' },
+        { label: '관심 종목', path: '/watchlist' },
+      ],
+    },
+    {
+      step: 2,
+      label: '투자성향 진단',
+      skippable: true,
+      items: [
+        { label: '투자성향진단', path: '/survey', recommended: true },
+        { label: '진단이력', path: '/history' },
+      ],
+    },
+    {
+      step: 3,
+      label: '포트폴리오 구성',
+      items: [
+        { label: 'AI 추천', separator: true },
+        { label: 'AI 시뮬레이션', path: '/portfolio', requiresDiagnosis: true },
+        { label: '직접 구성', separator: true },
+        { label: '포트폴리오 구성', path: '/portfolio-builder', recommended: true },
+        {
+          label: '포트폴리오 평가',
+          path: '/portfolio-evaluation',
+          activePaths: ['/portfolio-evaluation', '/phase7-evaluation'],
+        },
+      ],
+    },
+    {
+      step: 4,
+      label: '시뮬레이션·검증',
+      items: [
+        { label: '백테스팅', path: '/backtest' },
+        { label: '시나리오', path: '/scenarios' },
+        { label: '성과해석', path: '/analysis' },
+        { label: '리포트', path: '/report-history' },
+      ],
+    },
+  ], []);
+
+  // --- Auxiliary groups (no step numbers) ---
+  const auxiliaryGroups = useMemo(() => {
     const groups = [
-      {
-        label: '탐색',
-        items: [
-          { label: '시장현황', path: '/dashboard' },
-          { label: '종목 스크리너', path: '/screener' },
-          { label: '종목 비교', path: '/stock-comparison' },
-          { label: '관심 종목', path: '/watchlist' },
-        ],
-      },
-      {
-        label: '진단',
-        items: [
-          { label: '투자성향진단', path: '/survey', recommended: true },
-          { label: '진단결과', path: '/result' },
-          { label: '진단이력', path: '/history' },
-        ],
-      },
-      {
-        label: '포트폴리오',
-        items: [
-          { label: '직접 구성', separator: true },
-          { label: '포트폴리오 구성', path: '/portfolio-builder', recommended: true },
-          {
-            label: '포트폴리오 평가',
-            path: '/portfolio-evaluation',
-            activePaths: ['/portfolio-evaluation', '/phase7-evaluation'],
-          },
-          { label: '시뮬레이션', separator: true },
-          { label: 'AI 시뮬레이션', path: '/portfolio' },
-          { label: '시나리오', path: '/scenarios' },
-          { label: '백테스팅', path: '/backtest' },
-          { label: '분석·리포트', separator: true },
-          { label: '성과해석', path: '/analysis' },
-          { label: '리포트', path: '/report-history' },
-        ],
-      },
       {
         label: '학습',
         items: [
@@ -129,6 +144,16 @@ function Header() {
     navigate(path);
   };
 
+  const handleLockedNavigate = (item) => {
+    if (item.requiresDiagnosis && !completedSteps[2]) {
+      setOpenGroup(null);
+      setMobileMenuOpen(false);
+      navigate('/survey');
+      return;
+    }
+    handleNavigate(item.path);
+  };
+
   const handleAction = (action) => {
     setOpenGroup(null);
     setMobileMenuOpen(false);
@@ -173,6 +198,62 @@ function Header() {
     setOpenGroup(null);
   }
 
+  // --- Helpers ---
+  const getGroupPaths = (items) =>
+    items
+      .filter((item) => !item.separator && !item.action)
+      .flatMap((item) => (item.activePaths ? item.activePaths : [item.path]));
+
+  const isStepActive = (stepObj) => isAnyActive(getGroupPaths(stepObj.items));
+
+  // Determine which step is "current" for styling the active circle
+  const activeStep = journeySteps.find((s) => isStepActive(s))?.step ?? null;
+
+  // --- Dropdown renderer (shared desktop & mobile) ---
+  const renderDropdownItems = (items, isMobile = false) => {
+    const itemClass = isMobile ? 'mobile-nav-item' : 'nav-dropdown-item';
+    const sepClass = isMobile ? 'mobile-nav-separator' : 'nav-dropdown-separator';
+
+    return items.map((item) => {
+      if (item.separator) {
+        return (
+          <div key={item.label} className={sepClass}>
+            {item.label}
+          </div>
+        );
+      }
+      if (item.action) {
+        return (
+          <button
+            key={item.label}
+            type="button"
+            className={itemClass}
+            onClick={() => handleAction(item.action)}
+          >
+            {item.label}
+          </button>
+        );
+      }
+
+      const itemPaths = item.activePaths || [item.path];
+      const isItemActive = isAnyActive(itemPaths);
+      const isLocked = item.requiresDiagnosis && !completedSteps[2];
+
+      return (
+        <button
+          key={item.label}
+          type="button"
+          className={`${itemClass} ${isItemActive ? 'active' : ''} ${isLocked ? 'nav-locked' : ''}`}
+          onClick={() => handleLockedNavigate(item)}
+        >
+          {item.label}
+          {item.recommended && <span className="nav-recommended-badge">시작</span>}
+          {isLocked && <span className="nav-locked-badge">진단 필요</span>}
+        </button>
+      );
+    });
+  };
+
   return (
     <header className="header">
       <div className="header-container">
@@ -200,69 +281,76 @@ function Header() {
           </span>
         </button>
 
-        {/* 네비게이션 */}
+        {/* 데스크톱 네비게이션 */}
         <nav className="header-nav" ref={navRef}>
-          {navGroups.map((group) => {
-            const groupPaths = group.items
-              .filter((item) => !item.separator && !item.action)
-              .flatMap((item) =>
-                item.activePaths ? item.activePaths : [item.path]
-              );
-            const isGroupActive = isAnyActive(groupPaths);
-            const isOpen = openGroup === group.label;
-            return (
-              <div key={group.label} className="nav-group">
-                <button
-                  type="button"
-                  className={`nav-group-button ${isGroupActive ? 'active' : ''}`}
-                  onClick={() => handleToggleGroup(group.label)}
-                  aria-haspopup="true"
-                  aria-expanded={isOpen}
-                >
-                  {group.label}
-                  <span className="nav-caret">▾</span>
-                </button>
-                {isOpen && (
-                  <div className="nav-dropdown">
-                    {group.items.map((item) => {
-                      if (item.separator) {
-                        return (
-                          <div key={item.label} className="nav-dropdown-separator">
-                            {item.label}
-                          </div>
-                        );
-                      }
-                      if (item.action) {
-                        return (
-                          <button
-                            key={item.label}
-                            type="button"
-                            className="nav-dropdown-item"
-                            onClick={() => handleAction(item.action)}
-                          >
-                            {item.label}
-                          </button>
-                        );
-                      }
-                      const itemPaths = item.activePaths || [item.path];
-                      const isItemActive = isAnyActive(itemPaths);
-                      return (
-                        <button
-                          key={item.label}
-                          type="button"
-                          className={`nav-dropdown-item ${isItemActive ? 'active' : ''}`}
-                          onClick={() => handleNavigate(item.path)}
-                        >
-                          {item.label}
-                          {item.recommended && <span className="nav-recommended-badge">시작</span>}
-                        </button>
-                      );
-                    })}
+          {/* Step journey area */}
+          <div className="step-journey">
+            {journeySteps.map((stepObj, idx) => {
+              const isOpen = openGroup === stepObj.label;
+              const isCompleted = completedSteps[stepObj.step];
+              const isCurrent = activeStep === stepObj.step;
+
+              return (
+                <div key={stepObj.step} className="step-indicator-group step-nav-group">
+                  {idx > 0 && (
+                    <div className={`step-connector ${completedSteps[stepObj.step - 1] ? 'completed' : ''}`} />
+                  )}
+                  <div className="step-button-wrapper">
+                    <button
+                      type="button"
+                      className="step-button"
+                      onClick={() => handleToggleGroup(stepObj.label)}
+                      aria-haspopup="true"
+                      aria-expanded={isOpen}
+                    >
+                      <span
+                        className={`step-circle ${isCurrent ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                      >
+                        {isCompleted ? '\u2713' : stepObj.step}
+                      </span>
+                      <span className="step-label">{stepObj.label}</span>
+                    </button>
+                    {stepObj.skippable && (
+                      <span className="step-skip-hint">건너뛰기 가능</span>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                  {isOpen && (
+                    <div className="nav-dropdown">
+                      {renderDropdownItems(stepObj.items)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Auxiliary menu area */}
+          <div className="aux-nav">
+            {auxiliaryGroups.map((group) => {
+              const groupPaths = getGroupPaths(group.items);
+              const isGroupActive = isAnyActive(groupPaths);
+              const isOpen = openGroup === group.label;
+              return (
+                <div key={group.label} className="nav-group">
+                  <button
+                    type="button"
+                    className={`nav-group-button ${isGroupActive ? 'active' : ''}`}
+                    onClick={() => handleToggleGroup(group.label)}
+                    aria-haspopup="true"
+                    aria-expanded={isOpen}
+                  >
+                    {group.label}
+                    <span className="nav-caret">▾</span>
+                  </button>
+                  {isOpen && (
+                    <div className="nav-dropdown">
+                      {renderDropdownItems(group.items)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </nav>
 
         {/* 다크모드 토글 */}
@@ -355,8 +443,58 @@ function Header() {
           </button>
         </div>
 
+        {/* Mobile step indicator row */}
+        <div className="mobile-step-row">
+          {journeySteps.map((stepObj, idx) => {
+            const isCompleted = completedSteps[stepObj.step];
+            const isCurrent = activeStep === stepObj.step;
+            return (
+              <div key={stepObj.step} className="mobile-step-item">
+                {idx > 0 && (
+                  <div className={`mobile-step-connector ${completedSteps[stepObj.step - 1] ? 'completed' : ''}`} />
+                )}
+                <button
+                  className={`mobile-step-circle ${isCurrent ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                  onClick={() => handleToggleGroup(stepObj.label)}
+                  title={stepObj.label}
+                >
+                  {isCompleted ? '\u2713' : stepObj.step}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
         <nav className="mobile-nav">
-          {navGroups.map((group) => {
+          {/* Journey steps */}
+          {journeySteps.map((stepObj) => {
+            const isOpen = openGroup === stepObj.label;
+            return (
+              <div key={stepObj.label} className="mobile-nav-group">
+                <button
+                  className={`mobile-nav-group-button ${isOpen ? 'open' : ''}`}
+                  onClick={() => handleToggleGroup(stepObj.label)}
+                >
+                  <span className="mobile-nav-group-label">
+                    <span className="mobile-nav-step-num">{stepObj.step}</span>
+                    {stepObj.label}
+                  </span>
+                  <span className={`mobile-nav-caret ${isOpen ? 'open' : ''}`}>▾</span>
+                </button>
+                {isOpen && (
+                  <div className="mobile-nav-items">
+                    {renderDropdownItems(stepObj.items, true)}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Auxiliary divider */}
+          <div className="mobile-aux-divider">기타</div>
+
+          {/* Auxiliary groups */}
+          {auxiliaryGroups.map((group) => {
             const isOpen = openGroup === group.label;
             return (
               <div key={group.label} className="mobile-nav-group">
@@ -369,38 +507,7 @@ function Header() {
                 </button>
                 {isOpen && (
                   <div className="mobile-nav-items">
-                    {group.items.map((item) => {
-                      if (item.separator) {
-                        return (
-                          <div key={item.label} className="mobile-nav-separator">
-                            {item.label}
-                          </div>
-                        );
-                      }
-                      if (item.action) {
-                        return (
-                          <button
-                            key={item.label}
-                            className="mobile-nav-item"
-                            onClick={() => handleAction(item.action)}
-                          >
-                            {item.label}
-                          </button>
-                        );
-                      }
-                      const itemPaths = item.activePaths || [item.path];
-                      const isItemActive = isAnyActive(itemPaths);
-                      return (
-                        <button
-                          key={item.label}
-                          className={`mobile-nav-item ${isItemActive ? 'active' : ''}`}
-                          onClick={() => handleNavigate(item.path)}
-                        >
-                          {item.label}
-                          {item.recommended && <span className="nav-recommended-badge">시작</span>}
-                        </button>
-                      );
-                    })}
+                    {renderDropdownItems(group.items, true)}
                   </div>
                 )}
               </div>
