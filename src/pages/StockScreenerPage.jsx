@@ -77,7 +77,7 @@ function StockScreenerPage() {
   const [market, setMarket] = useState('');
   const [sector, setSector] = useState('');
   const [gradeFrom, setGradeFrom] = useState(0);  // S (index in GRADE_GROUPS)
-  const [gradeTo, setGradeTo] = useState(0);      // S (inclusive)
+  const [gradeTo, setGradeTo] = useState(1);      // A (inclusive)
 
   // 정렬
   const [sortBy, setSortBy] = useState('compass_score');
