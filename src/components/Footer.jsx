@@ -10,17 +10,10 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        {/* 법적 고지사항 */}
+        {/* 법적 고지 (한 줄 요약 — 상세 면책은 각 페이지 Disclaimer 컴포넌트) */}
         <div className="footer-legal">
-          <p className="footer-legal-title">⚠️ 법적 고지사항</p>
           <p className="footer-legal-item">
-            • 본 서비스는 투자 정보 제공을 목적으로 하며, 투자 권유나 매매 추천이 아닙니다.
-          </p>
-          <p className="footer-legal-item">
-            • 모든 투자 결정은 이용자의 판단과 책임 하에 이루어지며, 투자 손실에 대해 당사는 책임을 지지 않습니다.
-          </p>
-          <p className="footer-legal-item">
-            • 과거 수익률은 미래 수익을 보장하지 않습니다. 투자 전 전문가와 상담하시기 바랍니다.
+            교육 목적 참고 정보이며 투자 권유가 아닙니다. 자본시장법 제6조에 의거, 투자 판단과 책임은 이용자 본인에게 있습니다.
           </p>
         </div>
 
