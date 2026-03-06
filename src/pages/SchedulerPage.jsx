@@ -34,7 +34,7 @@ const JOB_LABELS_KO = {
   b2b_usage_log_cleanup: 'B2B 사용량 로그 정리',
   daily_index_prices: '일별 지수 시세 적재',
   daily_kis_prices: 'KIS 당일 시세 적재',
-  daily_krx_verification: 'KRX 시세 검증',
+  daily_krx_verification: 'KRX 시세 검증 (전일자)',
 };
 
 const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'];
