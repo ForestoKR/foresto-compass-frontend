@@ -4,6 +4,8 @@ import { Helmet } from 'react-helmet-async';
 // v2: 금현물 + USD/KRW 환율 KPI 카드 추가
 import api, { getMarketSubscriptionStatus, subscribeMarketEmail, getWatchlist, getProfileCompletionStatus } from '../services/api';
 import { trackPageView } from '../utils/analytics';
+import { useAuth } from '../contexts/AuthContext';
+import { useStepCompletion } from '../hooks/useStepCompletion';
 import ProfileCompletionModal from '../components/ProfileCompletionModal';
 import Disclaimer from '../components/Disclaimer';
 import '../styles/MarketDashboard.css';
@@ -26,6 +28,13 @@ const gradeColor = (grade) => {
 };
 
 const axisColors = { financial: '#4caf50', valuation: '#2196f3', technical: '#ff9800', risk: '#9c27b0' };
+
+const JOURNEY_STEPS = [
+  { num: 1, label: '시장 탐색', path: '/explore' },
+  { num: 2, label: '투자성향 진단', path: '/survey' },
+  { num: 3, label: '포트폴리오 구성', path: '/portfolio-builder' },
+  { num: 4, label: '시뮬레이션·검증', path: '/backtest' },
+];
 
 /* SVG sparkline from 8 data points */
 function Sparkline({ points, color }) {
@@ -118,6 +127,8 @@ function DashboardSkeleton() {
 /* ── Main component ── */
 function MarketDashboardPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { steps: journeySteps, loading: journeyLoading } = useStepCompletion();
   const [marketData, setMarketData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -289,6 +300,49 @@ function MarketDashboardPage() {
             </button>
           </div>
         )}
+
+        {/* ── Journey Tracker ── */}
+        {user && !journeyLoading && (() => {
+          const completed = Object.values(journeySteps).filter(Boolean).length;
+          const allDone = completed === 4;
+          const nextStep = JOURNEY_STEPS.find(s => !journeySteps[s.num]);
+          return (
+            <div className="journey-tracker">
+              <div className="journey-header">
+                <span className="journey-title">나의 학습 여정</span>
+                <span className="journey-count">{completed}/4 완료</span>
+              </div>
+              <div className="journey-steps">
+                {JOURNEY_STEPS.map((step, idx) => {
+                  const done = journeySteps[step.num];
+                  return (
+                    <div key={step.num} className="journey-step-wrapper">
+                      {idx > 0 && (
+                        <div className={`journey-line ${journeySteps[JOURNEY_STEPS[idx - 1].num] && done ? 'done' : ''}`} />
+                      )}
+                      <div
+                        className={`journey-circle ${done ? 'done' : ''}`}
+                        onClick={() => navigate(step.path)}
+                      >
+                        {done ? '\u2713' : step.num}
+                      </div>
+                      <span className="journey-label">{step.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="journey-cta">
+                {allDone ? (
+                  <span className="journey-congrats">모든 단계를 완료했습니다!</span>
+                ) : nextStep && (
+                  <button className="journey-next-btn" onClick={() => navigate(nextStep.path)}>
+                    다음 단계: {nextStep.label} &rarr;
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* ── Header ── */}
         <div className="dash-header">

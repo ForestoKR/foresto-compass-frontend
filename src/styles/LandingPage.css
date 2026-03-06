@@ -372,6 +372,20 @@
   margin-bottom: 1rem;
 }
 
+.lp-playground-step-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
 .lp-playground-card h3 {
   font-size: 1.05rem;
   font-weight: 700;
@@ -382,8 +396,54 @@
 .lp-playground-card p {
   font-size: 0.9rem;
   color: var(--text-secondary);
-  margin: 0;
+  margin: 0 0 1.25rem 0;
   line-height: 1.5;
+  flex: 1;
+}
+
+/* Card CTA button */
+.lp-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lp-card-cta:hover {
+  background: var(--primary);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Connector lines between cards (desktop horizontal) */
+.lp-playground-connected {
+  position: relative;
+}
+
+.lp-playground-connected .lp-playground-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.lp-playground-connected .lp-playground-card:not(:last-child)::after {
+  content: '\2192';
+  position: absolute;
+  right: -1.1rem;
+  top: 2.2rem;
+  font-size: 1.2rem;
+  color: var(--primary);
+  font-weight: 700;
+  z-index: 1;
 }
 
 /* Compass Score 축소판 */
@@ -733,6 +793,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .lp-playground-connected .lp-playground-card:not(:last-child)::after {
+    display: none;
+  }
+
   .lp-ai-features {
     grid-template-columns: 1fr;
     max-width: 480px;
@@ -786,6 +850,17 @@
 
   .lp-playground-grid {
     grid-template-columns: 1fr;
+  }
+
+  .lp-playground-connected .lp-playground-card:not(:last-child)::after {
+    content: '\2193';
+    display: block;
+    position: static;
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin: -0.5rem auto;
   }
 
   .lp-compass-mini-list {

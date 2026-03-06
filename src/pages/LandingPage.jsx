@@ -198,34 +198,32 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Section 4: 데이터 연습장 + Compass Score 축소판 */}
+      {/* Section 4: 4단계 여정 + Compass Score 축소판 */}
       <section className="lp-playground">
         <div className="lp-section-inner">
           <div className="lp-section-header">
-            <h2>실제 데이터로 연습하세요</h2>
-            <p>가상의 숫자가 아닌, 진짜 시장 데이터로 학습합니다</p>
+            <h2>4단계로 완성하는 투자 학습</h2>
+            <p>실제 데이터와 시뮬레이션으로 체계적으로 배워보세요</p>
           </div>
-          <div className="lp-playground-grid">
-            <div className="lp-playground-card">
-              <div className="lp-playground-icon">&#x1F4BC;</div>
-              <h3>포트폴리오 시뮬레이션</h3>
-              <p>실제 수익률 기반 모의 투자</p>
-            </div>
-            <div className="lp-playground-card">
-              <div className="lp-playground-icon">&#x1F4C8;</div>
-              <h3>백테스팅</h3>
-              <p>과거 데이터로 전략 검증</p>
-            </div>
-            <div className="lp-playground-card">
-              <div className="lp-playground-icon">&#x1F50D;</div>
-              <h3>종목 스크리너</h3>
-              <p>조건별 종목 필터링</p>
-            </div>
-            <div className="lp-playground-card">
-              <div className="lp-playground-icon">&#x1F30D;</div>
-              <h3>시나리오 분석</h3>
-              <p>금리 변동, 환율 변화 시뮬레이션</p>
-            </div>
+          <div className="lp-playground-grid lp-playground-connected">
+            {[
+              { num: 1, title: '시장 탐색', desc: '시장현황, 스크리너, 종목 비교로 투자 대상을 파악합니다', path: '/explore' },
+              { num: 2, title: '투자성향 진단', desc: '나의 위험 성향과 투자 스타일을 진단받으세요', path: '/survey' },
+              { num: 3, title: '포트폴리오 구성', desc: 'AI 추천 또는 직접 구성으로 나만의 포트폴리오를 만드세요', path: '/portfolio-builder' },
+              { num: 4, title: '시뮬레이션·검증', desc: '백테스팅과 시나리오 분석으로 전략을 검증합니다', path: '/backtest' },
+            ].map((step) => (
+              <div key={step.num} className="lp-playground-card">
+                <div className="lp-playground-step-num">{step.num}</div>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+                <button
+                  className="lp-card-cta"
+                  onClick={() => navigate(isAuthenticated ? step.path : '/signup')}
+                >
+                  시작하기 &rarr;
+                </button>
+              </div>
+            ))}
           </div>
 
           {/* Compass Score 축소판 */}
