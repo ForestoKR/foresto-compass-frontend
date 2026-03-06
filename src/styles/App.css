@@ -132,9 +132,159 @@ body {
 .header-nav {
   flex: 1;
   display: flex;
-  gap: 16px;
+  gap: 8px;
   justify-content: center;
   align-items: center;
+}
+
+/* ============================================================
+   Step Journey Navigation (Desktop)
+   ============================================================ */
+
+.step-journey {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.step-indicator-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.step-connector {
+  width: 32px;
+  height: 2px;
+  background: var(--border, #e0e0e0);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+
+.step-connector.completed {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.step-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.step-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.step-button:hover {
+  background: var(--card-hover, rgba(0, 0, 0, 0.04));
+}
+
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--card-inner, #f3f4f6);
+  color: var(--text-muted, #9ca3af);
+  border: 2px solid var(--border, #e0e0e0);
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.step-circle.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
+}
+
+.step-circle.completed {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.step-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-secondary, #6b7280);
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+
+.step-button:hover .step-label {
+  color: var(--text, #1f2937);
+}
+
+.step-skip-hint {
+  font-size: 0.6rem;
+  color: var(--text-muted, #9ca3af);
+  margin-top: 1px;
+  white-space: nowrap;
+}
+
+.nav-locked-badge {
+  display: inline-block;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
+.nav-locked {
+  opacity: 0.6;
+}
+
+/* Auxiliary nav area (desktop) */
+.aux-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border, #e0e0e0);
+}
+
+/* 1024px: shrink labels */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .step-connector {
+    width: 16px;
+  }
+
+  .step-label {
+    font-size: 0.65rem;
+  }
+
+  .step-button {
+    padding: 4px 4px;
+  }
+
+  .step-skip-hint {
+    display: none;
+  }
+
+  .aux-nav {
+    margin-left: 8px;
+    padding-left: 8px;
+  }
 }
 
 .nav-link,
@@ -370,6 +520,10 @@ body {
   .mobile-menu-toggle {
     display: flex;
   }
+
+  .mobile-step-row {
+    display: flex;
+  }
 }
 
 .hamburger-icon {
@@ -462,6 +616,107 @@ body {
 
 .mobile-menu-close:hover {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================================
+   Mobile Step Row
+   ============================================================ */
+
+.mobile-step-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  gap: 0;
+  border-bottom: 1px solid var(--border-light, #f3f4f6);
+  background: var(--card-inner, #fafbfc);
+}
+
+.mobile-step-item {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-step-connector {
+  width: 24px;
+  height: 2px;
+  background: var(--border, #e0e0e0);
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+
+.mobile-step-connector.completed {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.mobile-step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--card-inner, #f3f4f6);
+  color: var(--text-muted, #9ca3af);
+  border: 2px solid var(--border, #e0e0e0);
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.mobile-step-circle.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.35);
+}
+
+.mobile-step-circle.completed {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.mobile-nav-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--card-inner, #f3f4f6);
+  color: var(--text-muted, #9ca3af);
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-right: 8px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border, #e0e0e0);
+}
+
+.mobile-nav-group-button.open .mobile-nav-step-num {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.mobile-nav-group-label {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-aux-divider {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 20px 6px;
+  border-top: 1px solid var(--border, #e0e0e0);
+  margin-top: 4px;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Mobile nav */
@@ -1713,6 +1968,60 @@ body {
 
 [data-theme="dark"] .main-content {
   background-color: var(--bg);
+}
+
+/* Step navigation */
+[data-theme="dark"] .step-circle {
+  background: var(--card-inner);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .step-connector {
+  background: var(--border);
+}
+
+[data-theme="dark"] .step-label {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .step-button:hover .step-label {
+  color: var(--text);
+}
+
+[data-theme="dark"] .aux-nav {
+  border-left-color: var(--border);
+}
+
+[data-theme="dark"] .nav-locked-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .mobile-step-row {
+  background: var(--card-inner);
+  border-bottom-color: var(--border);
+}
+
+[data-theme="dark"] .mobile-step-circle {
+  background: var(--card-inner);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .mobile-step-connector {
+  background: var(--border);
+}
+
+[data-theme="dark"] .mobile-nav-step-num {
+  background: var(--card-inner);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .mobile-aux-divider {
+  color: var(--text-muted);
+  border-top-color: var(--border);
 }
 
 /* Mobile menu */

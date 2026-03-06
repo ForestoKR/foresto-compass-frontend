@@ -748,6 +748,20 @@ const PortfolioBuilderPage = () => {
                     <span className="more-badge">+{p.items.length - 3}</span>
                   )}
                 </div>
+                <div className="portfolio-card-actions">
+                  <button
+                    className="portfolio-action-btn portfolio-action-evaluate"
+                    onClick={() => navigate('/portfolio-evaluation', { state: { selectedPortfolioId: p.portfolio_id } })}
+                  >
+                    평가하기
+                  </button>
+                  <button
+                    className="portfolio-action-btn portfolio-action-backtest"
+                    onClick={() => navigate('/backtest', { state: { portfolioId: p.portfolio_id, portfolioName: p.portfolio_name, items: p.items } })}
+                  >
+                    백테스팅
+                  </button>
+                </div>
               </div>
             ))}
           </div>

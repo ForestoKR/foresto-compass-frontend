@@ -960,3 +960,42 @@
   border-radius: 4px;
   color: var(--text-muted, #9ca3af);
 }
+
+/* Portfolio Card Actions */
+.portfolio-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border, #e5e7eb);
+}
+
+.portfolio-action-btn {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.portfolio-action-btn:hover {
+  opacity: 0.85;
+}
+
+.portfolio-action-evaluate {
+  background: var(--primary, #667eea);
+  color: #fff;
+}
+
+.portfolio-action-backtest {
+  background: var(--card-inner, #fafbfc);
+  color: var(--primary, #667eea);
+  border: 1px solid var(--primary, #667eea);
+}
+
+[data-theme="dark"] .portfolio-action-backtest {
+  background: rgba(102, 126, 234, 0.1);
+}

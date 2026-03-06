@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Disclaimer from '../components/Disclaimer';
 import {
   Chart as ChartJS,
@@ -73,6 +73,7 @@ function Phase7PortfolioEvaluationPage() {
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const formatPercent = (value) => {
     if (value === null || value === undefined) return '-';
@@ -440,6 +441,19 @@ function Phase7PortfolioEvaluationPage() {
     refreshPortfolios();
     trackPageView('portfolio_evaluation');
   }, []);
+
+  // Auto-select portfolio from navigation state (e.g., from PortfolioBuilder)
+  const autoSelectDone = useRef(false);
+  useEffect(() => {
+    const stateId = location.state?.selectedPortfolioId;
+    if (stateId && portfolios.length > 0 && !autoSelectDone.current) {
+      const match = portfolios.find((p) => String(p.portfolio_id) === String(stateId));
+      if (match) {
+        autoSelectDone.current = true;
+        setSelectedPortfolioId(String(match.portfolio_id));
+      }
+    }
+  }, [portfolios, location.state]);
 
   useEffect(() => {
     if (!selectedPortfolioId) {

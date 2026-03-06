@@ -32,212 +32,118 @@ npm run generate-icons  # Regenerate PWA icons from public/icon.svg (uses sharp)
 
 ```
 src/
-├── pages/               # Page components (42 pages)
-├── components/          # Reusable (14): Header, Footer, ErrorBoundary, Disclaimer, OnboardingTour,
-│                        #   ProgressModal, ProfileCompletionModal, DataTable, ProgressBar, SurveyQuestion,
-│                        #   FinancialAnalysis, Valuation, QuantAnalysis, InvestmentReport
-├── contexts/            # AuthContext.jsx (auth state + Sentry integration)
+├── pages/               # Page components (~42 pages)
+├── components/          # Reusable: Header, Footer, ErrorBoundary, Disclaimer, OnboardingTour, etc.
+├── contexts/            # AuthContext.jsx (auth state + Sentry/Mixpanel integration)
 ├── hooks/useTheme.js    # Dark mode toggle hook (localStorage + system preference)
 ├── services/api.js      # Axios client with JWT injection + idempotency keys
-├── utils/
-│   ├── analytics.js     # Mixpanel (VITE_MIXPANEL_TOKEN)
-│   ├── chartUtils.js    # Chart.js shared: downsampleData, buildChartOptions, buildDrawdownChartData
-│   ├── formatting.js    # formatCurrency, formatPercent
-│   └── sentry.js        # Sentry error tracking (VITE_SENTRY_DSN)
+├── utils/               # analytics.js, chartUtils.js, formatting.js, sentry.js
 └── styles/
     ├── theme.css        # CSS design tokens (:root light + [data-theme="dark"])
     └── *.css            # Per-page/component CSS (all theme-aware)
 ```
 
-## UI Theme System
+## CSS Rules (Critical)
 
-### Architecture
-- **Design tokens**: `src/styles/theme.css` — `:root` (light) + `[data-theme="dark"]` (dark)
-- **Toggle hook**: `src/hooks/useTheme.js` — `useThemeInit()` for App.jsx, `useTheme()` for components
-- **Global stylesheet**: `App.css` — ~1,900 lines covering header/nav, mobile drawer, buttons, forms, auth pages, loading spinner, admin shared styles, disclaimer box, and a `--primary-color` → `var(--primary)` legacy bridge
+- **All colors MUST use CSS variables** from `theme.css`. No hardcoded `white`, `#333`, `#e0e0e0`.
+- **Forbidden variable names** (not in theme.css): `--card-bg`, `--text-primary`, `--input-bg`, `--border-color`
+- **Class naming**: Page-scoped prefixes required (e.g., `screener-table`, `backtest-card`, `guest-52w-bar`)
+- **Dark mode overrides**: `[data-theme="dark"] .selector` for colors needing different dark values
+- **Brand gradients**: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)` — universal, no dark override
+- **Stock color convention**: Korean market — **red = up, blue = down** (opposite of US)
+- **Disclaimer**: Always use `<Disclaimer />` component with `.disclaimer-box` class, never inline
+- **Tailwind**: Installed but **do NOT use utility classes in components**. Use CSS variables from theme.css.
 
-### CSS Variable Categories
-| Category | Variables | Light Example | Dark Example |
-|----------|-----------|---------------|--------------|
-| Background | `--bg`, `--card`, `--card-inner`, `--card-hover` | `#f0f2f5`, `#ffffff` | `#0f172a`, `#1e293b` |
-| Text | `--text`, `--text-secondary`, `--text-muted` | `#1f2937`, `#6b7280` | `#f1f5f9`, `#94a3b8` |
-| Border | `--border`, `--border-light` | `#e5e7eb`, `#f3f4f6` | `#334155`, `#1e293b` |
-| Shadow | `--shadow-sm`, `--shadow-md`, `--shadow-lg` | light rgba | dark rgba |
-| Brand | `--primary`, `--primary-dark`, `--primary-light`, `--accent` | `#667eea`, `#5568d3`, `#8b9cf7` | same values |
-| Stock | `--stock-up`, `--stock-down` | `#e53935` (red), `#1e88e5` (blue) | `#ff6b6b`, `#64b5f6` |
-| Grade | `--grade-a`, `--grade-b`, `--grade-c`, `--grade-d` | grade-specific colors | — |
-| Skeleton | `--skeleton-base`, `--skeleton-shine` | loading placeholders | — |
-
-**Stock color convention**: Korean market standard — **red = up, blue = down** (opposite of US convention).
-
-### Rules for CSS
-- **All colors MUST use CSS variables**. No hardcoded `white`, `#333`, `#e0e0e0`.
-- **Forbidden variable names**: `--card-bg`, `--text-primary`, `--input-bg`, `--border-color` (not in theme.css)
-- **Class naming**: Page-scoped prefixes required (`{page}-table`, `{page}-error`) to prevent cross-file conflicts.
-- **Dark mode overrides**: Use `[data-theme="dark"] .selector` for colors that need different dark values.
-- **Brand gradients**: `linear-gradient(135deg, #667eea 0%, #764ba2 100%)` is universal — no dark override needed.
-- **Disclaimer component**: Uses `.disclaimer-box` CSS class (no inline styles).
-
-### Theme Toggle Implementation
-```js
-// App.jsx — initialize theme once at app root
-const { theme, toggleTheme } = useThemeInit();
-// Sets document.documentElement.setAttribute('data-theme', theme)
-// Persists to localStorage, listens to system prefers-color-scheme
-```
-
-## Analytics & Error Tracking
-
-- **Mixpanel** (`utils/analytics.js`): via `VITE_MIXPANEL_TOKEN`. Functions: `initAnalytics()`, `identifyUser()`, `resetAnalytics()`, `trackEvent()`, `trackPageView()`. No-ops if token missing.
-- **Sentry** (`utils/sentry.js`): via `VITE_SENTRY_DSN`. Functions: `initSentry()`, `setSentryUser()`, `clearSentryUser()`, `captureException()`. `tracesSampleRate: 0.1`, `sendDefaultPii: false`. No-ops if DSN missing.
-- Both initialized in `AuthContext.jsx` on mount; Sentry user set/cleared on login/logout.
-- Key Mixpanel events: `signup_completed`, `login_completed`, `survey_started`, `survey_completed`, `profile_completed`, `preset_loaded`
-
-## Onboarding & UX Components
-
-- **OnboardingTour** (`components/OnboardingTour.jsx`): Shepherd.js 5-step guided tour, auto-triggers on first visit (`localStorage: onboarding_tour_completed`), restartable via Header menu
-- **ProfileCompletionModal** (`components/ProfileCompletionModal.jsx`): Prompts incomplete profiles; used in SurveyPage, PortfolioBuilderPage, StockScreenerPage
-- **Mini Diagnosis**: 3-question quick assessment embedded in LandingPage (lines 8-309)
-- **GuestScreenerPage** (`/explore`): Public stock screener — no login required, limited to 20 results
-- **JSON-LD**: TerminologyPage injects Schema.org `DefinedTermSet` structured data via React Helmet
-
-## Prerendering & Vercel
-
-- **Build-time prerender**: `@prerenderer/rollup-plugin` with `@prerenderer/renderer-jsdom` in `vite.config.js`
-- **Prerendered routes**: `/`, `/login`, `/signup`, `/explore`, `/terminology`, `/guide`, `/developers`
-- **`vercel.json`**: SPA fallback rewrite (`/(.*) → /index.html`); Vercel serves prerendered HTML first
+### Theme System
+- Design tokens: `src/styles/theme.css` — `:root` (light) + `[data-theme="dark"]` (dark)
+- Toggle: `useThemeInit()` in App.jsx, `useTheme()` in components
+- Theme hook persists to localStorage, listens to `prefers-color-scheme`
 
 ## API Client (`services/api.js`)
 
 - Axios instance with `VITE_API_URL` base
-- Request interceptor: JWT token injection from localStorage
-- Idempotency keys: auto-generated for POST/PUT/PATCH/DELETE (header `X-Idempotency-Key`)
-- Response interceptor: 401 → clear token + redirect to login
-- **PDF downloads**: Use raw `fetch` (not Axios) for binary blob responses — `downloadPortfolioPDF`, `downloadDiagnosisPDF`, `downloadExplanationPDF`, `downloadPortfolioExplanationPDF`, `downloadPremiumReportPDF`
+- **Timeouts**: 60s default, 120s for admin data collection endpoints
+- JWT injection from localStorage key `access_token`
+- Idempotency keys for POST/PUT/PATCH/DELETE (`X-Idempotency-Key`)
+- 401 → clear token + redirect to `/login` (except `/auth/login` and `/auth/signup`)
+- **PDF downloads**: Use raw `fetch` (not Axios) for binary blob responses
+- **StrictMode guard**: Pages with `useEffect` data fetching use `useRef` guard to prevent duplicate API calls
 
 ## Routing (`App.jsx`)
 
-### Public (static import — fast first paint)
-- `/` — LandingPage (feature cards, Compass showcase, mini diagnosis, how-it-works)
-- `/login` — LoginPage
-- `/signup` — SignupPage
-- `/verify-email` — EmailVerificationPage
-- `/explore` — GuestScreenerPage (public stock screener, no auth required, 52주 범위 바 포함)
-- `/guide` — UserGuidePage (사용 설명서, react-markdown + remark-gfm, fetches `/user-guide.md`)
-- `/developers` — B2BApiDocsPage (B2B API 개발자 문서, 8개 엔드포인트 레퍼런스, 코드 예제, 요금제, JSON-LD)
+- **Public**: Statically imported (fast first paint) — `/`, `/login`, `/signup`, `/explore`, `/guide`, `/developers`
+- **Protected**: `React.lazy` code split — `/dashboard`, `/survey`, `/portfolio`, `/backtest`, `/screener`, `/watchlist`, etc.
+- **Admin**: Role-based, lazy-loaded — `/admin/*`
+- `ProtectedRoute` checks `isAuthenticated` from AuthContext
+- `ErrorBoundary` catches `ChunkLoadError` from failed lazy imports
+- React Router v7 future flags: `v7_startTransition`, `v7_relativeSplatPath`
 
-### Protected (React.lazy — code split)
-- `/dashboard` — MarketDashboardPage (KPI cards, watchlist, news)
-- `/survey` — SurveyPage (investment profile diagnosis)
-- `/result`, `/history` — DiagnosisResultPage, DiagnosisHistoryPage
-- `/portfolio` — PortfolioRecommendationPage
-- `/portfolio-builder` — PortfolioBuilderPage (직접 포트폴리오 구성)
-- `/portfolio-evaluation`, `/phase7-evaluation` — Phase7PortfolioEvaluationPage (성과 평가/비교)
-- `/backtest` — BacktestPage (단일 백테스트 + 포트폴리오 비교, risk_metrics 카드 최상위 + historical_observation 하위, 벤치마크 비교: KOSPI/KOSDAQ 드롭다운→차트 점선 오버레이+상대 지표 카드(초과수익률·베타·트래킹에러·정보비율))
-- `/scenarios` — ScenarioSimulationPage (MIN_VOL/DEFENSIVE/GROWTH 시나리오 카드, 자산 배분 바, 리스크 지표)
-- `/analysis` — PortfolioExplanationPage (성과 해석 & 리포트)
-- `/screener` — StockScreenerPage (52주 범위 바: 그라데이션 트랙 + 마커 + 퍼센트)
-- `/watchlist` — WatchlistPage
-- `/stock-comparison` — StockComparisonPage
-- `/report-history` — ReportHistoryPage
-- `/profile` — ProfilePage
-- `/terminology` — TerminologyPage (JSON-LD 구조화 데이터)
-- `/subscription` — SubscriptionPage (구독 플랜)
-- `/payment/success`, `/payment/fail` — 결제 결과 콜백
+## Key User Flows
 
-### Admin (role-based, lazy-loaded)
-- `/admin` — AdminPage (대시보드)
-- `/admin/data` — DataManagementPage (batch data collection + progress monitoring)
-- `/admin/batch` — BatchJobsPage (백그라운드 Job 진행)
-- `/admin/scheduler` — SchedulerPage (APScheduler 상태/트리거)
-- `/admin/users` — UserManagementPage
-- `/admin/consents` — AdminConsentPage (법적 동의 이력)
-- `/admin/market-calendar` — AdminMarketCalendarPage (휴장일 관리)
-- `/admin/stock-detail` — StockDetailPage
-- `/admin/financial-analysis`, `/admin/valuation`, `/admin/quant` — Analysis pages
-- `/admin/portfolio` — PortfolioManagementPage (프리셋 관리)
-- `/admin/portfolio-comparison` — PortfolioComparisonPage
-- `/admin/report` — ReportPage (투자 리포트 생성)
-- `/admin/system` — SystemHealthPage (백엔드 상태 & API 성능)
+### Diagnosis → Portfolio → Backtesting
+```
+Survey → DiagnosisResult → PortfolioRecommendation → ScenarioSimulation
+                                                          ↓ "AI 성과 해석 보기"
+                                                     PortfolioExplanation (/analysis)
+```
+- Scenario → Analysis is **direct** (skips BacktestPage)
+- BacktestPage is an **independent tool** accessible from GNB menu, also links to `/analysis`
+- Inter-page data: React Router `navigate('/path', { state: { metrics, autoSubmit } })`
+- Percent→decimal conversion when passing between pages (CAGR/100, volatility/100, MDD sign negation)
 
-### Catch-all
-- `*` — NotFoundPage (404)
+### AI Commentary Pattern
+Pages that display AI analysis (DiagnosisResult, PortfolioExplanation, StockDetail):
+- Backend returns optional `ai_commentary` / `ai_analysis` field (null if Claude API unavailable)
+- Frontend renders conditionally: `{ai_commentary && <div className="...-ai-section">...`
+- Gradient background (`--ai-bg` or brand gradient) + white inner cards
+- Always graceful degradation — page works without AI
 
-`ProtectedRoute` checks `isAuthenticated` + `isLoading` from AuthContext; shows spinner while loading, redirects to `/login` if not authenticated.
-`ErrorBoundary` catches `ChunkLoadError` from failed lazy imports.
-React Router v7 future flags enabled: `v7_startTransition`, `v7_relativeSplatPath`.
+## Chart Utilities (`utils/chartUtils.js`)
+
+- `downsampleData(dailyValues, threshold=365)` — 7-day averaging for large datasets
+- `buildChartOptions(titleText, yFormat, opts)` — theme-aware Chart.js config (reads CSS variables at runtime)
+- `buildDrawdownChartData(dailyValues)` — peak-to-valley drawdown chart
+- Shared by BacktestPage and ScenarioSimulationPage
+
+## Disclaimer Component
+
+7 context-specific types: `general`, `diagnosis`, `portfolio`, `stock`, `backtest`, `simulation`, `market`. Usage: `<Disclaimer type="backtest" />`. Never write disclaimer text inline.
 
 ## Component Conventions
 
 - Hooks must appear before any conditional returns (React rules)
 - Use `useRef` for polling intervals to prevent multiple concurrent polls
 - ProgressModal: 3-retry 404 handling before giving up
-- Disclaimer: always use `<Disclaimer />` component, never inline disclaimer text
 - New page = `src/pages/{PageName}.jsx` + `src/styles/{PageName}.css` (page-scoped prefix)
 
 ## State Management
 
-- **AuthContext** (`contexts/AuthContext.jsx`): `user`, `setUser`, `isAuthenticated`, `isLoading`, `login()`, `logout()`. Initializes analytics + Sentry on mount; validates token via `GET /auth/me` on load.
-- **ThemeContext** (useTheme.js): `theme`, `toggleTheme()` — persists to localStorage
-- No Redux/Zustand — all state is local `useState` or Context
-- `useCallback` for memoizing API fetch functions; `useEffect` with dependency arrays
+- **AuthContext**: `user`, `isAuthenticated`, `isLoading`, `login()`, `logout()`. Validates token via `GET /auth/me`.
+- **ThemeContext**: `theme`, `toggleTheme()` — localStorage
+- No Redux/Zustand — React Context + local useState
 
-## Deployment
+## Branding
 
-| Component | Service | URL |
-|-----------|---------|-----|
-| Frontend | Vercel (Hobby) | `https://foresto-compass-frontend.vercel.app` |
-| Custom Domain | Cloudflare DNS → Vercel | `https://foresto.co.kr` |
-| Backend API | Render | `https://foresto-compass-backend.onrender.com` |
-
-- Auto-deploy: pushes to `main` trigger Vercel build
-- Framework preset: Vite (auto-detected)
-- `VITE_API_URL` set in Vercel Environment Variables
-- Cloudflare DNS: A `foresto.co.kr` → `76.76.21.21`, CNAME `www` → `cname.vercel-dns.com`
-
-## Environment Variables
-
-`.env.development`:
-```
-VITE_API_URL=http://localhost:8000
-VITE_MIXPANEL_TOKEN=your-mixpanel-token   # optional, analytics no-ops if missing
-VITE_SENTRY_DSN=your-sentry-dsn           # optional, error tracking no-ops if missing
-VITE_TOSS_CLIENT_KEY=your-toss-key        # optional, payments
-```
-
-`.env.production`:
-```
-VITE_API_URL=https://foresto-compass-backend.onrender.com
-VITE_MIXPANEL_TOKEN=your-mixpanel-token
-VITE_SENTRY_DSN=your-sentry-dsn
-VITE_TOSS_CLIENT_KEY=your-toss-key
-```
-
-## Tech Stack
-
-- **Framework**: React 18, Vite 5, React Router 6
-- **Charts**: Chart.js
-- **Styling**: CSS custom properties (theme.css) — no CSS-in-JS, no Tailwind utility classes in components
-- **PWA**: Workbox + standalone + offline caching (NetworkFirst for API, autoUpdate SW)
-- **Code splitting**: React.lazy + ErrorBoundary for chunk loading failures
-- **Analytics**: Mixpanel (via `utils/analytics.js`)
-- **Onboarding**: Shepherd.js guided tour
-- **SEO**: react-helmet-async (meta tags, JSON-LD) + build-time prerendering
-- **Prerendering**: `@prerenderer/rollup-plugin` + `@prerenderer/renderer-jsdom`
-- **Error tracking**: Sentry (`@sentry/react`, via `utils/sentry.js`)
-- **Payments**: Toss Payments SDK (`VITE_TOSS_CLIENT_KEY`)
-- **Build optimization**: Manual chunks — `vendor` (React core), `charts` (Chart.js) 분리
-- **PWA detail**: Service Worker `controllerchange` listener in `main.jsx` auto-reloads page on SW update (`skipWaiting: true`)
+- **Foresto IQ** (내부명 `compass_score`) — user-facing text is "Foresto IQ", API fields remain `compass_score`/`compass_grade`
+- Forbidden terms: "투자 추천", "매수 추천", "수익 보장" — use "학습 도구", "시뮬레이션", "교육 목적"
+- All analysis pages must include `<Disclaimer />` component
 
 ## ESLint
 
 - Flat config (`eslint.config.js`), `--max-warnings 0`
-- `no-unused-vars`: `varsIgnorePattern: '^[A-Z_]'` — uppercase/underscore-prefixed vars are exempt
+- `no-unused-vars`: `varsIgnorePattern: '^[A-Z_]'` — uppercase/underscore-prefixed vars exempt
 
-## Public Static Assets
+## Deployment
 
-- `public/terminology.md` — fetched at runtime by TerminologyPage
-- `public/user-guide.md` — fetched at runtime by UserGuidePage
-- `public/guide/` — user guide screenshot images
-- `public/robots.txt`, `public/sitemap.xml` — SEO
-- `public/og-image.png` — Open Graph image
+Auto-deploy on push to `main` via Vercel (Vite preset). Custom domain: `foresto.co.kr` (Cloudflare DNS).
+
+## Environment Variables
+
+See `.env.development` and `.env.production`. Key: `VITE_API_URL`, `VITE_MIXPANEL_TOKEN` (optional), `VITE_SENTRY_DSN` (optional), `VITE_TOSS_CLIENT_KEY` (optional).
+
+## Build Configuration (`vite.config.js`)
+
+- Manual chunk splitting: `vendor` (react, react-dom, react-router-dom) + `charts` (chart.js, react-chartjs-2)
+- PWA: `vite-plugin-pwa` with auto-update, workbox caching (HTML/API NetworkFirst)
+- Prerender: `@prerenderer/rollup-plugin` + `@prerenderer/renderer-jsdom` for SEO routes: `/`, `/login`, `/signup`, `/explore`, `/terminology`, `/guide`, `/developers`
+- `vercel.json` SPA fallback for client-side routing

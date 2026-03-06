@@ -22,56 +22,67 @@ function OnboardingTour() {
     });
 
     tour.addStep({
-      id: 'step-learn',
-      title: '\uD559\uC2B5',
-      text: '\uC5EC\uAE30\uC11C \uC2DC\uC7A5\uD604\uD669, \uC885\uBAA9 \uC2A4\uD06C\uB9AC\uB108, \uAD00\uC2EC \uC885\uBAA9 \uB4F1\uC744 \uD0D0\uC0C9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
-      attachTo: { element: '.nav-group:nth-child(1)', on: 'bottom' },
+      id: 'step-explore',
+      title: '① 시장 탐색',
+      text: '시장현황, 종목 스크리너, 관심 종목 등을 탐색하는 첫 번째 단계입니다.',
+      attachTo: { element: '.step-nav-group:nth-child(1) .step-button', on: 'bottom' },
       buttons: [
-        { text: '\uB2E4\uC74C', action: tour.next, classes: 'shepherd-button' },
+        { text: '다음', action: tour.next, classes: 'shepherd-button' },
       ],
     });
 
     tour.addStep({
       id: 'step-diagnosis',
-      title: '\uC9C4\uB2E8',
-      text: '\uD22C\uC790 \uC131\uD5A5 \uC9C4\uB2E8\uC744 \uD1B5\uD574 \uB098\uC5D0\uAC8C \uB9DE\uB294 \uC804\uB7B5\uC744 \uCC3E\uC544\uBCF4\uC138\uC694.',
-      attachTo: { element: '.nav-group:nth-child(2)', on: 'bottom' },
+      title: '② 투자성향 진단',
+      text: '투자 성향 진단을 통해 나에게 맞는 전략을 찾아보세요. 건너뛰어도 됩니다.',
+      attachTo: { element: '.step-nav-group:nth-child(2) .step-button', on: 'bottom' },
       buttons: [
-        { text: '\uC774\uC804', action: tour.back, classes: 'shepherd-button shepherd-button-secondary' },
-        { text: '\uB2E4\uC74C', action: tour.next, classes: 'shepherd-button' },
+        { text: '이전', action: tour.back, classes: 'shepherd-button shepherd-button-secondary' },
+        { text: '다음', action: tour.next, classes: 'shepherd-button' },
       ],
     });
 
     tour.addStep({
       id: 'step-portfolio',
-      title: '\uD3EC\uD2B8\uD3F4\uB9AC\uC624',
-      text: '\uD3EC\uD2B8\uD3F4\uB9AC\uC624 \uAD6C\uC131, \uBC31\uD14C\uC2A4\uD305, \uC2DC\uBBAC\uB808\uC774\uC158\uC744 \uCCB4\uD5D8\uD574\uBCF4\uC138\uC694.',
-      attachTo: { element: '.nav-group:nth-child(3)', on: 'bottom' },
+      title: '③ 포트폴리오 구성',
+      text: 'AI 추천 또는 직접 구성으로 포트폴리오를 만들어보세요.',
+      attachTo: { element: '.step-nav-group:nth-child(3) .step-button', on: 'bottom' },
       buttons: [
-        { text: '\uC774\uC804', action: tour.back, classes: 'shepherd-button shepherd-button-secondary' },
-        { text: '\uB2E4\uC74C', action: tour.next, classes: 'shepherd-button' },
+        { text: '이전', action: tour.back, classes: 'shepherd-button shepherd-button-secondary' },
+        { text: '다음', action: tour.next, classes: 'shepherd-button' },
+      ],
+    });
+
+    tour.addStep({
+      id: 'step-simulation',
+      title: '④ 시뮬레이션·검증',
+      text: '백테스팅, 시나리오 분석, 성과해석으로 전략을 검증해보세요.',
+      attachTo: { element: '.step-nav-group:nth-child(4) .step-button', on: 'bottom' },
+      buttons: [
+        { text: '이전', action: tour.back, classes: 'shepherd-button shepherd-button-secondary' },
+        { text: '다음', action: tour.next, classes: 'shepherd-button' },
       ],
     });
 
     tour.addStep({
       id: 'step-theme',
-      title: '\uD14C\uB9C8 \uC804\uD658',
-      text: '\uB2E4\uD06C/\uB77C\uC774\uD2B8 \uBAA8\uB4DC\uB97C \uC804\uD658\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.',
+      title: '테마 전환',
+      text: '다크/라이트 모드를 전환할 수 있습니다.',
       attachTo: { element: '.theme-toggle', on: 'bottom' },
       buttons: [
-        { text: '\uC774\uC804', action: tour.back, classes: 'shepherd-button shepherd-button-secondary' },
-        { text: '\uB2E4\uC74C', action: tour.next, classes: 'shepherd-button' },
+        { text: '이전', action: tour.back, classes: 'shepherd-button shepherd-button-secondary' },
+        { text: '다음', action: tour.next, classes: 'shepherd-button' },
       ],
     });
 
     tour.addStep({
       id: 'step-start',
-      title: '\uC900\uBE44 \uC644\uB8CC!',
-      text: '\uBA3C\uC800 \uD22C\uC790 \uC131\uD5A5 \uC9C4\uB2E8\uBD80\uD130 \uC2DC\uC791\uD574\uBCFC\uAE4C\uC694?',
+      title: '준비 완료!',
+      text: '먼저 투자 성향 진단부터 시작해볼까요?',
       buttons: [
-        { text: '\uB098\uC911\uC5D0', action: tour.complete, classes: 'shepherd-button shepherd-button-secondary' },
+        { text: '나중에', action: tour.complete, classes: 'shepherd-button shepherd-button-secondary' },
         {
-          text: '\uC9C4\uB2E8 \uC2DC\uC791',
+          text: '진단 시작',
           action: () => {
             tour.complete();
             navigate('/survey');
