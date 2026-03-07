@@ -1152,8 +1152,13 @@ export const getPortfolioAvailableSecurities = () =>
   api.get('/admin/portfolio/available-securities');
 
 // ── Admin KRX Timeseries API ──
-export const loadKrxTimeseriesStock = (ticker, startMonth) =>
-  api.post(`/admin/krx-timeseries/load-stock/${ticker}?start_month=${startMonth}`);
+export const loadKrxTimeseriesStock = (ticker, startMonth, assetType = 'STOCK') =>
+  api.post(`/admin/krx-timeseries/load-stock/${ticker}?start_month=${startMonth}&asset_type=${assetType}`);
+export const loadEtfIncremental = (payload) =>
+  api.post('/admin/krx-timeseries/load-etf-incremental', null, {
+    ...ADMIN_TIMEOUT,
+    params: payload,
+  });
 
 // ── Payments API ──
 export const getPaymentPlans = () => api.get('/payments/plans');

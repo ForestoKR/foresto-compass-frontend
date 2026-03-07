@@ -443,30 +443,45 @@ export default function DataManagementPage() {
               <h3>단일 종목 시계열</h3>
               <div className="dm-grid-2col-sm">
                 <div>
-                  <label className="dm-label">종목 코드 (6자리)</label>
+                  <label className="dm-label">종목 코드</label>
                   <input
                     type="text"
                     placeholder="005930"
-                    maxLength={6}
+                    maxLength={12}
                     value={symbolInput}
-                    onChange={(e) => setSymbolInput(e.target.value.replace(/[^0-9]/g, ''))}
+                    onChange={(e) => setSymbolInput(e.target.value.replace(/[^0-9A-Za-z]/g, ''))}
                     className="dm-input"
                   />
                 </div>
                 <div>
-                  <label className="dm-label">적재 시작 년월</label>
-                  <input
-                    type="month"
-                    id="krx-timeseries-start-month"
-                    defaultValue="2021-01"
-                    className="dm-input"
-                  />
+                  <label className="dm-label">자산유형</label>
+                  <select id="krx-timeseries-asset-type" className="dm-input">
+                    <option value="STOCK">주식</option>
+                    <option value="ETF">ETF</option>
+                    <option value="ETN">ETN</option>
+                    <option value="GOLD">금현물</option>
+                  </select>
                 </div>
+              </div>
+              <div style={{ marginTop: 8 }}>
+                <label className="dm-label">적재 시작 년월</label>
+                <input
+                  type="month"
+                  id="krx-timeseries-start-month"
+                  defaultValue="2021-01"
+                  className="dm-input"
+                  style={{ maxWidth: 200 }}
+                />
               </div>
               <button
                 onClick={async () => {
                   const ticker = symbolInput.trim();
-                  if (!ticker || ticker.length !== 6) {
+                  const assetType = document.getElementById('krx-timeseries-asset-type').value;
+                  if (!ticker) {
+                    alert('종목 코드를 입력하세요');
+                    return;
+                  }
+                  if (assetType !== 'GOLD' && (ticker.length !== 6 || !/^\d{6}$/.test(ticker))) {
                     alert('6자리 종목 코드를 입력하세요');
                     return;
                   }
@@ -478,12 +493,12 @@ export default function DataManagementPage() {
                   setLoading(true);
                   setError(null);
                   try {
-                    const response = await api.loadKrxTimeseriesStock(ticker, startMonth);
+                    const response = await api.loadKrxTimeseriesStock(ticker, startMonth, assetType);
                     const data = response.data;
-                    alert(`${ticker} 시계열 ${data.records_added}건 수집 완료`);
+                    alert(`[${data.asset_type}] ${ticker} 시계열 ${data.records_added}건 수집 완료`);
                     await fetchDataStatus();
                   } catch (err) {
-                    alert(err.message);
+                    alert(err.response?.data?.detail || err.message);
                   } finally {
                     setLoading(false);
                   }
@@ -494,7 +509,7 @@ export default function DataManagementPage() {
                 시계열 데이터 수집
               </button>
               <p className="dm-hint">
-                예: 005930 (삼성전자), 000660 (SK하이닉스), 035420 (NAVER)
+                주식: 005930 (삼성전자) / ETF: 069500 (KODEX 200) / ETN: 530104 / 금: 금현물 코드
               </p>
             </div>
 
@@ -567,6 +582,76 @@ export default function DataManagementPage() {
               </button>
               <p className="dm-hint-dark">
                 첫 실행: 약 4-6시간 (야간 권장) / 재실행: 약 10-30분 (증분만)
+              </p>
+            </div>
+
+            {/* ETF/ETN/금현물 증분 적재 */}
+            <div className="dm-panel-green">
+              <h3>ETF / ETN / 금현물 증분 적재</h3>
+              <p className="dm-panel-green-desc">
+                etf_price_daily 테이블 기준 증분 적재. 마지막 적재일 이후 데이터만 수집합니다.
+              </p>
+              <div className="dm-grid-2col-sm">
+                <div>
+                  <label className="dm-label">수집 대상</label>
+                  <select id="etf-incremental-types" className="dm-input">
+                    <option value="ETF,ETN,GOLD">전체 (ETF+ETN+금현물)</option>
+                    <option value="ETF">ETF만</option>
+                    <option value="ETN">ETN만</option>
+                    <option value="GOLD">금현물만</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="dm-label">신규 기본 기간</label>
+                  <select id="etf-incremental-days" className="dm-input">
+                    <option value="365">1년</option>
+                    <option value="1095">3년</option>
+                    <option value="1825">5년 (권장)</option>
+                  </select>
+                </div>
+              </div>
+              <button
+                onClick={async () => {
+                  const assetTypes = document.getElementById('etf-incremental-types').value;
+                  const defaultDays = Number(document.getElementById('etf-incremental-days').value) || 1825;
+
+                  if (!window.confirm(
+                    `[${assetTypes}] 증분 시계열 적재를 시작하시겠습니까?\n\n` +
+                    `- 신규: ${defaultDays}일치 수집 / 기존: 증분만\n` +
+                    `- 날짜당 API 3회 (ETF+ETN+Gold)\n` +
+                    `- 첫 실행 시 수 시간 소요될 수 있습니다.`
+                  )) {
+                    return;
+                  }
+
+                  setLoading(true);
+                  setError(null);
+                  const tempTaskId = `temp_etf_inc_${Date.now()}`;
+                  setCurrentTaskId(tempTaskId);
+
+                  try {
+                    const res = await api.loadEtfIncremental({
+                      default_days: defaultDays,
+                      asset_types: assetTypes,
+                    });
+                    if (res.data.task_id) {
+                      setCurrentTaskId(res.data.task_id);
+                    }
+                    await fetchDataStatus();
+                  } catch (err) {
+                    alert(err.response?.data?.error?.message || err.response?.data?.detail || 'ETF 증분 적재 시작 실패');
+                    setCurrentTaskId(null);
+                  } finally {
+                    setLoading(false);
+                  }
+                }}
+                disabled={loading}
+                className="btn btn-success dm-btn-incremental"
+              >
+                {loading ? '시작 중...' : 'ETF/ETN/금현물 증분 적재'}
+              </button>
+              <p className="dm-hint-dark">
+                첫 실행: 약 2-4시간 (5년치) / 재실행: 수 분 (증분만)
               </p>
             </div>
           </div>
