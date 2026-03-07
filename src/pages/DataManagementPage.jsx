@@ -47,9 +47,8 @@ export default function DataManagementPage() {
     }
   };
 
-  const handleLoadData = async (type) => {
-    const typeNames = { stocks: '주식', etfs: 'ETF', etns: 'ETN', gold: 'ETF/ETN/금현물 시계열' };
-    if (!window.confirm(`${typeNames[type]} 데이터를 수집하시겠습니까?`)) {
+  const handleLoadStocks = async () => {
+    if (!window.confirm('주식 데이터를 수집하시겠습니까?')) {
       return;
     }
 
@@ -57,20 +56,13 @@ export default function DataManagementPage() {
     setError(null);
     setLoadResult(null);
 
-    // 임시 task_id로 즉시 모달 표시
-    const tempTaskId = `temp_${type}_${Date.now()}`;
+    const tempTaskId = `temp_stocks_${Date.now()}`;
     setCurrentTaskId(tempTaskId);
 
     try {
-      let response;
-      if (type === 'stocks') response = await api.loadStocks();
-      else if (type === 'etfs') response = await api.loadETFs();
-      else if (type === 'etns') response = await api.loadETNs();
-      else response = await api.loadGold();
-
+      const response = await api.loadStocks();
       setLoadResult(response.data);
 
-      // 실제 task_id로 업데이트
       if (response.data.task_id) {
         setCurrentTaskId(response.data.task_id);
       }
@@ -78,7 +70,7 @@ export default function DataManagementPage() {
       await fetchDataStatus();
     } catch (err) {
       setError(err.response?.data?.error?.message || err.response?.data?.detail || '데이터 수집 실패');
-      setCurrentTaskId(null); // 에러 시 모달 닫기
+      setCurrentTaskId(null);
     } finally {
       setLoading(false);
     }
@@ -392,7 +384,7 @@ export default function DataManagementPage() {
               FDR 종목 마스터 기반으로 DB 시세 데이터에서 현재가, 수익률 등을 계산합니다.
             </p>
             <button
-              onClick={() => handleLoadData('stocks')}
+              onClick={handleLoadStocks}
               disabled={loading}
               className="btn btn-primary dm-btn-full-bold"
             >
