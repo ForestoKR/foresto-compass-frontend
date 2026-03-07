@@ -44,13 +44,39 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// 응답 인터셉터 - 에러 처리
+// 재시도 설정
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 1000;
+const RETRYABLE_STATUS = new Set([502, 503, 504]);
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const shouldRetry = (error) => {
+  // 네트워크 에러 (서버 무응답, 타임아웃)
+  if (!error.response) return true;
+  // 서버 과부하/일시 장애
+  return RETRYABLE_STATUS.has(error.response.status);
+};
+
+// 응답 인터셉터 - 재시도 + 에러 처리
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const config = error.config;
+
+    // 재시도 로직 (GET 요청 + 재시도 가능한 에러만)
+    if (config && config.method === 'get' && shouldRetry(error)) {
+      config.__retryCount = config.__retryCount || 0;
+      if (config.__retryCount < MAX_RETRIES) {
+        config.__retryCount += 1;
+        await sleep(RETRY_DELAY_MS * config.__retryCount);
+        return api(config);
+      }
+    }
+
     // 로그인/회원가입 요청의 401 에러는 정상적인 실패이므로 리다이렉트하지 않음
-    const isAuthEndpoint = error.config?.url === '/auth/login' ||
-                          error.config?.url === '/auth/signup';
+    const isAuthEndpoint = config?.url === '/auth/login' ||
+                          config?.url === '/auth/signup';
 
     if (error.response?.status === 401 && !isAuthEndpoint) {
       localStorage.removeItem('access_token');
