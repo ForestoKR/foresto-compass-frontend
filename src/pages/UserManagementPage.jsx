@@ -152,10 +152,10 @@ function UserManagementPage() {
                     <div className="tier-item">
                       <span className="tier-label">VIP</span>
                       <span className="tier-value" style={{
-                        color: user.vip_tier === 'diamond' ? '#b9f2ff' :
-                               user.vip_tier === 'platinum' ? '#e5e4e2' :
-                               user.vip_tier === 'gold' ? '#ffd700' :
-                               user.vip_tier === 'silver' ? '#c0c0c0' : '#cd7f32'
+                        color: user.vip_tier === 'diamond' ? 'var(--vip-diamond)' :
+                               user.vip_tier === 'platinum' ? 'var(--vip-platinum)' :
+                               user.vip_tier === 'gold' ? 'var(--vip-gold)' :
+                               user.vip_tier === 'silver' ? 'var(--vip-silver)' : 'var(--vip-bronze)'
                       }}>
                         {user.vip_tier === 'diamond' && '💠'}
                         {user.vip_tier === 'platinum' && '💎'}
@@ -170,9 +170,9 @@ function UserManagementPage() {
                     <div className="tier-item">
                       <span className="tier-label">멤버십</span>
                       <span className="tier-value" style={{
-                        color: user.membership_plan === 'enterprise' ? '#8b5cf6' :
-                               user.membership_plan === 'pro' ? '#3b82f6' :
-                               user.membership_plan === 'starter' ? '#10b981' : '#6b7280'
+                        color: user.membership_plan === 'enterprise' ? 'var(--membership-enterprise)' :
+                               user.membership_plan === 'pro' ? 'var(--membership-pro)' :
+                               user.membership_plan === 'starter' ? 'var(--membership-starter)' : 'var(--membership-free)'
                       }}>
                         {user.membership_plan === 'enterprise' && '🏢'}
                         {user.membership_plan === 'pro' && '🚀'}
@@ -344,10 +344,10 @@ function UserManagementPage() {
                       <span style={{
                         fontSize: '16px',
                         fontWeight: 'bold',
-                        color: selectedUser.vip_tier === 'diamond' ? '#b9f2ff' :
-                               selectedUser.vip_tier === 'platinum' ? '#e5e4e2' :
-                               selectedUser.vip_tier === 'gold' ? '#ffd700' :
-                               selectedUser.vip_tier === 'silver' ? '#c0c0c0' : '#cd7f32'
+                        color: selectedUser.vip_tier === 'diamond' ? 'var(--vip-diamond)' :
+                               selectedUser.vip_tier === 'platinum' ? 'var(--vip-platinum)' :
+                               selectedUser.vip_tier === 'gold' ? 'var(--vip-gold)' :
+                               selectedUser.vip_tier === 'silver' ? 'var(--vip-silver)' : 'var(--vip-bronze)'
                       }}>
                         {selectedUser.vip_tier === 'diamond' && '💠'}
                         {selectedUser.vip_tier === 'platinum' && '💎'}
@@ -369,9 +369,9 @@ function UserManagementPage() {
                       <span style={{
                         fontSize: '14px',
                         fontWeight: '600',
-                        color: selectedUser.membership_plan === 'enterprise' ? '#8b5cf6' :
-                               selectedUser.membership_plan === 'pro' ? '#3b82f6' :
-                               selectedUser.membership_plan === 'starter' ? '#10b981' : '#6b7280'
+                        color: selectedUser.membership_plan === 'enterprise' ? 'var(--membership-enterprise)' :
+                               selectedUser.membership_plan === 'pro' ? 'var(--membership-pro)' :
+                               selectedUser.membership_plan === 'starter' ? 'var(--membership-starter)' : 'var(--membership-free)'
                       }}>
                         {selectedUser.membership_plan === 'enterprise' && '🏢'}
                         {selectedUser.membership_plan === 'pro' && '🚀'}

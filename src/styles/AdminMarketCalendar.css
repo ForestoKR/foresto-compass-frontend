@@ -209,7 +209,7 @@
 
 .amc-type-krx_special {
   background: rgba(255, 152, 0, 0.12);
-  color: #f59e0b;
+  color: var(--risk-medium, #f59e0b);
 }
 
 [data-theme="dark"] .amc-type-krx_special {

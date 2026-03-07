@@ -58,6 +58,50 @@
   /* Mover bars */
   --bar-bg-up-start: #ffcdd2;
   --bar-bg-down-start: #bbdefb;
+
+  /* Admin menu card colors */
+  --admin-data: #2196F3;
+  --admin-batch: #FF9800;
+  --admin-scheduler: #0ea5e9;
+  --admin-system: #8b5cf6;
+  --admin-calendar: #14b8a6;
+  --admin-stock: #673AB7;
+  --admin-users: #00BCD4;
+  --admin-consents: #ef4444;
+  --admin-portfolio: #667eea;
+  --admin-comparison: #9c27b0;
+  --admin-financial: #4CAF50;
+  --admin-valuation: #9C27B0;
+  --admin-quant: #FF9800;
+  --admin-report: #E91E63;
+
+  /* Risk level colors */
+  --risk-low: #4CAF50;
+  --risk-medium: #FF9800;
+  --risk-high: #F44336;
+
+  /* Asset pool card colors */
+  --asset-stock: #2196F3;
+  --asset-stock-bg: #e3f2fd;
+  --asset-etf: #9C27B0;
+  --asset-etf-bg: #f3e5f5;
+  --asset-bond: #4CAF50;
+  --asset-bond-bg: #e8f5e9;
+  --asset-deposit: #FF9800;
+  --asset-deposit-bg: #fff3e0;
+
+  /* VIP tier colors */
+  --vip-diamond: #b9f2ff;
+  --vip-platinum: #e5e4e2;
+  --vip-gold: #ffd700;
+  --vip-silver: #c0c0c0;
+  --vip-bronze: #cd7f32;
+
+  /* Membership plan colors */
+  --membership-enterprise: #8b5cf6;
+  --membership-pro: #3b82f6;
+  --membership-starter: #10b981;
+  --membership-free: #6b7280;
 }
 
 [data-theme="dark"] {
@@ -105,6 +149,19 @@
   /* Mover bars */
   --bar-bg-up-start: rgba(255, 107, 107, 0.2);
   --bar-bg-down-start: rgba(100, 181, 246, 0.2);
+
+  /* Asset pool card backgrounds (dark) */
+  --asset-stock-bg: #1a2744;
+  --asset-etf-bg: #2a1a3a;
+  --asset-bond-bg: #1a2e1a;
+  --asset-deposit-bg: #2e2a1a;
+
+  /* VIP tier colors (brighter for dark bg) */
+  --vip-diamond: #7dd3fc;
+  --vip-platinum: #d1d5db;
+  --vip-gold: #fbbf24;
+  --vip-silver: #a8a29e;
+  --vip-bronze: #d97706;
 }
 
 /* Smooth theme transition on body */

@@ -1115,6 +1115,20 @@ export const checkTradingDay = (date) =>
 export const getSystemHealth = () => api.get('/admin/system/health');
 export const getApiPerformance = () => api.get('/admin/system/api-performance');
 
+// ── Admin Portfolio Management API ──
+export const getPortfolioStrategies = () =>
+  api.get('/admin/portfolio/strategies');
+export const getPortfolioComposition = (investmentType, investmentAmount = 10000000) =>
+  api.get(`/admin/portfolio/composition/${investmentType}?investment_amount=${investmentAmount}`);
+export const getPortfolioTopSecurities = (investmentType, limit = 10) =>
+  api.get(`/admin/portfolio/top-securities/${investmentType}?limit=${limit}`);
+export const getPortfolioAvailableSecurities = () =>
+  api.get('/admin/portfolio/available-securities');
+
+// ── Admin KRX Timeseries API ──
+export const loadKrxTimeseriesStock = (ticker, startMonth) =>
+  api.post(`/admin/krx-timeseries/load-stock/${ticker}?start_month=${startMonth}`);
+
 // ── Payments API ──
 export const getPaymentPlans = () => api.get('/payments/plans');
 export const createCheckout = (data) => api.post('/payments/checkout', data);

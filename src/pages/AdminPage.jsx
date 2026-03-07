@@ -12,98 +12,98 @@ export default function AdminPage() {
       title: '데이터 관리',
       description: '종목 정보 수집 및 데이터베이스 관리',
       path: '/admin/data',
-      color: '#2196F3'
+      colorVar: 'var(--admin-data)'
     },
     {
       icon: '⚙️',
       title: '배치 작업',
       description: '한국 주식 데이터 일괄 수집 및 작업 모니터링',
       path: '/admin/batch',
-      color: '#FF9800'
+      colorVar: 'var(--admin-batch)'
     },
     {
       icon: '🗓️',
       title: '스케줄 관리',
       description: '데이터 수집 스케줄 관리 및 수동 실행',
       path: '/admin/scheduler',
-      color: '#0ea5e9'
+      colorVar: 'var(--admin-scheduler)'
     },
     {
       icon: '\u{1F4E1}',
       title: '시스템 모니터링',
       description: 'DB 풀, 메모리, 스케줄러, API 성능 실시간 확인',
       path: '/admin/system',
-      color: '#8b5cf6'
+      colorVar: 'var(--admin-system)'
     },
     {
       icon: '\u{1F4C5}',
       title: '휴장일 관리',
       description: '한국 주식시장 휴장일 조회, 추가, 거래일 확인',
       path: '/admin/market-calendar',
-      color: '#14b8a6'
+      colorVar: 'var(--admin-calendar)'
     },
     {
       icon: '🔍',
       title: '종목 조회',
       description: '기본 정보, 시계열 데이터, 재무 지표 한눈에 확인',
       path: '/admin/stock-detail',
-      color: '#673AB7'
+      colorVar: 'var(--admin-stock)'
     },
     {
       icon: '👥',
       title: '사용자 관리',
       description: '사용자 목록, 역할 변경, 계정 삭제',
       path: '/admin/users',
-      color: '#00BCD4'
+      colorVar: 'var(--admin-users)'
     },
     {
       icon: '🧾',
       title: '동의 이력',
       description: '유의사항 동의 기록 조회',
       path: '/admin/consents',
-      color: '#ef4444'
+      colorVar: 'var(--admin-consents)'
     },
     {
       icon: '📊',
       title: '포트폴리오 관리',
       description: '투자 성향별 포트폴리오 전략 및 종목 구성',
       path: '/admin/portfolio',
-      color: '#667eea'
+      colorVar: 'var(--admin-portfolio)'
     },
     {
       icon: '📈',
       title: '포트폴리오 성과 비교',
       description: '여러 포트폴리오의 수익률과 성과를 비교 분석',
       path: '/admin/portfolio-comparison',
-      color: '#9c27b0'
+      colorVar: 'var(--admin-comparison)'
     },
     {
       icon: '📊',
       title: '재무 분석',
       description: 'CAGR, ROE, 부채비율 등 재무제표 분석',
       path: '/admin/financial-analysis',
-      color: '#4CAF50'
+      colorVar: 'var(--admin-financial)'
     },
     {
       icon: '💼',
       title: '밸류에이션',
       description: 'PER/PBR 비교, DCF, 배당할인모형',
       path: '/admin/valuation',
-      color: '#9C27B0'
+      colorVar: 'var(--admin-valuation)'
     },
     {
       icon: '📈',
       title: '퀀트/기술 분석',
       description: 'RSI, MACD, 변동성, 베타, 알파 분석',
       path: '/admin/quant',
-      color: '#FF9800'
+      colorVar: 'var(--admin-quant)'
     },
     {
       icon: '📄',
       title: '종합 리포트',
       description: '모든 분석 결과 통합 리포트 (투자 권고 없음)',
       path: '/admin/report',
-      color: '#E91E63'
+      colorVar: 'var(--admin-report)'
     }
   ];
 
@@ -130,13 +130,13 @@ export default function AdminPage() {
               <div
                 key={index}
                 className="admin-menu-card"
-                style={{ '--card-color': item.color }}
+                style={{ '--card-color': item.colorVar }}
                 onClick={() => navigate(item.path)}
               >
                 <div className="admin-menu-card-icon">
                   {item.icon}
                 </div>
-                <h3 className="admin-menu-card-title" style={{ color: item.color }}>
+                <h3 className="admin-menu-card-title" style={{ color: item.colorVar }}>
                   {item.title}
                 </h3>
                 <p className="admin-menu-card-desc">

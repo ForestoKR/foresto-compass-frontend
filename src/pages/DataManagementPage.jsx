@@ -478,19 +478,8 @@ export default function DataManagementPage() {
                   setLoading(true);
                   setError(null);
                   try {
-                    const token = localStorage.getItem('access_token');
-                    const response = await fetch(
-                      `${import.meta.env.VITE_API_URL}/admin/krx-timeseries/load-stock/${ticker}?start_month=${startMonth}`,
-                      {
-                        method: 'POST',
-                        headers: { Authorization: `Bearer ${token}` }
-                      }
-                    );
-                    if (!response.ok) {
-                      const errorData = await response.json();
-                      throw new Error(errorData.detail || '데이터 수집 실패');
-                    }
-                    const data = await response.json();
+                    const response = await api.loadKrxTimeseriesStock(ticker, startMonth);
+                    const data = response.data;
                     alert(`${ticker} 시계열 ${data.records_added}건 수집 완료`);
                     await fetchDataStatus();
                   } catch (err) {

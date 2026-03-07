@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import * as api from '../services/api';
 import '../styles/PortfolioManagement.css';
 
 export default function PortfolioManagementPage() {
@@ -28,11 +28,7 @@ export default function PortfolioManagementPage() {
 
   const loadStrategies = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/admin/portfolio/strategies`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.getPortfolioStrategies();
       setStrategies(response.data.data.strategies);
     } catch (err) {
       console.error('Failed to load strategies:', err);
@@ -42,11 +38,7 @@ export default function PortfolioManagementPage() {
   const loadDetailPortfolio = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/admin/portfolio/composition/${selectedType}?investment_amount=10000000`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.getPortfolioComposition(selectedType);
       setDetailPortfolio(response.data.data);
     } catch (err) {
       console.error('Failed to load portfolio:', err);
@@ -57,11 +49,7 @@ export default function PortfolioManagementPage() {
 
   const loadTopSecurities = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/admin/portfolio/top-securities/${selectedType}?limit=10`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.getPortfolioTopSecurities(selectedType);
       setTopSecurities(response.data.data);
     } catch (err) {
       console.error('Failed to load top securities:', err);
@@ -70,11 +58,7 @@ export default function PortfolioManagementPage() {
 
   const loadAvailableSecurities = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/admin/portfolio/available-securities`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await api.getPortfolioAvailableSecurities();
       setAvailableSecurities(response.data.data);
     } catch (err) {
       console.error('Failed to load available securities:', err);
@@ -89,8 +73,8 @@ export default function PortfolioManagementPage() {
   };
 
   const getRiskLevelColor = (level) => {
-    const colors = { low: '#4CAF50', medium: '#FF9800', high: '#F44336' };
-    return colors[level] || '#666';
+    const colors = { low: 'var(--risk-low)', medium: 'var(--risk-medium)', high: 'var(--risk-high)' };
+    return colors[level] || 'var(--text-secondary)';
   };
 
   const getRiskLevelName = (level) => {
@@ -362,7 +346,7 @@ export default function PortfolioManagementPage() {
                                   <div className="pm-cell-ticker-sm">{stock.ticker}</div>
                                 </td>
                                 <td>{stock.sector}</td>
-                                <td className="right" style={{ color: stock.one_year_return > 0 ? '#4CAF50' : '#F44336' }}>
+                                <td className="right" style={{ color: stock.one_year_return > 0 ? 'var(--stock-up)' : 'var(--stock-down)' }}>
                                   {stock.one_year_return ? formatPercent(stock.one_year_return) : 'N/A'}
                                 </td>
                                 <td className="right">
@@ -406,7 +390,7 @@ export default function PortfolioManagementPage() {
                                   <div className="pm-cell-ticker-sm">{etf.ticker}</div>
                                 </td>
                                 <td>{etf.etf_type}</td>
-                                <td className="right" style={{ color: etf.one_year_return > 0 ? '#4CAF50' : '#F44336' }}>
+                                <td className="right" style={{ color: etf.one_year_return > 0 ? 'var(--stock-up)' : 'var(--stock-down)' }}>
                                   {etf.one_year_return ? formatPercent(etf.one_year_return) : 'N/A'}
                                 </td>
                                 <td className="right">
@@ -441,10 +425,10 @@ export default function PortfolioManagementPage() {
               {/* Totals */}
               <div className="pm-pool-grid">
                 {[
-                  { label: '전체 주식', count: availableSecurities.totals.stocks, bg: '#e3f2fd', color: '#2196F3' },
-                  { label: '전체 ETF', count: availableSecurities.totals.etfs, bg: '#f3e5f5', color: '#9C27B0' },
-                  { label: '전체 채권', count: availableSecurities.totals.bonds, bg: '#e8f5e9', color: '#4CAF50' },
-                  { label: '전체 예금', count: availableSecurities.totals.deposits, bg: '#fff3e0', color: '#FF9800' },
+                  { label: '전체 주식', count: availableSecurities.totals.stocks, bg: 'var(--asset-stock-bg)', color: 'var(--asset-stock)' },
+                  { label: '전체 ETF', count: availableSecurities.totals.etfs, bg: 'var(--asset-etf-bg)', color: 'var(--asset-etf)' },
+                  { label: '전체 채권', count: availableSecurities.totals.bonds, bg: 'var(--asset-bond-bg)', color: 'var(--asset-bond)' },
+                  { label: '전체 예금', count: availableSecurities.totals.deposits, bg: 'var(--asset-deposit-bg)', color: 'var(--asset-deposit)' },
                 ].map((item) => (
                   <div key={item.label} className="pm-pool-card" style={{ background: item.bg }}>
                     <div className="pm-pool-card-label">{item.label}</div>
@@ -454,7 +438,7 @@ export default function PortfolioManagementPage() {
               </div>
 
               {/* By Investment Type */}
-              <h3 style={{ marginBottom: '16px' }}>투자 성향별 종목 수</h3>
+              <h3 className="pm-section-title">투자 성향별 종목 수</h3>
               <div className="pm-table-wrap">
                 <table className="pm-table">
                   <thead>

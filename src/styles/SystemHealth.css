@@ -50,17 +50,17 @@
 }
 
 .syshealth-badge-warning {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--banner-label-bg, #fef3c7);
+  color: var(--banner-label-text, #92400e);
 }
 
 [data-theme="dark"] .syshealth-badge-warning {
   background: rgba(251, 191, 36, 0.15);
-  color: #fbbf24;
+  color: var(--banner-label-text);
 }
 
 .syshealth-badge-error {
-  background: #fee2e2;
+  background: rgba(220, 38, 38, 0.08);
   color: var(--stock-down);
 }
 

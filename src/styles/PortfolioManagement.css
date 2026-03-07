@@ -336,13 +336,19 @@
   color: var(--text, #1f2937);
 }
 
+/* Section title */
+.pm-section-title {
+  margin-bottom: 16px;
+  color: var(--text, #1f2937);
+}
+
 /* Info box */
 .pm-info-box {
   margin-top: 24px;
   padding: 16px;
-  background: rgba(255, 152, 0, 0.08);
+  background: var(--banner-bg, rgba(255, 152, 0, 0.08));
   border-radius: 8px;
-  border-left: 4px solid #ff9800;
+  border-left: 4px solid var(--risk-medium, #ff9800);
 }
 
 [data-theme="dark"] .pm-info-box {
