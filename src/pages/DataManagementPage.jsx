@@ -202,10 +202,10 @@ export default function DataManagementPage() {
                     <li><strong>DB 영향:</strong> 기존 데이터를 최신 값으로 덮어씁니다 (upsert). 삭제는 없습니다.</li>
                   </ul>
                   <div className="dm-confirm-steps">
-                    <strong>실행 순서 (13단계)</strong>
+                    <strong>실행 순서 (12단계)</strong>
                     <ol>
                       <li>FDR 종목 마스터</li>
-                      <li>주식 데이터 수집 → ETF 데이터 수집</li>
+                      <li>주식 데이터 수집</li>
                       <li>시계열 증분 적재 (5년치)</li>
                       <li>배당이력 전체종목 → 기업액션 5년 → 채권 전체</li>
                       <li>재무제표 FY2021 ~ FY2025 (5개년 순차)</li>
@@ -385,35 +385,19 @@ export default function DataManagementPage() {
             </div>
           </div>
 
-          {/* ─── Step 2: 주식/ETF/ETN 수집 ─── */}
+          {/* ─── Step 2: 주식 데이터 수집 ─── */}
           <div className="description-section dm-section">
-            <h2>{stepBadge(2)} 주식 / ETF / ETN 수집</h2>
+            <h2>{stepBadge(2)} 주식 데이터 수집</h2>
             <p className="dm-section-subtitle">
               FDR 종목 마스터 기반으로 DB 시세 데이터에서 현재가, 수익률 등을 계산합니다.
             </p>
-            <div className="dm-grid-3col">
-              <button
-                onClick={() => handleLoadData('stocks')}
-                disabled={loading}
-                className="btn btn-primary dm-btn-action"
-              >
-                주식 데이터 수집
-              </button>
-              <button
-                onClick={() => handleLoadData('etfs')}
-                disabled={loading}
-                className="btn btn-primary dm-btn-action"
-              >
-                ETF 데이터 수집
-              </button>
-              <button
-                onClick={() => handleLoadData('etns')}
-                disabled={loading}
-                className="btn btn-primary dm-btn-action"
-              >
-                ETN 데이터 수집
-              </button>
-            </div>
+            <button
+              onClick={() => handleLoadData('stocks')}
+              disabled={loading}
+              className="btn btn-primary dm-btn-full-bold"
+            >
+              주식 데이터 수집
+            </button>
           </div>
 
           {/* ─── Step 3: pykrx 시계열 ─── */}
