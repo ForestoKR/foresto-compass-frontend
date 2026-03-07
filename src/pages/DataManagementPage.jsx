@@ -385,11 +385,11 @@ export default function DataManagementPage() {
             </div>
           </div>
 
-          {/* ─── Step 2: 주식/ETF 수집 (yfinance) ─── */}
+          {/* ─── Step 2: 주식/ETF/ETN 수집 ─── */}
           <div className="description-section dm-section">
             <h2>{stepBadge(2)} 주식 / ETF / ETN 수집</h2>
             <p className="dm-section-subtitle">
-              FDR 종목 마스터 기반으로 yfinance / KRX Open API에서 시가총액, 섹터, 상장일 등을 수집합니다.
+              FDR 종목 마스터 기반으로 DB 시세 데이터에서 현재가, 수익률 등을 계산합니다.
             </p>
             <div className="dm-grid-3col">
               <button
