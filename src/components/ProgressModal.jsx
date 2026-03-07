@@ -31,6 +31,7 @@ function ProgressModal({ taskId, onComplete, onClose }) {
     if (tid.startsWith('dart_fin_')) return '약 5-10분';
     if (tid.startsWith('compass_')) return '약 20-30분';
     if (tid.startsWith('stocks_') || tid.startsWith('fdr_')) return '약 3-5분';
+    if (tid.startsWith('etf_incremental_')) return '약 2-4시간 (첫 실행)';
     if (tid.startsWith('etf_')) return '약 1-2분';
     if (tid.startsWith('dividends_')) return '약 3-5분';
     if (tid.startsWith('corp_action_')) return '약 10-30초';
@@ -182,12 +183,12 @@ function ProgressModal({ taskId, onComplete, onClose }) {
   const isPipeline = taskId && taskId.startsWith('pipeline_');
 
   // 단일 Phase 작업 - Phase 배지 숨김 (채권/예금/적금/연금저축/주담대/전세대출/DART재무제표/파이프라인)
-  const isBondTask = taskId && (taskId.startsWith('bonds_') || taskId.startsWith('deposits_') || taskId.startsWith('savings_') || taskId.startsWith('annuity_') || taskId.startsWith('mortgage_') || taskId.startsWith('rentloan_') || taskId.startsWith('creditloan_') || taskId.startsWith('dart_fin_') || taskId.startsWith('corp_action_') || isPipeline);
+  const isSinglePhase = taskId && (taskId.startsWith('bonds_') || taskId.startsWith('deposits_') || taskId.startsWith('savings_') || taskId.startsWith('annuity_') || taskId.startsWith('mortgage_') || taskId.startsWith('rentloan_') || taskId.startsWith('creditloan_') || taskId.startsWith('dart_fin_') || taskId.startsWith('corp_action_') || taskId.startsWith('etf_incremental_') || isPipeline);
 
   // Phase 판별: backend의 phase 필드 사용, 없으면 current_item 기반으로 판단
   const currentPhase = progress.phase ||
     (progress.current_item && progress.current_item.includes('[Phase 1]') ? 'Phase 1' : 'Phase 2');
-  const isPhase1 = !isBondTask && progress.status === 'running' && currentPhase === 'Phase 1';
+  const isPhase1 = !isSinglePhase && progress.status === 'running' && currentPhase === 'Phase 1';
 
   // Phase 1 상태 표시
   if (isPhase1) {
@@ -251,7 +252,7 @@ function ProgressModal({ taskId, onComplete, onClose }) {
               />
             </div>
             {/* Phase Badge - 채권은 단일 단계이므로 숨김 */}
-            {!isBondTask && (
+            {!isSinglePhase && (
               <div className="pm-phase-badges">
                 <span className={`pm-phase-badge ${currentPhase === 'Phase 1' ? 'pm-phase-active' : 'pm-phase-inactive'}`}>
                   Phase 1: 수집
