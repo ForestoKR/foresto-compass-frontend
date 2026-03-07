@@ -48,7 +48,7 @@ export default function DataManagementPage() {
   };
 
   const handleLoadData = async (type) => {
-    const typeNames = { stocks: '주식', etfs: 'ETF', etns: 'ETN', gold: '금시장' };
+    const typeNames = { stocks: '주식', etfs: 'ETF', etns: 'ETN', gold: 'ETF/ETN/금현물 시계열' };
     if (!window.confirm(`${typeNames[type]} 데이터를 수집하시겠습니까?`)) {
       return;
     }
@@ -274,7 +274,7 @@ export default function DataManagementPage() {
             {[
               { num: 1, label: 'FDR 종목' },
               { num: 2, label: '주식/ETF/ETN' },
-              { num: 3, label: '시계열/금시장' },
+              { num: 3, label: '시계열' },
               { num: 4, label: '재무/배당' },
               { num: 5, label: '금융상품' },
             ].map((step) => (
@@ -418,23 +418,23 @@ export default function DataManagementPage() {
 
           {/* ─── Step 3: pykrx 시계열 ─── */}
           <div className="description-section dm-section">
-            <h2>{stepBadge(3)} KRX Open API 시계열 / 금시장 데이터</h2>
+            <h2>{stepBadge(3)} KRX Open API 시계열 데이터</h2>
             <p className="dm-section-subtitle">
               KRX 공식 데이터로 과거 가격(OHLCV)을 수집합니다. 일 9,500건 한도.
             </p>
 
-            {/* 금시장 수집 */}
+            {/* ETF/ETN/금현물 시계열 수집 */}
             <div className="dm-panel">
-              <h3>금시장 데이터 수집</h3>
+              <h3>ETF / ETN / 금현물 시계열 수집</h3>
               <p className="dm-hint" style={{ marginBottom: 8 }}>
-                KRX 금시장 현물 종목(금 1kg 등)의 시세를 수집합니다. 가격 단위: 원/g.
+                KRX API로 ETF·ETN·금현물의 일별 OHLCV를 etf_price_daily 테이블에 적재합니다. API 3회 호출.
               </p>
               <button
                 onClick={() => handleLoadData('gold')}
                 disabled={loading}
                 className="btn btn-primary dm-btn-full-bold"
               >
-                금시장 데이터 수집
+                ETF/ETN/금현물 시계열 수집
               </button>
             </div>
 
