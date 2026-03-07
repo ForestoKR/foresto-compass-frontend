@@ -423,21 +423,6 @@ export default function DataManagementPage() {
               KRX 공식 데이터로 과거 가격(OHLCV)을 수집합니다. 일 9,500건 한도.
             </p>
 
-            {/* ETF/ETN/금현물 시계열 수집 */}
-            <div className="dm-panel">
-              <h3>ETF / ETN / 금현물 시계열 수집</h3>
-              <p className="dm-hint" style={{ marginBottom: 8 }}>
-                KRX API로 ETF·ETN·금현물의 일별 OHLCV를 etf_price_daily 테이블에 적재합니다. API 3회 호출.
-              </p>
-              <button
-                onClick={() => handleLoadData('gold')}
-                disabled={loading}
-                className="btn btn-primary dm-btn-full-bold"
-              >
-                ETF/ETN/금현물 시계열 수집
-              </button>
-            </div>
-
             {/* 단일 종목 */}
             <div className="dm-panel">
               <h3>단일 종목 시계열</h3>
